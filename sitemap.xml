@@ -6,23 +6,39 @@
     xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
                         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
  <url>
-  <loc>https://fehiepsi.github.io/archive/index.html</loc>
-  <lastmod>2016-07-06T10:19:00Z</lastmod>
+  <loc>https://fehiepsi.github.io/</loc>
+  <lastmod>2016-07-06T11:12:00Z</lastmod>
  </url>
  <url>
-  <loc>https://fehiepsi.github.io/categories/index.html</loc>
-  <lastmod>2016-07-06T10:19:00Z</lastmod>
+  <loc>https://fehiepsi.github.io/archive/</loc>
+  <lastmod>2016-07-06T08:22:00Z</lastmod>
  </url>
  <url>
-  <loc>https://fehiepsi.github.io/galleries/index.html</loc>
-  <lastmod>2016-07-06T10:19:00Z</lastmod>
+  <loc>https://fehiepsi.github.io/blog/solutions-to-the-first-50-problems/</loc>
+  <lastmod>2016-07-06T11:12:00Z</lastmod>
  </url>
  <url>
-  <loc>https://fehiepsi.github.io/index.html</loc>
-  <lastmod>2016-07-06T10:19:00Z</lastmod>
+  <loc>https://fehiepsi.github.io/categories/</loc>
+  <lastmod>2016-07-06T11:12:00Z</lastmod>
  </url>
  <url>
-  <loc>https://fehiepsi.github.io/listings/index.html</loc>
-  <lastmod>2016-07-06T10:19:00Z</lastmod>
+  <loc>https://fehiepsi.github.io/categories/abcccc/</loc>
+  <lastmod>2016-07-06T11:12:00Z</lastmod>
+ </url>
+ <url>
+  <loc>https://fehiepsi.github.io/categories/ddeeffffff/</loc>
+  <lastmod>2016-07-06T11:12:00Z</lastmod>
+ </url>
+ <url>
+  <loc>https://fehiepsi.github.io/categories/test/</loc>
+  <lastmod>2016-07-06T11:12:00Z</lastmod>
+ </url>
+ <url>
+  <loc>https://fehiepsi.github.io/galleries/</loc>
+  <lastmod>2016-07-06T10:13:00Z</lastmod>
+ </url>
+ <url>
+  <loc>https://fehiepsi.github.io/listings/</loc>
+  <lastmod>2016-07-06T10:13:00Z</lastmod>
  </url>
 </urlset>
