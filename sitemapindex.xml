@@ -14,15 +14,27 @@
   <lastmod>2016-08-31T13:54:00Z</lastmod>
  </sitemap>
  <sitemap>
+  <loc>https://fehiepsi.github.io/categories/numba.xml</loc>
+  <lastmod>2016-08-31T16:22:00Z</lastmod>
+ </sitemap>
+ <sitemap>
+  <loc>https://fehiepsi.github.io/categories/project-euler.xml</loc>
+  <lastmod>2016-08-31T16:22:00Z</lastmod>
+ </sitemap>
+ <sitemap>
+  <loc>https://fehiepsi.github.io/categories/python.xml</loc>
+  <lastmod>2016-08-31T16:22:00Z</lastmod>
+ </sitemap>
+ <sitemap>
   <loc>https://fehiepsi.github.io/categories/test.xml</loc>
   <lastmod>2016-08-31T13:54:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://fehiepsi.github.io/rss.xml</loc>
-  <lastmod>2016-08-31T13:54:00Z</lastmod>
+  <lastmod>2016-08-31T16:22:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://fehiepsi.github.io/sitemap.xml</loc>
-  <lastmod>2016-08-31T13:54:00Z</lastmod>
+  <lastmod>2016-08-31T16:22:00Z</lastmod>
  </sitemap>
 </sitemapindex>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>fehiepsi's blog</title><link>https://fehiepsi.github.io/</link><description>enjoy freedom</description><atom:link type="application/rss+xml" rel="self" href="https://fehiepsi.github.io/rss.xml"></atom:link><language>en</language><lastBuildDate>Wed, 31 Aug 2016 13:54:29 GMT</lastBuildDate><generator>https://getnikola.com/</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Solutions to the first 50 problems</title><link>https://fehiepsi.github.io/blog/solutions-to-the-first-50-problems/</link><dc:creator>fehiepsi</dc:creator><description>&lt;div tabindex="-1" id="notebook" class="border-box-sizing"&gt;
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>fehiepsi's blog</title><link>https://fehiepsi.github.io/</link><description>enjoy freedom</description><atom:link href="https://fehiepsi.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><lastBuildDate>Wed, 31 Aug 2016 16:34:34 GMT</lastBuildDate><generator>https://getnikola.com/</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Solutions to Project Euler's first 50 problems</title><link>https://fehiepsi.github.io/blog/projecteuler-first50/</link><dc:creator>fehiepsi</dc:creator><description>&lt;div tabindex="-1" id="notebook" class="border-box-sizing"&gt;
     &lt;div class="container" id="notebook-container"&gt;
 
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;
@@ -7,7 +7,7 @@
 &lt;/div&gt;
 &lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
-&lt;p&gt;These are codes to solve first 50 problems in &lt;a href="http://projecteuler.net/"&gt;Project Euler&lt;/a&gt;. The thing is that I try to make these &lt;em&gt;python&lt;/em&gt; codes give solutions in less than 1 seconds. This is achieved by using the excellent &lt;strong&gt;numba&lt;/strong&gt; &lt;a href="http://numba.pydata.org/"&gt;package&lt;/a&gt;. This post is written in a IPython notebook.&lt;/p&gt;
+&lt;p&gt;These are codes to solve the first 50 problems in &lt;a href="http://projecteuler.net/"&gt;Project Euler&lt;/a&gt;. The thing is that I try to make these &lt;em&gt;python&lt;/em&gt; codes give solutions in less than 1 second. This is achieved by using the excellent &lt;strong&gt;numba&lt;/strong&gt; &lt;a href="http://numba.pydata.org/"&gt;package&lt;/a&gt;. This post is written in an IPython notebook.&lt;/p&gt;
 
 &lt;/div&gt;
 &lt;/div&gt;
@@ -2739,4 +2739,4 @@ The slowest run took 12.25 times longer than the fastest. This could mean that a
 &lt;/div&gt;
     &lt;/div&gt;
   &lt;/div&gt;
-</description><category>abcccc</category><category>ddeeffffff</category><category>test</category><guid>https://fehiepsi.github.io/blog/solutions-to-the-first-50-problems/</guid><pubDate>Wed, 06 Jul 2016 11:10:50 GMT</pubDate></item></channel></rss>
+</description><category>numba</category><category>project euler</category><category>python</category><guid>https://fehiepsi.github.io/blog/projecteuler-first50/</guid><pubDate>Wed, 06 Jul 2016 11:10:50 GMT</pubDate></item></channel></rss>
