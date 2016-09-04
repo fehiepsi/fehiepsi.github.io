@@ -7,7 +7,11 @@
                         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
  <url>
   <loc>https://fehiepsi.github.io/</loc>
-  <lastmod>2016-08-31T18:37:00Z</lastmod>
+  <lastmod>2016-09-04T16:29:00Z</lastmod>
+ </url>
+ <url>
+  <loc>https://fehiepsi.github.io/about/</loc>
+  <lastmod>2016-09-04T16:06:00Z</lastmod>
  </url>
  <url>
   <loc>https://fehiepsi.github.io/archive/</loc>
