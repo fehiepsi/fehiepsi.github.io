@@ -7,43 +7,35 @@
                         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
  <url>
   <loc>https://fehiepsi.github.io/</loc>
-  <lastmod>2016-08-31T13:12:00Z</lastmod>
+  <lastmod>2016-08-31T18:37:00Z</lastmod>
  </url>
  <url>
   <loc>https://fehiepsi.github.io/archive/</loc>
-  <lastmod>2016-08-31T12:10:00Z</lastmod>
- </url>
- <url>
-  <loc>https://fehiepsi.github.io/blog/a/</loc>
-  <lastmod>2016-08-31T14:50:00Z</lastmod>
- </url>
- <url>
-  <loc>https://fehiepsi.github.io/blog/feafaf/</loc>
-  <lastmod>2016-08-31T14:50:00Z</lastmod>
+  <lastmod>2016-08-31T18:37:00Z</lastmod>
  </url>
  <url>
   <loc>https://fehiepsi.github.io/blog/projecteuler-first50/</loc>
   <lastmod>2016-08-31T16:22:00Z</lastmod>
  </url>
  <url>
-  <loc>https://fehiepsi.github.io/blog/solutions-to-the-first-50-problems/</loc>
-  <lastmod>2016-08-31T12:10:00Z</lastmod>
- </url>
- <url>
-  <loc>https://fehiepsi.github.io/blog/test/</loc>
-  <lastmod>2016-08-31T14:50:00Z</lastmod>
+  <loc>https://fehiepsi.github.io/blog/rudin-complex-analysis/</loc>
+  <lastmod>2016-09-04T10:02:00Z</lastmod>
  </url>
  <url>
   <loc>https://fehiepsi.github.io/categories/</loc>
-  <lastmod>2016-08-31T16:22:00Z</lastmod>
+  <lastmod>2016-09-04T11:27:00Z</lastmod>
  </url>
  <url>
-  <loc>https://fehiepsi.github.io/categories/abcccc/</loc>
-  <lastmod>2016-08-31T12:10:00Z</lastmod>
+  <loc>https://fehiepsi.github.io/categories/complex-analysis/</loc>
+  <lastmod>2016-09-04T10:02:00Z</lastmod>
  </url>
  <url>
-  <loc>https://fehiepsi.github.io/categories/ddeeffffff/</loc>
-  <lastmod>2016-08-31T12:10:00Z</lastmod>
+  <loc>https://fehiepsi.github.io/categories/latex/</loc>
+  <lastmod>2016-09-04T10:02:00Z</lastmod>
+ </url>
+ <url>
+  <loc>https://fehiepsi.github.io/categories/mathjax/</loc>
+  <lastmod>2016-09-04T10:02:00Z</lastmod>
  </url>
  <url>
   <loc>https://fehiepsi.github.io/categories/numba/</loc>
@@ -58,7 +50,7 @@
   <lastmod>2016-08-31T16:22:00Z</lastmod>
  </url>
  <url>
-  <loc>https://fehiepsi.github.io/categories/test/</loc>
-  <lastmod>2016-08-31T12:10:00Z</lastmod>
+  <loc>https://fehiepsi.github.io/categories/rudin/</loc>
+  <lastmod>2016-09-04T10:02:00Z</lastmod>
  </url>
 </urlset>

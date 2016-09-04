@@ -14,8 +14,9 @@ article: http://ogp.me/ns/article#
 <link rel="alternate" type="application/rss+xml" title="RSS" href="../../rss.xml">
 <link rel="canonical" href="https://fehiepsi.github.io/blog/projecteuler-first50/">
 <!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
-<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/katex.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">
 <meta name="author" content="fehiepsi">
+<link rel="next" href="../rudin-complex-analysis/" title="Some solutions to Rudin's complex analysis book" type="text/html">
 <meta property="og:site_name" content="fehiepsi's blog">
 <meta property="og:title" content="Solutions to Project Euler's first 50 problems">
 <meta property="og:url" content="https://fehiepsi.github.io/blog/projecteuler-first50/">
@@ -197,6 +198,15 @@ article: http://ogp.me/ns/article#
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<!-- TEASER_END -->
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
@@ -2896,6 +2906,11 @@ The slowest run took 12.25 times longer than the fastest. This could mean that a
 <li><a class="tag p-category" href="../../categories/numba/" rel="tag">numba</a></li>
             <li><a class="tag p-category" href="../../categories/project-euler/" rel="tag">project euler</a></li>
             <li><a class="tag p-category" href="../../categories/python/" rel="tag">python</a></li>
+        </ul>
+<ul class="pager hidden-print">
+<li class="next">
+                <a href="../rudin-complex-analysis/" rel="next" title="Some solutions to Rudin's complex analysis book">Next post</a>
+            </li>
         </ul></nav></aside><section class="comments hidden-print"><h2>Comments</h2>
                         <div id="disqus_thread"></div>
         <script>
@@ -2916,8 +2931,17 @@ The slowest run took 12.25 times longer than the fastest. This could mean that a
     <a href="https://disqus.com" class="dsq-brlink" rel="nofollow">Comments powered by <span class="logo-disqus">Disqus</span></a>
 
 
-        </section><script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/katex.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/contrib/auto-render.min.js"></script><script>
-                renderMathInElement(document.body);
+        </section><script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/contrib/auto-render.min.js"></script><script>
+                renderMathInElement(document.body,
+                {
+                    delimiters: [
+                        {left: "$$", right: "$$", display: true},
+                        {left: "\\[", right: "\\]", display: true},
+                        {left: "$", right: "$", display: false},
+                        {left: "\\(", right: "\\)", display: false}
+                    ]
+                }
+                );
             </script></article><script>var disqus_shortname="fehiepsi-github-io";(function(){var a=document.createElement("script");a.async=true;a.src="https://"+disqus_shortname+".disqus.com/count.js";(document.getElementsByTagName("head")[0]||document.getElementsByTagName("body")[0]).appendChild(a)}());</script>
 </div>
         <!--End of body content-->
@@ -2940,6 +2964,12 @@ The slowest run took 12.25 times longer than the fastest. This could mean that a
   <a href="https://github.com/fehiepsi">
     <i class="fa fa-circle fa-stack-2x"></i>
     <i class="fa fa-github fa-inverse fa-stack-1x"></i>
+  </a>
+</span>
+<span class="fa-stack fa-2x">
+  <a href="https://fehiepsi.wordpress.com">
+    <i class="fa fa-circle fa-stack-2x"></i>
+    <i class="fa fa-wordpress fa-inverse fa-stack-1x"></i>
   </a>
 </span>
 <span class="fa-stack fa-2x">

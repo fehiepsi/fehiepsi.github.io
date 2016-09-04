@@ -6,35 +6,39 @@
     xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
                         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
  <sitemap>
-  <loc>https://fehiepsi.github.io/categories/abcccc.xml</loc>
-  <lastmod>2016-08-31T13:54:00Z</lastmod>
+  <loc>https://fehiepsi.github.io/categories/complex-analysis.xml</loc>
+  <lastmod>2016-09-04T10:02:00Z</lastmod>
  </sitemap>
  <sitemap>
-  <loc>https://fehiepsi.github.io/categories/ddeeffffff.xml</loc>
-  <lastmod>2016-08-31T13:54:00Z</lastmod>
+  <loc>https://fehiepsi.github.io/categories/latex.xml</loc>
+  <lastmod>2016-09-04T10:02:00Z</lastmod>
+ </sitemap>
+ <sitemap>
+  <loc>https://fehiepsi.github.io/categories/mathjax.xml</loc>
+  <lastmod>2016-09-04T10:02:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://fehiepsi.github.io/categories/numba.xml</loc>
-  <lastmod>2016-08-31T16:22:00Z</lastmod>
+  <lastmod>2016-09-04T10:02:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://fehiepsi.github.io/categories/project-euler.xml</loc>
-  <lastmod>2016-08-31T16:22:00Z</lastmod>
+  <lastmod>2016-09-04T10:02:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://fehiepsi.github.io/categories/python.xml</loc>
-  <lastmod>2016-08-31T16:22:00Z</lastmod>
+  <lastmod>2016-09-04T10:02:00Z</lastmod>
  </sitemap>
  <sitemap>
-  <loc>https://fehiepsi.github.io/categories/test.xml</loc>
-  <lastmod>2016-08-31T13:54:00Z</lastmod>
+  <loc>https://fehiepsi.github.io/categories/rudin.xml</loc>
+  <lastmod>2016-09-04T10:02:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://fehiepsi.github.io/rss.xml</loc>
-  <lastmod>2016-08-31T16:22:00Z</lastmod>
+  <lastmod>2016-09-04T10:02:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://fehiepsi.github.io/sitemap.xml</loc>
-  <lastmod>2016-08-31T16:22:00Z</lastmod>
+  <lastmod>2016-09-04T11:49:00Z</lastmod>
  </sitemap>
 </sitemapindex>

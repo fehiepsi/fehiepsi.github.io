@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>fehiepsi's blog (mathjax)</title><link>https://fehiepsi.github.io/</link><description></description><atom:link href="https://fehiepsi.github.io/categories/mathjax.xml" type="application/rss+xml" rel="self"></atom:link><language>en</language><lastBuildDate>Sun, 04 Sep 2016 13:06:37 GMT</lastBuildDate><generator>https://getnikola.com/</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Some solutions to Rudin's complex analysis book</title><link>https://fehiepsi.github.io/blog/rudin-complex-analysis/</link><dc:creator>fehiepsi</dc:creator><description>&lt;div tabindex="-1" id="notebook" class="border-box-sizing"&gt;
+    &lt;div class="container" id="notebook-container"&gt;
+
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;p&gt;The following notebook contains some solutions to the complex analysis part of the &lt;a href="https://www.amazon.com/Real-Complex-Analysis-Rudin/dp/0070619875/"&gt;Big Rudin book&lt;/a&gt; that I studied at POSTECH. This post is also a chance for to test the different between MathJax and KaTeX in Nikola, to see which one has better render. It turns out that KaTeX is much faster than MathJax. As a note, to make KaTeX work with inline mode from Jupyter notebook, we have to change the default auto-render code in the theme (as suggested in this &lt;a href="https://github.com/Khan/KaTeX/blob/master/contrib/auto-render/index.html"&gt;file&lt;/a&gt;, the &lt;code&gt;renderMathInElement part&lt;/code&gt;).&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Chapter 10: &lt;a href="https://fehiepsi.github.io/blog/rudin-complex-analysis/#Chapter-10---Elementary-Properties-of-Holomorphic-Functions"&gt;Elementary Properties of Holomorphic Functions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Chapter 11: &lt;a href="https://fehiepsi.github.io/blog/rudin-complex-analysis/#Chapter-11---Harmonic-Functions"&gt;Harmonic Functions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Chapter 12: &lt;a href="https://fehiepsi.github.io/blog/rudin-complex-analysis/#Chapter-12---The-Maximum-Modulus-Principle"&gt;The Maximum Modulus Principle&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Chapter 13: &lt;a href="https://fehiepsi.github.io/blog/rudin-complex-analysis/#Chapter-13---Approximation-by-Rational-Functions"&gt;Approximation by Rational Functions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Chapter 14: &lt;a href="https://fehiepsi.github.io/blog/rudin-complex-analysis/#Chapter-14---Conformal-Mapping"&gt;Conformal Mapping&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;h3 id="Chapter-10---Elementary-Properties-of-Holomorphic-Functions"&gt;Chapter 10 - Elementary Properties of Holomorphic Functions&lt;a class="anchor-link" href="https://fehiepsi.github.io/blog/rudin-complex-analysis/#Chapter-10---Elementary-Properties-of-Holomorphic-Functions"&gt;¶&lt;/a&gt;&lt;/h3&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;p&gt;&lt;strong&gt;1.&lt;/strong&gt; The following fact was tacitly used in this chapter: If $A$ and $B$ are disjoint subsets of the plane, if $A$ is compact, and if $B$ is closed, then there exists a $\delta &amp;gt; 0$ such that $|\alpha - \beta| \geq \delta$ for all $\alpha \in A$ and $\beta \in B$. Prove this, with an arbitrary metric space in place of the plane.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Proof.&lt;/strong&gt; Let $A$ be a compact set and $B$ be a closed set in a metric space such that $A\cap B = \varnothing$. Let $\delta = \inf_{\alpha,\beta}d(\alpha,\beta)$ where the infimum is taken with all $\alpha \in A$ and $\beta\in B$, and let $\{a_n\}$, $\{b_n\}$ be two sequences in $A$ and $B$ correspondingly such that $\lim_{n\to\infty}d(a_n,b_n) = \delta$. Suppose that $\delta = 0$. Because $A$ is compact, there exists $c\in A$ and a subsequence $\{a_{n_k}\}$ of $\{a_n\}$ such that $\lim_{k\to\infty}d(a_{n_k},c) = 0$. Hence $\lim_{k\to\infty}d(b_{n_k},c) = 0$ because $\lim_{k\to\infty}d(a_{n_k},b_{n_k}) = 0$. Hence $c \in \bar{B}=B$, which is a contradiction with the hypothesis that $A\cap B = \varnothing$. So $\delta &amp;gt; 0$. We get the conclusion. $\Box$
+&lt;/p&gt;&lt;p&gt;&lt;a href="https://fehiepsi.github.io/blog/rudin-complex-analysis/"&gt;Read more…&lt;/a&gt; (28 min remaining to read)&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</description><category>complex analysis</category><category>latex</category><category>mathjax</category><category>rudin</category><guid>https://fehiepsi.github.io/blog/rudin-complex-analysis/</guid><pubDate>Sun, 04 Sep 2016 09:59:50 GMT</pubDate></item></channel></rss>
