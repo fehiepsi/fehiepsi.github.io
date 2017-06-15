@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/"><channel><title>fehiepsi's blog (Posts about seq2seq)</title><link>https://fehiepsi.github.io/</link><description></description><atom:link rel="self" type="application/rss+xml" href="https://fehiepsi.github.io/categories/seq2seq.xml"></atom:link><language>en</language><lastBuildDate>Thu, 15 Jun 2017 11:42:24 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>How to build a Grapheme-to-Phoneme (G2P) model using PyTorch</title><link>https://fehiepsi.github.io/blog/grapheme-to-phoneme/</link><dc:creator>fehiepsi</dc:creator><description>&lt;div tabindex="-1" id="notebook" class="border-box-sizing"&gt;
+    &lt;div class="container" id="notebook-container"&gt;
+
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;h4 id="introduction"&gt;introduction&lt;a class="anchor-link" href="https://fehiepsi.github.io/blog/grapheme-to-phoneme/#introduction"&gt;¶&lt;/a&gt;&lt;/h4&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;p&gt;Grapheme-to-Phoneme (G2P) model is one of the core components of a typical Text-to-Speech (TTS) system, e.g. &lt;a href="https://deepmind.com/blog/wavenet-generative-model-raw-audio/"&gt;WaveNet&lt;/a&gt; and &lt;a href="http://research.baidu.com/deep-voice-production-quality-text-speech-system-constructed-entirely-deep-neural-networks/"&gt;Deep Voice&lt;/a&gt;. In this notebook, we will try to replicate the Encoder-decoder LSTM model from the paper &lt;a href="https://arxiv.org/abs/1506.00196"&gt;https://arxiv.org/abs/1506.00196&lt;/a&gt;.&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;p&gt;Throughout this tutorial, we will learn how to:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Implement a sequence-to-sequence (seq2seq) model&lt;/li&gt;
+&lt;li&gt;Implement global attention into seq2seq model&lt;/li&gt;
+&lt;li&gt;Use beam-search decoder&lt;/li&gt;
+&lt;li&gt;Use Levenshtein distance to compute phoneme-error-rate (PER)&lt;/li&gt;
+&lt;li&gt;Use torchtext package&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;h4 id="setup"&gt;setup&lt;a class="anchor-link" href="https://fehiepsi.github.io/blog/grapheme-to-phoneme/#setup"&gt;¶&lt;/a&gt;&lt;/h4&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;p&gt;First, we will import necessary modules. You can install PyTorch as suggested in its &lt;a href="http://pytorch.org/"&gt;main page&lt;/a&gt;. To install &lt;a href="https://github.com/pytorch/text"&gt;torchtext&lt;/a&gt;, simply call&lt;/p&gt;
+&lt;blockquote&gt;&lt;p&gt;git install git+&lt;a href="https://github.com/pytorch/text.git"&gt;https://github.com/pytorch/text.git&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Due to &lt;a href="https://github.com/pytorch/text/pull/28"&gt;this bug&lt;/a&gt;, it is important to update your &lt;code&gt;torchtext&lt;/code&gt; to the lastest version (using the above installing command is enough).&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;p&gt;&lt;a href="https://fehiepsi.github.io/blog/grapheme-to-phoneme/"&gt;Read more…&lt;/a&gt; (28 min remaining to read)&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</description><category>deep learning</category><category>G2P</category><category>pytorch</category><category>seq2seq</category><guid>https://fehiepsi.github.io/blog/grapheme-to-phoneme/</guid><pubDate>Thu, 15 Jun 2017 11:25:53 GMT</pubDate></item></channel></rss>

@@ -11,12 +11,12 @@ article: http://ogp.me/ns/article#
 <link href="assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
 <link href="assets/css/ipython.min.css" rel="stylesheet" type="text/css">
 <link href="assets/css/nikola_ipython.css" rel="stylesheet" type="text/css">
-<meta content="#5670d4" name="theme-color">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
 <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml">
 <link rel="canonical" href="https://fehiepsi.github.io/">
-<!--[if lt IE 9]><script src="assets/js/html5.js"></script><![endif]--><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
-<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">
-<link rel="prefetch" href="blog/rudin-complex-analysis/" type="text/html">
+<!--[if lt IE 9]><script src="assets/js/html5.js"></script><![endif]--><link rel="prefetch" href="blog/grapheme-to-phoneme/" type="text/html">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
 </head>
 <body>
 <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
@@ -63,10 +63,98 @@ article: http://ogp.me/ns/article#
         <div class="row">
             
     
+    
 <div class="postindex">
-    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="blog/rudin-complex-analysis/" class="u-url">Some solutions to Rudin's complex analysis book</a></h1>
+    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="blog/grapheme-to-phoneme/" class="u-url">How to build a Grapheme-to-Phoneme (G2P) model using PyTorch</a></h1>
         <div class="metadata">
-            <p class="byline author vcard"><span class="byline-name fn">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                fehiepsi
+            </span></p>
+            <p class="dateline"><a href="blog/grapheme-to-phoneme/" rel="bookmark"><time class="published dt-published" datetime="2017-06-15T20:25:53+09:00" title="2017-06-15 20:25">2017-06-15 20:25</time></a></p>
+                <p class="commentline">            <a href="blog/grapheme-to-phoneme/#disqus_thread" data-disqus-identifier="cache/posts/grapheme-to-phoneme.html">Comments</a>
+
+
+        </p>
+</div>
+    </header><div class="p-summary entry-summary">
+    <div tabindex="-1" id="notebook" class="border-box-sizing">
+    <div class="container" id="notebook-container">
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="introduction">introduction<a class="anchor-link" href="blog/grapheme-to-phoneme/#introduction">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Grapheme-to-Phoneme (G2P) model is one of the core components of a typical Text-to-Speech (TTS) system, e.g. <a href="https://deepmind.com/blog/wavenet-generative-model-raw-audio/">WaveNet</a> and <a href="http://research.baidu.com/deep-voice-production-quality-text-speech-system-constructed-entirely-deep-neural-networks/">Deep Voice</a>. In this notebook, we will try to replicate the Encoder-decoder LSTM model from the paper <a href="https://arxiv.org/abs/1506.00196">https://arxiv.org/abs/1506.00196</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Throughout this tutorial, we will learn how to:</p>
+<ul>
+<li>Implement a sequence-to-sequence (seq2seq) model</li>
+<li>Implement global attention into seq2seq model</li>
+<li>Use beam-search decoder</li>
+<li>Use Levenshtein distance to compute phoneme-error-rate (PER)</li>
+<li>Use torchtext package</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="setup">setup<a class="anchor-link" href="blog/grapheme-to-phoneme/#setup">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>First, we will import necessary modules. You can install PyTorch as suggested in its <a href="http://pytorch.org/">main page</a>. To install <a href="https://github.com/pytorch/text">torchtext</a>, simply call</p>
+<blockquote>
+<p>git install git+<a href="https://github.com/pytorch/text.git">https://github.com/pytorch/text.git</a></p>
+</blockquote>
+<p>Due to <a href="https://github.com/pytorch/text/pull/28">this bug</a>, it is important to update your <code>torchtext</code> to the lastest version (using the above installing command is enough).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p class="more"><a href="blog/grapheme-to-phoneme/">Read more…</a></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+    </div>
+    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="blog/rudin-complex-analysis/" class="u-url">Some solutions to Rudin's complex analysis book</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 fehiepsi
             </span></p>
             <p class="dateline"><a href="blog/rudin-complex-analysis/" rel="bookmark"><time class="published dt-published" datetime="2016-09-04T18:59:50+09:00" title="2016-09-04 18:59">2016-09-04 18:59</time></a></p>
@@ -127,7 +215,7 @@ article: http://ogp.me/ns/article#
     </div>
     </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="blog/projecteuler-first50/" class="u-url">Solutions to Project Euler's first 50 problems</a></h1>
         <div class="metadata">
-            <p class="byline author vcard"><span class="byline-name fn">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 fehiepsi
             </span></p>
             <p class="dateline"><a href="blog/projecteuler-first50/" rel="bookmark"><time class="published dt-published" datetime="2016-07-06T20:10:50+09:00" title="2016-07-06 20:10">2016-07-06 20:10</time></a></p>
@@ -190,6 +278,7 @@ article: http://ogp.me/ns/article#
 
 <div class="output_area">
 <div class="prompt"></div>
+
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>233168
 1000 loops, best of 3: 245 µs per loop
@@ -230,6 +319,7 @@ article: http://ogp.me/ns/article#
 
 <div class="output_area">
 <div class="prompt"></div>
+
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>4613732
 100000 loops, best of 3: 8.44 µs per loop
@@ -256,16 +346,18 @@ article: http://ogp.me/ns/article#
     </article>
 </div>
 
-               <script>var disqus_shortname="fehiepsi-github-io";(function(){var a=document.createElement("script");a.async=true;a.src="https://"+disqus_shortname+".disqus.com/count.js";(document.getElementsByTagName("head")[0]||document.getElementsByTagName("body")[0]).appendChild(a)}());</script><script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/contrib/auto-render.min.js"></script><script>
+               <script>var disqus_shortname="fehiepsi-github-io";(function(){var a=document.createElement("script");a.async=true;a.src="https://"+disqus_shortname+".disqus.com/count.js";(document.getElementsByTagName("head")[0]||document.getElementsByTagName("body")[0]).appendChild(a)}());</script><script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js" integrity="sha256-ExtbCSBuYA7kq1Pz362ibde9nnsHYPt6JxuxYeZbU+c=" crossorigin="anonymous"></script><script>
                 renderMathInElement(document.body,
-                {
-                    delimiters: [
-                        {left: "$$", right: "$$", display: true},
-                        {left: "\\[", right: "\\]", display: true},
-                        {left: "$", right: "$", display: false},
-                        {left: "\\(", right: "\\)", display: false}
-                    ]
-                }
+                    {
+                        
+delimiters: [
+    {left: "$$", right: "$$", display: true},
+    {left: "\\[", right: "\\]", display: true},
+    {left: "$", right: "$", display: false},
+    {left: "\\(", right: "\\)", display: false}
+]
+
+                    }
                 );
             </script>
 </div>
@@ -305,7 +397,7 @@ article: http://ogp.me/ns/article#
 </span>
 </p>
 <p>
-  Contents © 2016  <a href="mailto:fehiepsi@gmail.com">fehiepsi</a>
+  Contents © 2017  <a href="mailto:fehiepsi@gmail.com">fehiepsi</a>
   —
   
 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
