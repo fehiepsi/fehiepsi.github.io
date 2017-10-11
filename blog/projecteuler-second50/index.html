@@ -1,0 +1,4231 @@
+<!DOCTYPE html>
+<html prefix="
+og: http://ogp.me/ns#
+article: http://ogp.me/ns/article#
+" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Solutions to Project Euler's second 50 problems | fehiepsi's blog</title>
+<link href="../../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/ipython.min.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/nikola_ipython.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="../../rss.xml">
+<link rel="canonical" href="https://fehiepsi.github.io/blog/projecteuler-second50/">
+<!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="author" content="fehiepsi">
+<link rel="prev" href="../grapheme-to-phoneme/" title="How to build a Grapheme-to-Phoneme (G2P) model using PyTorch" type="text/html">
+<meta property="og:site_name" content="fehiepsi's blog">
+<meta property="og:title" content="Solutions to Project Euler's second 50 problems">
+<meta property="og:url" content="https://fehiepsi.github.io/blog/projecteuler-second50/">
+<meta property="og:description" content="These are codes to solve the second 50 problems in Project Euler. These python codes will give solutions in less than 1 second. This is achieved by using the excellent numba package.
+
+
+
+
+
+
+
+
+Problem 5">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2017-10-12T03:08:50+09:00">
+<meta property="article:tag" content="numba">
+<meta property="article:tag" content="project euler">
+<meta property="article:tag" content="python">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+</head>
+<body>
+<a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+
+<!-- Menubar -->
+
+<nav class="navbar navbar-inverse navbar-static-top"><div class="container">
+<!-- This keeps the margins nice -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="https://fehiepsi.github.io/">
+
+                <span id="blog-title">fehiepsi's blog</span>
+            </a>
+        </div>
+<!-- /.navbar-header -->
+        <div class="collapse navbar-collapse" id="bs-navbar" aria-expanded="false">
+            <ul class="nav navbar-nav">
+<li>
+<a href="../../archive/">Archive</a>
+                </li>
+<li>
+<a href="../../categories/">Tags</a>
+                </li>
+<li>
+<a href="../../about/">About</a>
+
+                
+            </li>
+</ul>
+<ul class="nav navbar-nav navbar-right">
+<li>
+    <a href="index.ipynb" id="sourcelink">Source</a>
+    </li>
+                
+            </ul>
+</div>
+<!-- /.navbar-collapse -->
+    </div>
+<!-- /.container -->
+</nav><!-- End of Menubar --><div class="container" id="content" role="main">
+    <div class="body-content">
+        <!--Body content-->
+        <div class="row">
+            
+<article class="post-text h-entry hentry postpage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">Solutions to Project Euler's second 50 problems</a></h1>
+
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                    fehiepsi
+            </span></p>
+            <p class="dateline"><a href="." rel="bookmark"><time class="published dt-published" datetime="2017-10-12T03:08:50+09:00" itemprop="datePublished" title="2017-10-12 03:08">2017-10-12 03:08</time></a></p>
+                <p class="commentline">            <a href="#disqus_thread" data-disqus-identifier="cache/posts/projecteuler-second50.html">Comments</a>
+
+
+                    </p>
+<p class="sourceline"><a href="index.ipynb" class="sourcelink">Source</a></p>
+
+        </div>
+        
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <div tabindex="-1" id="notebook" class="border-box-sizing">
+    <div class="container" id="notebook-container">
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>These are codes to solve the <a href="https://projecteuler.net/archives;page=2">second 50 problems</a> in <a href="http://projecteuler.net/">Project Euler</a>. These <em>python</em> codes will give solutions in <strong>less than 1 second</strong>. This is achieved by using the excellent <strong>numba</strong> <a href="http://numba.pydata.org/">package</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-51">Problem 51<a class="anchor-link" href="#Problem-51">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">is_prime</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">3</span>
+    <span class="k">elif</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">3</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="o">**</span><span class="mf">0.5</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">%</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">n</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="kc">True</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+def problem51(max_digits=6):
+    position_list = [[i, j, k] for i in range(6) for j in range(i+1, 6)
+                     for k in range(j+1, 6)]
+    for origin in range(10**(max_digits-3)):
+        for position in position_list:
+            start_digit = 0 if position[0] == 0 else 1
+            fail_count = start_digit
+            answer = []
+            for digit in range(start_digit, 10):
+                origin_str = "{:0{}d}".format(origin, max_digits-3)
+                expanded_digits = [str(digit)] * 6
+                expanded_digits[position[0]] = origin_str[0]
+                expanded_digits[position[1]] = origin_str[1]
+                expanded_digits[position[2]] = origin_str[2]
+                generated_number = int("".join(expanded_digits))
+                if is_prime(generated_number) == False:
+                    fail_count += 1
+                    if fail_count == 3:
+                        break
+                else:
+                    answer.append(generated_number)
+            if len(answer) == 8:
+                return answer[0]
+
+print(problem51())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>121313
+CPU times: user 40 ms, sys: 0 ns, total: 40 ms
+Wall time: 40.9 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-52">Problem 52<a class="anchor-link" href="#Problem-52">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+def problem52(limit=10**7):
+    for i in range(1, limit):
+        sorted_i = sorted(str(i))
+        if sorted_i == sorted(str(2*i)):
+            if sorted_i == sorted(str(3*i)):
+                if sorted_i == sorted(str(4*i)):
+                    if sorted_i == sorted(str(5*i)):
+                        if sorted_i == sorted(str(6*i)):
+                            return i
+
+print(problem52())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>142857
+CPU times: user 208 ms, sys: 0 ns, total: 208 ms
+Wall time: 205 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-53">Problem 53<a class="anchor-link" href="#Problem-53">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<!-- TEASER_END -->
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">factorial</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+def problem53():    
+    count = 0
+    for n in range(23, 101):
+        for r in range(1, n):
+            if factorial(n) // (factorial(r) * factorial(n-r)) &gt; 10**6:
+                count += 1
+    return count
+
+print(problem53())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>4075
+CPU times: user 12 ms, sys: 0 ns, total: 12 ms
+Wall time: 9.28 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-54">Problem 54<a class="anchor-link" href="#Problem-54">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">urllib.request</span> <span class="k">import</span> <span class="n">urlopen</span>
+
+<span class="n">url</span> <span class="o">=</span> <span class="s1">'https://projecteuler.net/project/resources/p054_poker.txt'</span>
+<span class="k">with</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>
+    <span class="n">DATA</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">get_rank_value</span><span class="p">(</span><span class="n">hand</span><span class="p">):</span>
+    <span class="n">CARD_TO_VALUE</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="s1">'23456789TJQKA'</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">13</span><span class="p">)))</span>
+    <span class="n">RANK_LIST</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'Royal Flush'</span><span class="p">,</span> <span class="s1">'Straight Flush'</span><span class="p">,</span> <span class="s1">'Four of a Kind'</span><span class="p">,</span>
+                 <span class="s1">'Full House'</span><span class="p">,</span> <span class="s1">'Flush'</span><span class="p">,</span> <span class="s1">'Straight'</span><span class="p">,</span> <span class="s1">'Three of a Kind'</span><span class="p">,</span>
+                 <span class="s1">'Two Pairs'</span><span class="p">,</span> <span class="s1">'One Pair'</span><span class="p">,</span> <span class="s1">'High Card'</span><span class="p">]</span>
+    <span class="n">RANK</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">RANK_LIST</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">)))</span>
+    
+    <span class="n">cards</span> <span class="o">=</span> <span class="p">[</span><span class="n">CARD_TO_VALUE</span><span class="p">[</span><span class="n">card</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="k">for</span> <span class="n">card</span> <span class="ow">in</span> <span class="n">hand</span><span class="p">]</span>
+    <span class="n">is_flush</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">([</span><span class="n">card</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">card</span> <span class="ow">in</span> <span class="n">hand</span><span class="p">]))</span> <span class="o">==</span> <span class="mi">1</span>
+    <span class="n">card_freqs</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([(</span><span class="n">cards</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">card</span><span class="p">),</span> <span class="n">card</span><span class="p">)</span> <span class="k">for</span> <span class="n">card</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">cards</span><span class="p">)])</span>
+    <span class="n">n_cards</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">card_freqs</span><span class="p">)</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">card_freqs</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_cards</span><span class="p">)])</span>
+    <span class="k">if</span> <span class="n">card_freqs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">RANK</span><span class="p">[</span><span class="s1">'Four of a Kind'</span><span class="p">],</span> <span class="n">value</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">card_freqs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">n_cards</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">RANK</span><span class="p">[</span><span class="s1">'Full House'</span><span class="p">],</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">RANK</span><span class="p">[</span><span class="s1">'Three of a Kind'</span><span class="p">],</span> <span class="n">value</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">card_freqs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">n_cards</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">RANK</span><span class="p">[</span><span class="s1">'Two Pairs'</span><span class="p">],</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">RANK</span><span class="p">[</span><span class="s1">'One Pair'</span><span class="p">],</span> <span class="n">value</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="p">(((</span><span class="n">card_freqs</span><span class="p">[</span><span class="mi">4</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">card_freqs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)</span> <span class="ow">or</span>
+          <span class="p">((</span><span class="n">card_freqs</span><span class="p">[</span><span class="mi">4</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">CARD_TO_VALUE</span><span class="p">[</span><span class="s1">'A'</span><span class="p">]</span> <span class="ow">and</span>
+            <span class="n">card_freqs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">CARD_TO_VALUE</span><span class="p">[</span><span class="s1">'2'</span><span class="p">]</span> <span class="ow">and</span>
+            <span class="n">card_freqs</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">CARD_TO_VALUE</span><span class="p">[</span><span class="s1">'5'</span><span class="p">]))):</span>
+        <span class="k">if</span> <span class="n">is_flush</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">card_freqs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">CARD_TO_VALUE</span><span class="p">[</span><span class="s1">'A'</span><span class="p">]:</span>
+                <span class="k">return</span> <span class="p">(</span><span class="n">RANK</span><span class="p">[</span><span class="s1">'Royal Flush'</span><span class="p">],</span> <span class="n">value</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">(</span><span class="n">RANK</span><span class="p">[</span><span class="s1">'Straight Flush'</span><span class="p">],</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">RANK</span><span class="p">[</span><span class="s1">'Straight'</span><span class="p">],</span> <span class="n">value</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">is_flush</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">RANK</span><span class="p">[</span><span class="s1">'Flush'</span><span class="p">],</span> <span class="n">value</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">RANK</span><span class="p">[</span><span class="s1">'High Card'</span><span class="p">],</span> <span class="n">value</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+def problem54():
+    lines = DATA.strip().split('\n')
+    count = 0
+    for line in lines:
+        cards = line.split()
+        player_1 = cards[:5]
+        player_2 = cards[5:]
+        if get_rank_value(player_1) &gt; get_rank_value(player_2):
+            count += 1
+    return count
+
+print(problem54())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>376
+CPU times: user 20 ms, sys: 0 ns, total: 20 ms
+Wall time: 17.8 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-55">Problem 55<a class="anchor-link" href="#Problem-55">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+def problem55(limit=10000):
+    c = 0
+    for i in range(limit):
+        n = i
+        n_t = int(str(n)[::-1])
+        is_Lychrel = True
+        for j in range(49):
+            n = n + n_t
+            n_t = int(str(n)[::-1])
+            if n == n_t:
+                is_Lychrel = False
+                break
+        if is_Lychrel:
+            c += 1
+    return c
+    
+print(problem55())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>249
+CPU times: user 40 ms, sys: 0 ns, total: 40 ms
+Wall time: 40.7 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-56">Problem 56<a class="anchor-link" href="#Problem-56">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+def problem56():
+    max_digital_sum = 0
+    for a in range(100):
+        for b in range(100):
+            d_sum = sum([int(x) for x in str(a**b)])
+            if d_sum &gt; max_digital_sum:
+                max_digital_sum = d_sum
+    return max_digital_sum
+
+print(problem56())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>972
+CPU times: user 128 ms, sys: 0 ns, total: 128 ms
+Wall time: 130 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-57">Problem 57<a class="anchor-link" href="#Problem-57">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">fractions</span> <span class="k">import</span> <span class="n">Fraction</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+def problem57():    
+    x = 2 + Fraction(1, 2)
+    count = 0
+    for i in range(1000):
+        y = x - 1
+        if len(str(y.numerator)) &gt; len(str(y.denominator)):
+            count += 1
+        x = 2 + Fraction(1, x)
+    return count
+
+print(problem57())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>153
+CPU times: user 40 ms, sys: 0 ns, total: 40 ms
+Wall time: 40.9 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-58">Problem 58<a class="anchor-link" href="#Problem-58">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [12]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">numba</span> <span class="k">import</span> <span class="n">jit</span>
+
+<span class="nd">@jit</span>
+<span class="k">def</span> <span class="nf">is_prime</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">3</span>
+    <span class="k">elif</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">3</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="o">**</span><span class="mf">0.5</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">%</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">n</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="kc">True</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [13]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+@jit
+def problem58():
+    x = 1
+    gap = 0
+    n_prime_x10 = 0
+    n_x = 1
+    while True:
+        gap = gap + 2
+        for i in range(3):
+            x = x + gap
+            if is_prime(x):
+                n_prime_x10 += 10
+        x = x + gap
+        n_x += 4
+        if n_prime_x10 &lt; n_x:
+            return int(x**0.5)
+
+print(problem58())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>26241
+CPU times: user 216 ms, sys: 4 ms, total: 220 ms
+Wall time: 220 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-59">Problem 59<a class="anchor-link" href="#Problem-59">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [14]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">urllib.request</span> <span class="k">import</span> <span class="n">urlopen</span>
+    
+<span class="n">url</span> <span class="o">=</span> <span class="s1">'https://projecteuler.net/project/resources/p059_cipher.txt'</span>
+<span class="k">with</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>
+    <span class="n">DATA</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [15]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+def problem59():
+    cipher = list(map(lambda x: int(x), DATA.rstrip().split(',')))
+    length = len(cipher)
+    ord_a = ord('a')
+    for i in range(ord_a, ord_a+26):
+        for j in range(ord_a, ord_a+26):
+            for k in range(ord_a, ord_a+26):
+                key = ([i, j, k] * (length//3+1))[:length]
+                message = bytes([x^y for x, y in zip(cipher, key)])
+                if b'that' in message and b'have' in message:
+                    return sum([ord(x) for x in message.decode()])
+
+print(problem59())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>107359
+CPU times: user 332 ms, sys: 0 ns, total: 332 ms
+Wall time: 333 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-60">Problem 60<a class="anchor-link" href="#Problem-60">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [16]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numba</span> <span class="k">import</span> <span class="n">jit</span><span class="p">,</span> <span class="n">int8</span><span class="p">,</span> <span class="n">int64</span>
+
+<span class="nd">@jit</span><span class="p">(</span><span class="n">int8</span><span class="p">[:](</span><span class="n">int64</span><span class="p">))</span>
+<span class="k">def</span> <span class="nf">create_sieve_of_halfprimes</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="n">sieve</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="o">**</span><span class="mf">0.5</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">sieve</span><span class="p">[</span><span class="n">i</span><span class="o">//</span><span class="mi">2</span><span class="p">]:</span>
+            <span class="n">sieve</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="n">i</span><span class="o">//</span><span class="mi">2</span><span class="p">::</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">return</span> <span class="n">sieve</span>
+
+<span class="nd">@jit</span><span class="p">(</span><span class="n">int8</span><span class="p">[:,:](</span><span class="n">int8</span><span class="p">[:],</span> <span class="n">int64</span><span class="p">[:]))</span>
+<span class="k">def</span> <span class="nf">create_check_matrix</span><span class="p">(</span><span class="n">sieve</span><span class="p">,</span> <span class="n">primes</span><span class="p">):</span>
+    <span class="n">check_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">primes</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">primes</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">primes</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">i2</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i1</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">primes</span><span class="p">)):</span>
+            <span class="n">half_prime12</span> <span class="o">=</span> <span class="p">(</span><span class="n">primes</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span>
+                            <span class="o">*</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">primes</span><span class="p">[</span><span class="n">i2</span><span class="p">]))</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+                            <span class="o">+</span> <span class="n">primes</span><span class="p">[</span><span class="n">i2</span><span class="p">])</span> <span class="o">//</span> <span class="mi">2</span>
+            <span class="k">if</span> <span class="n">sieve</span><span class="p">[</span><span class="n">half_prime12</span><span class="p">]:</span>
+                <span class="n">half_prime21</span> <span class="o">=</span> <span class="p">(</span><span class="n">primes</span><span class="p">[</span><span class="n">i2</span><span class="p">]</span>
+                                <span class="o">*</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">primes</span><span class="p">[</span><span class="n">i1</span><span class="p">]))</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+                                <span class="o">+</span> <span class="n">primes</span><span class="p">[</span><span class="n">i1</span><span class="p">])</span> <span class="o">//</span> <span class="mi">2</span>
+                <span class="k">if</span> <span class="n">sieve</span><span class="p">[</span><span class="n">half_prime21</span><span class="p">]:</span>
+                    <span class="n">check_matrix</span><span class="p">[</span><span class="n">i1</span><span class="p">,</span> <span class="n">i2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">check_matrix</span>
+
+<span class="nd">@jit</span><span class="p">(</span><span class="n">int64</span><span class="p">(</span><span class="n">int64</span><span class="p">[:],</span> <span class="n">int8</span><span class="p">[:,:]))</span>
+<span class="k">def</span> <span class="nf">find_answer</span><span class="p">(</span><span class="n">primes</span><span class="p">,</span> <span class="n">check_matrix</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">a1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">primes</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">a2</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">a1</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">primes</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">check_matrix</span><span class="p">[</span><span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">]:</span>
+                <span class="k">for</span> <span class="n">a3</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">a2</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">primes</span><span class="p">)):</span>
+                    <span class="k">if</span> <span class="n">check_matrix</span><span class="p">[</span><span class="n">a2</span><span class="p">,</span> <span class="n">a3</span><span class="p">]</span> <span class="ow">and</span> <span class="n">check_matrix</span><span class="p">[</span><span class="n">a1</span><span class="p">,</span> <span class="n">a3</span><span class="p">]:</span>
+                        <span class="k">for</span> <span class="n">a4</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">a3</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">primes</span><span class="p">)):</span>
+                            <span class="k">if</span> <span class="p">(</span><span class="n">check_matrix</span><span class="p">[</span><span class="n">a3</span><span class="p">,</span> <span class="n">a4</span><span class="p">]</span> <span class="ow">and</span> <span class="n">check_matrix</span><span class="p">[</span><span class="n">a2</span><span class="p">,</span> <span class="n">a4</span><span class="p">]</span>
+                                    <span class="ow">and</span> <span class="n">check_matrix</span><span class="p">[</span><span class="n">a1</span><span class="p">,</span> <span class="n">a4</span><span class="p">]):</span>
+                                <span class="k">for</span> <span class="n">a5</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">a4</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">primes</span><span class="p">)):</span>
+                                    <span class="k">if</span> <span class="p">(</span><span class="n">check_matrix</span><span class="p">[</span><span class="n">a4</span><span class="p">,</span> <span class="n">a5</span><span class="p">]</span>
+                                            <span class="ow">and</span> <span class="n">check_matrix</span><span class="p">[</span><span class="n">a3</span><span class="p">,</span> <span class="n">a5</span><span class="p">]</span>
+                                            <span class="ow">and</span> <span class="n">check_matrix</span><span class="p">[</span><span class="n">a2</span><span class="p">,</span> <span class="n">a5</span><span class="p">]</span>
+                                            <span class="ow">and</span> <span class="n">check_matrix</span><span class="p">[</span><span class="n">a1</span><span class="p">,</span> <span class="n">a5</span><span class="p">]):</span>
+                                        <span class="k">return</span> <span class="p">(</span><span class="n">primes</span><span class="p">[</span><span class="n">a1</span><span class="p">]</span> <span class="o">+</span> <span class="n">primes</span><span class="p">[</span><span class="n">a2</span><span class="p">]</span>
+                                                <span class="o">+</span> <span class="n">primes</span><span class="p">[</span><span class="n">a3</span><span class="p">]</span> <span class="o">+</span> <span class="n">primes</span><span class="p">[</span><span class="n">a4</span><span class="p">]</span>
+                                                <span class="o">+</span> <span class="n">primes</span><span class="p">[</span><span class="n">a5</span><span class="p">])</span>
+    <span class="k">return</span> <span class="mi">0</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [17]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+def problem60(limit=10**4):
+    sieve = create_sieve_of_halfprimes(limit**2)
+    primes = 2*np.nonzero(sieve[:limit//2])[0][1:] + 1
+    check_matrix = create_check_matrix(sieve, primes)
+    return find_answer(primes, check_matrix)
+
+print(problem60())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>26033
+CPU times: user 296 ms, sys: 4 ms, total: 300 ms
+Wall time: 298 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-61">Problem 61<a class="anchor-link" href="#Problem-61">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [18]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">create_polygonal_numbers</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
+    <span class="n">l</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">while</span> <span class="n">p</span> <span class="o">&lt;</span> <span class="mi">10000</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">p</span> <span class="o">&gt;=</span> <span class="mi">1000</span><span class="p">:</span>
+            <span class="n">l</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">n</span> <span class="o">*</span> <span class="p">((</span><span class="n">k</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">n</span> <span class="o">-</span> <span class="n">k</span> <span class="o">+</span> <span class="mi">4</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
+    <span class="k">return</span> <span class="n">l</span>
+
+<span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">polygonal_dict</span><span class="p">):</span>
+    <span class="n">ab</span> <span class="o">=</span> <span class="n">a</span><span class="o">*</span><span class="mi">100</span> <span class="o">+</span> <span class="n">b</span>
+    <span class="n">bc</span> <span class="o">=</span> <span class="n">b</span><span class="o">*</span><span class="mi">100</span> <span class="o">+</span> <span class="n">c</span>
+    <span class="n">cd</span> <span class="o">=</span> <span class="n">c</span><span class="o">*</span><span class="mi">100</span> <span class="o">+</span> <span class="n">d</span>
+    <span class="n">de</span> <span class="o">=</span> <span class="n">d</span><span class="o">*</span><span class="mi">100</span> <span class="o">+</span> <span class="n">e</span>
+    <span class="n">ef</span> <span class="o">=</span> <span class="n">e</span><span class="o">*</span><span class="mi">100</span> <span class="o">+</span> <span class="n">f</span>
+    <span class="n">fa</span> <span class="o">=</span> <span class="n">f</span><span class="o">*</span><span class="mi">100</span> <span class="o">+</span> <span class="n">a</span>
+    <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="n">polygonal_dict</span><span class="p">[</span><span class="n">ab</span><span class="p">]:</span>
+        <span class="k">for</span> <span class="n">i2</span> <span class="ow">in</span> <span class="n">polygonal_dict</span><span class="p">[</span><span class="n">bc</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">i3</span> <span class="ow">in</span> <span class="n">polygonal_dict</span><span class="p">[</span><span class="n">cd</span><span class="p">]:</span>
+                <span class="k">for</span> <span class="n">i4</span> <span class="ow">in</span> <span class="n">polygonal_dict</span><span class="p">[</span><span class="n">de</span><span class="p">]:</span>
+                    <span class="k">for</span> <span class="n">i5</span> <span class="ow">in</span> <span class="n">polygonal_dict</span><span class="p">[</span><span class="n">ef</span><span class="p">]:</span>
+                        <span class="k">for</span> <span class="n">i6</span> <span class="ow">in</span> <span class="n">polygonal_dict</span><span class="p">[</span><span class="n">fa</span><span class="p">]:</span>
+                            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">([</span><span class="n">i1</span><span class="p">,</span><span class="n">i2</span><span class="p">,</span><span class="n">i3</span><span class="p">,</span><span class="n">i4</span><span class="p">,</span><span class="n">i5</span><span class="p">,</span><span class="n">i6</span><span class="p">]))</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
+                                <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">False</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [19]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+def problem61():
+    polygonal_dict = dict()
+    for k in range(3, 9):
+        for n in create_polygonal_numbers(k):
+            if n not in polygonal_dict:
+                polygonal_dict[n] = [k]
+            else:
+                polygonal_dict[n].append(k)
+                
+    cyclic = dict()
+    for n in polygonal_dict:
+        a, b = (n//100, n%100)
+        if b &lt; 10:
+            continue
+        if a not in cyclic:
+            cyclic[a] = [b]
+        else:
+            cyclic[a].append(b)
+
+    for a in cyclic:
+        for b in cyclic[a]:
+            if b not in cyclic:
+                continue
+            for c in cyclic[b]:
+                if c not in cyclic:
+                    continue
+                for d in cyclic[c]:
+                    if d not in cyclic:
+                        continue
+                    for e in cyclic[d]:
+                        if e not in cyclic:
+                            continue
+                        for f in cyclic[e]:
+                            if f not in cyclic:
+                                continue
+                            if a not in cyclic[f]:
+                                continue
+                            if check(a, b, c, d, e, f, polygonal_dict):
+                                return sum([a,b,c,d,e,f]) * 101
+
+print(problem61())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>28684
+CPU times: user 4 ms, sys: 0 ns, total: 4 ms
+Wall time: 741 µs
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-62">Problem 62<a class="anchor-link" href="#Problem-62">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [20]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">Counter</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [21]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+def problem62():    
+    k = 1
+    while True:
+        cubes = []
+        for n in range(int(int('1'*k)**(1/3))+1, int(int('9'*k)**(1/3))+1):
+            cubes.append(n**3)
+        arranged_cubes = [''.join(sorted(str(x))) for x in cubes]    
+        counter = Counter(arranged_cubes)
+        for c in list(counter):
+            if counter[c] == 5:
+                return cubes[arranged_cubes.index(c)]
+        k += 1
+
+print(problem62())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>127035954683
+CPU times: user 28 ms, sys: 0 ns, total: 28 ms
+Wall time: 28.3 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-63">Problem 63<a class="anchor-link" href="#Problem-63">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [22]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+def problem63():
+    n = 1
+    c = 1
+    while len(str(9**n)) &gt;= n:
+        for i in range(2, 10):
+            if i**n &gt;= 10**(n-1):
+                c += 1
+        n += 1
+    return c
+
+print(problem63())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>49
+CPU times: user 0 ns, sys: 0 ns, total: 0 ns
+Wall time: 141 µs
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-64">Problem 64<a class="anchor-link" href="#Problem-64">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [23]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">count_period</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="o">**</span><span class="mf">0.5</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">l</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">)</span> <span class="ow">in</span> <span class="n">l</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">-</span> <span class="n">l</span><span class="o">.</span><span class="n">index</span><span class="p">((</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">))</span>
+        <span class="n">l</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">))</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">n</span><span class="o">**</span><span class="mf">0.5</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span> <span class="o">/</span> <span class="n">c</span><span class="p">)</span> <span class="o">*</span> <span class="n">c</span> <span class="o">-</span> <span class="n">b</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="n">b</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">//</span> <span class="n">c</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [24]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+def problem64(limit=10**4):
+    c = 0
+    for i in range(2, limit+1):
+        if count_period(i) % 2 == 1:
+            c += 1
+    return c
+
+print(problem64())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>1322
+CPU times: user 420 ms, sys: 0 ns, total: 420 ms
+Wall time: 419 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-65">Problem 65<a class="anchor-link" href="#Problem-65">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [25]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">fractions</span> <span class="k">import</span> <span class="n">Fraction</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [26]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+def problem65():
+    fraction_list = [2]
+    for i in range(1, 34):
+        fraction_list += [1, 2*i, 1]
+    rational_approx = Fraction(fraction_list[-1])
+    for a in fraction_list[-2::-1]:
+        rational_approx = a + 1 / rational_approx
+    return sum([int(x) for x in str(rational_approx.numerator)])
+
+print(problem65())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>272
+CPU times: user 0 ns, sys: 0 ns, total: 0 ns
+Wall time: 1.02 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-66">Problem 66<a class="anchor-link" href="#Problem-66">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [27]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">fractions</span> <span class="k">import</span> <span class="n">Fraction</span>
+
+<span class="k">def</span> <span class="nf">diophantine_solution</span><span class="p">(</span><span class="n">D</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">D</span> <span class="o">==</span> <span class="nb">int</span><span class="p">(</span><span class="n">D</span><span class="o">**</span><span class="mf">0.5</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">a0</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">D</span><span class="o">**</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">fraction_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">D</span><span class="o">**</span><span class="mf">0.5</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span> <span class="o">/</span> <span class="n">c</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">a</span> <span class="o">==</span> <span class="mi">2</span><span class="o">*</span><span class="n">a0</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="n">fraction_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="o">*</span><span class="n">c</span> <span class="o">-</span> <span class="n">b</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="p">(</span><span class="n">D</span> <span class="o">-</span> <span class="n">b</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">//</span> <span class="n">c</span>
+    <span class="n">rational_approx</span> <span class="o">=</span> <span class="n">Fraction</span><span class="p">(</span><span class="n">fraction_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">fraction_list</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="n">rational_approx</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">rational_approx</span>
+    <span class="k">if</span> <span class="n">rational_approx</span><span class="o">.</span><span class="n">numerator</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">D</span><span class="o">*</span><span class="n">rational_approx</span><span class="o">.</span><span class="n">denominator</span><span class="o">**</span><span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">rational_approx</span><span class="o">.</span><span class="n">numerator</span>
+    <span class="n">rational_approx</span> <span class="o">=</span> <span class="n">rational_approx</span> <span class="o">+</span> <span class="n">a0</span>
+    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">fraction_list</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="n">rational_approx</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">rational_approx</span>
+    <span class="k">return</span> <span class="n">rational_approx</span><span class="o">.</span><span class="n">numerator</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [28]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+def problem66(limit=1000):
+    x_max = 3
+    d_max = 2
+    for i in range(3, limit+1):
+        x = diophantine_solution(i)
+        if x &gt; x_max:
+            x_max = x
+            d_max = i
+    return d_max
+
+print(problem66())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>661
+CPU times: user 96 ms, sys: 0 ns, total: 96 ms
+Wall time: 93.3 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-67">Problem 67<a class="anchor-link" href="#Problem-67">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [29]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">urllib.request</span> <span class="k">import</span> <span class="n">urlopen</span>
+    
+<span class="n">url</span> <span class="o">=</span> <span class="s1">'https://projecteuler.net/project/resources/p067_triangle.txt'</span>
+<span class="k">with</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>
+    <span class="n">DATA</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [30]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+def problem67():
+    triangle = [[int(y) for y in x.split()] for x in DATA.rstrip().split('\n')]
+    route = [59]
+    for i, row in enumerate(triangle[1:]):
+        current = [row[0] + route[0]] \
+            + [x + max(route[j], route[j+1]) for j, x in enumerate(row[1:-1])] \
+            + [row[-1] + route[-1]]
+        route = current
+    return max(route)
+
+print(problem67())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>7273
+CPU times: user 0 ns, sys: 0 ns, total: 0 ns
+Wall time: 2.3 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-68">Problem 68<a class="anchor-link" href="#Problem-68">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [31]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+def problem68():
+    solutions = []
+    a = 10
+    for b in range(1, 10):
+        for c in range(1, 10):
+            if b == c:
+                continue
+            for d in range(1, 10):
+                if d in [b, c]:
+                    continue
+                e = a + b - d
+                if e &lt; 1 or e &gt; 9 or e in [b, c, d]:
+                    continue
+                for f in range(1, 10):
+                    if f in [b, c, d, e]:
+                        continue
+                    g = c + d - f
+                    if g &lt; 1 or g &gt; 9 or g in [b, c, d, e, f]:
+                        continue
+                    for h in range(1, 10):
+                        if h in [b, c, d, e, f, g]:
+                            continue
+                        i = e + f - h
+                        j = g + h - b
+                        if i &lt; 1 or j &lt; 1 or i &gt; 9 or j &gt; 9:
+                            continue
+                        if len(set([a,b,c,d,e,f,g,h,i,j])) == 10:
+                            solutions.append([a,b,c,d,c,e,f,e,g,h,g,i,j,i,b])
+    ordered_solutions = []
+    for solution in solutions:
+        i_min = solution.index(min(solution[0], solution[3],
+                                   solution[6], solution[9], solution[12]))
+        ordered_solution = solution[i_min:] + solution[:i_min]
+        ordered_solution_to_int = int(''.join(
+            [str(x) for x in ordered_solution]))
+        ordered_solutions.append(ordered_solution_to_int)
+    return max(ordered_solutions)
+
+print(problem68())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>6531031914842725
+CPU times: user 0 ns, sys: 4 ms, total: 4 ms
+Wall time: 1.34 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-69">Problem 69<a class="anchor-link" href="#Problem-69">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [32]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [33]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+def problem69(limit=10**6):    
+    sieve = np.ones(limit+1)
+    n_per_phi_n_list = np.ones(limit+1)
+    for i in range(2, int(limit**0.5)+1):
+        if sieve[i] == 1:
+            sieve[i::i] = 0
+            n_per_phi_n_list[i::i] *= i / (i-1)
+    return np.argmax(n_per_phi_n_list)
+
+print(problem69())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>510510
+CPU times: user 28 ms, sys: 0 ns, total: 28 ms
+Wall time: 27.5 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-70">Problem 70<a class="anchor-link" href="#Problem-70">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [34]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numba</span> <span class="k">import</span> <span class="n">jit</span>
+
+<span class="nd">@jit</span>
+<span class="k">def</span> <span class="nf">create_sieve</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="n">sieve</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">)</span>
+    <span class="n">sieve</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">sieve</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">sieve</span><span class="p">[</span><span class="mi">4</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="o">**</span><span class="mf">0.5</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">sieve</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+            <span class="n">sieve</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="n">i</span><span class="p">::</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">return</span> <span class="n">sieve</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [35]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+def problem70(limit=10**7):
+    sieve = create_sieve(limit)
+    prime_list = np.nonzero(sieve)[0]
+    nb_primes = len(prime_list)
+    n_min = 87109
+    ratio_min = 87109 / 79180
+    i_max = np.nonzero((prime_list ** 2) &gt;= 10**7)[0][0]-1
+    for i in range(i_max, -1, -1):
+        if prime_list[i] / (prime_list[i]-1) &gt;= ratio_min:
+            break
+        for j in range(i+1, nb_primes):
+            i_times_j = prime_list[i] * prime_list[j]
+            if i_times_j &gt;= 10**7:
+                break
+            phi_i_times_j = (prime_list[i]-1) * (prime_list[j]-1)
+            ratio = i_times_j / phi_i_times_j
+            if ratio &lt; ratio_min:
+                if sorted(str(i_times_j)) == sorted(str(phi_i_times_j)):
+                    n_min = i_times_j
+                    ratio_min = ratio
+    return n_min
+
+print(problem70())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>8319823
+CPU times: user 280 ms, sys: 0 ns, total: 280 ms
+Wall time: 279 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-71">Problem 71<a class="anchor-link" href="#Problem-71">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [36]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">fractions</span> <span class="k">import</span> <span class="n">Fraction</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [37]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+def problem71(limit=10**6):
+    d_min = 5
+    n_min = 2
+    for d in range(2, limit+1):
+        n = 3 * d // 7
+        if d % 7 == 0:
+            n = n-1
+        if n * d_min &gt; d * n_min:
+            n_min = n
+            d_min = d
+    return Fraction(n_min, d_min).numerator
+
+print(problem71())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>428570
+CPU times: user 220 ms, sys: 0 ns, total: 220 ms
+Wall time: 219 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-72">Problem 72<a class="anchor-link" href="#Problem-72">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [38]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numba</span> <span class="k">import</span> <span class="n">jit</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [39]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+@jit
+def problem72(limit=10**6):
+    sieve = np.ones(limit+1)
+    phi_n_list = np.arange(limit+1)
+    phi_n_list[1] = 0
+    for i in range(2, limit+1):
+        if sieve[i] == 1:
+            sieve[i*i::i] = 0
+            phi_n_list[i::i] *= (i-1)
+            phi_n_list[i::i] //= i
+    return sum(phi_n_list)
+
+print(problem72())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>303963552391
+CPU times: user 360 ms, sys: 0 ns, total: 360 ms
+Wall time: 359 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-73">Problem 73<a class="anchor-link" href="#Problem-73">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [40]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">numba</span> <span class="k">import</span> <span class="n">jit</span>
+
+<span class="nd">@jit</span>
+<span class="k">def</span> <span class="nf">count_Stern_Brocot</span><span class="p">(</span><span class="n">limit</span><span class="p">,</span> <span class="n">left_n</span><span class="p">,</span> <span class="n">left_d</span><span class="p">,</span> <span class="n">right_n</span><span class="p">,</span> <span class="n">right_d</span><span class="p">):</span>
+    <span class="n">mid_n</span> <span class="o">=</span> <span class="n">left_n</span> <span class="o">+</span> <span class="n">right_n</span>
+    <span class="n">mid_d</span> <span class="o">=</span> <span class="n">left_d</span> <span class="o">+</span> <span class="n">right_d</span>
+    <span class="k">if</span> <span class="n">mid_d</span> <span class="o">&gt;</span> <span class="n">limit</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">count</span> <span class="o">+=</span> <span class="n">count_Stern_Brocot</span><span class="p">(</span><span class="n">limit</span><span class="p">,</span> <span class="n">left_n</span><span class="p">,</span> <span class="n">left_d</span><span class="p">,</span> <span class="n">mid_n</span><span class="p">,</span> <span class="n">mid_d</span><span class="p">)</span>
+        <span class="n">count</span> <span class="o">+=</span> <span class="n">count_Stern_Brocot</span><span class="p">(</span><span class="n">limit</span><span class="p">,</span> <span class="n">mid_n</span><span class="p">,</span> <span class="n">mid_d</span><span class="p">,</span> <span class="n">right_n</span><span class="p">,</span> <span class="n">right_d</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">count</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [41]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+def problem73(limit=12000):
+    return count_Stern_Brocot(12000, 1, 3, 1, 2)
+
+print(problem73())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>7295372
+CPU times: user 124 ms, sys: 0 ns, total: 124 ms
+Wall time: 124 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-74">Problem 74<a class="anchor-link" href="#Problem-74">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [42]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">factorial</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">permutations</span>
+
+<span class="k">def</span> <span class="nf">count_permuation</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">permutations</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)))</span>
+    <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'1'</span><span class="p">:</span>
+        <span class="n">new_str</span> <span class="o">=</span> <span class="s1">'0'</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">permutations</span><span class="p">(</span><span class="n">new_str</span><span class="p">)))</span>
+    <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'11'</span><span class="p">:</span>
+        <span class="n">new_str</span> <span class="o">=</span> <span class="s1">'00'</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">permutations</span><span class="p">(</span><span class="n">new_str</span><span class="p">)))</span>
+    <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'111'</span><span class="p">:</span>
+        <span class="n">new_str</span> <span class="o">=</span> <span class="s1">'000'</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)[</span><span class="mi">3</span><span class="p">:]</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">permutations</span><span class="p">(</span><span class="n">new_str</span><span class="p">)))</span>
+    <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)[:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'1111'</span><span class="p">:</span>
+        <span class="n">new_str</span> <span class="o">=</span> <span class="s1">'0000'</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)[</span><span class="mi">4</span><span class="p">:]</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">permutations</span><span class="p">(</span><span class="n">new_str</span><span class="p">)))</span>
+    <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)[:</span><span class="mi">5</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'11111'</span><span class="p">:</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)[</span><span class="mi">5</span><span class="p">:]</span><span class="o">+</span><span class="s1">'00000'</span><span class="p">)</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">p</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">e</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">'0'</span><span class="p">:</span>
+            <span class="n">c</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">c</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [43]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+def problem74():
+    fac = [factorial(x) for x in range(10)]
+    a = [0] * 2200000
+    answer_list = []
+    for i1 in range(10):
+        for i2 in range(i1, 10):
+            for i3 in range(i2, 10):
+                for i4 in range(i3, 10):
+                    for i5 in range(i4, 10):
+                        for i6 in range(i5, 10):
+                            i = i1*10**5+i2*10**4+i3*1000+i4*100+i5*10+i6
+                            chain = []
+                            j = i
+                            while (a[j] == 0) and (j not in chain):
+                                chain.append(j)
+                                s = 0
+                                jr = j
+                                while jr != 0:
+                                    s += fac[jr % 10]
+                                    jr //= 10
+                                j = s
+                            if j in chain:
+                                for t in range(len(chain)):
+                                    a[chain[t]] = len(chain) - t
+                                    if chain[t] == j:
+                                        break
+                                for t1 in range(t+1, len(chain)):
+                                    a[chain[t1]] = len(chain) - t
+                            else:
+                                for t, k in enumerate(chain):
+                                    a[k] = len(chain) - t + a[j]
+                            if a[i] == 60:
+                                answer_list.append(i)
+    return sum([count_permuation(answer) for answer in answer_list])
+
+print(problem74())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>402
+CPU times: user 20 ms, sys: 0 ns, total: 20 ms
+Wall time: 18.7 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-75">Problem 75<a class="anchor-link" href="#Problem-75">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [44]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">numba</span> <span class="k">import</span> <span class="n">jit</span>
+
+<span class="nd">@jit</span>
+<span class="k">def</span> <span class="nf">gcd</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">m</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">n</span>
+    <span class="k">return</span> <span class="n">gcd</span><span class="p">(</span><span class="n">n</span> <span class="o">%</span> <span class="n">m</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [45]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">timeit</span>
+<span class="k">def</span> <span class="nf">problem75</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="mi">1500000</span><span class="p">):</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">limit</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1000</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">gcd</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">L</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">m</span> <span class="o">*</span> <span class="p">(</span><span class="n">m</span> <span class="o">+</span> <span class="n">n</span><span class="p">)</span>
+            <span class="n">k_max</span> <span class="o">=</span> <span class="n">limit</span> <span class="o">//</span> <span class="n">L</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">k_max</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+                <span class="n">d</span><span class="p">[</span><span class="n">L</span><span class="o">*</span><span class="n">k</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">limit</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">c</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">c</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">problem75</span><span class="p">())</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>161667
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-76">Problem 76<a class="anchor-link" href="#Problem-76">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [46]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [47]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+def problem76():
+    A = np.zeros((101, 101), dtype=np.int)
+    for i in range(1, 101):
+        for j in range(1, i+1):
+            A[i, j] = 1
+            for k in range(j, i//2+1):
+                A[i, j] += A[i-k, k]
+    return A[100, 1] - 1
+
+print(problem76())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>190569291
+CPU times: user 24 ms, sys: 0 ns, total: 24 ms
+Wall time: 21.3 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-77">Problem 77<a class="anchor-link" href="#Problem-77">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [48]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="k">def</span> <span class="nf">is_prime</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">3</span>
+    <span class="k">elif</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">3</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="o">**</span><span class="mf">0.5</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">%</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">n</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="kc">True</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [49]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+def problem77():
+    A = np.zeros((101, 101), dtype=np.int)
+    for i in range(1, 101):
+        for j in range(1, i+1):
+            if is_prime(i):
+                A[i, j] = 1
+            for k in range(j, i//2+1):
+                if is_prime(k):
+                    A[i, j] += A[i-k, k]
+            if A[i, j] &gt; 5000 + is_prime(i):
+                return i
+
+print(problem77())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>71
+CPU times: user 20 ms, sys: 0 ns, total: 20 ms
+Wall time: 20.5 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-78">Problem 78<a class="anchor-link" href="#Problem-78">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [50]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">numba</span> <span class="k">import</span> <span class="n">jit</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [51]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+@jit
+def problem78(limit=60000):
+    p = [0] * limit
+    p[0] = 1
+    p[1] = 1
+    for i in range(2, limit):
+        k = 1
+        s = 1
+        g_k = 0
+        while True:
+            g_k += 2*k - 1
+            if g_k &gt; i:
+                break
+            p[i] = p[i] + s*p[i-g_k]
+            g_k += k
+            if g_k &gt; i:
+                break
+            p[i] = p[i] + s*p[i-g_k]
+            k += 1
+            s = -s
+        p[i] = p[i] % 10**6
+        if p[i] == 0:
+            return i
+        
+print(problem78())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>55374
+CPU times: user 100 ms, sys: 0 ns, total: 100 ms
+Wall time: 102 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-79">Problem 79<a class="anchor-link" href="#Problem-79">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [52]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">urllib.request</span> <span class="k">import</span> <span class="n">urlopen</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">permutations</span><span class="p">,</span> <span class="n">combinations</span>
+    
+<span class="n">url</span> <span class="o">=</span> <span class="s1">'https://projecteuler.net/project/resources/p079_keylog.txt'</span>
+<span class="k">with</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>
+    <span class="n">DATA</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [53]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+def problem79():
+    for p in permutations(''.join(sorted(list(set(DATA) - {'\n'})))):
+        passcode = ''.join(p)
+        passcode_keys = [''.join(x) for x in combinations(passcode, 3)]
+        flag = True
+        for key in DATA.split():
+            if key not in passcode_keys:
+                flag = False
+                break
+        if flag == True:
+            return passcode
+
+print(problem79())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>73162890
+CPU times: user 300 ms, sys: 0 ns, total: 300 ms
+Wall time: 300 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-80">Problem 80<a class="anchor-link" href="#Problem-80">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [54]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">decimal</span> <span class="k">import</span> <span class="n">getcontext</span><span class="p">,</span> <span class="n">Decimal</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [55]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+def problem80():
+    getcontext().prec = 102
+    s = 0
+    for i in range(1, 101):
+        if i not in [y**2 for y in range(1, 11)]:
+            s += sum([int(x) for x in str(Decimal(i).sqrt())[:101]
+                      if x != '.'])
+    return s
+
+print(problem80())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>40886
+CPU times: user 4 ms, sys: 0 ns, total: 4 ms
+Wall time: 4.47 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-81">Problem 81<a class="anchor-link" href="#Problem-81">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [56]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">urllib.request</span> <span class="k">import</span> <span class="n">urlopen</span>
+    
+<span class="n">url</span> <span class="o">=</span> <span class="s1">'https://projecteuler.net/project/resources/p081_matrix.txt'</span>
+<span class="k">with</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>
+    <span class="n">DATA</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [57]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+def problem81():
+    matrix = [[int(y) for y in x.split(',')] for x in DATA.split()]
+    path_sum = [[0]*80]*80
+    for i in range(80):
+        for j in range(80):
+            if i == 0 and j == 0:
+                min_path = 0
+            elif i == 0:
+                min_path = path_sum[i][j-1]
+            elif j == 0:
+                min_path = path_sum[i-1][j]
+            else:
+                min_path = min(path_sum[i][j-1], path_sum[i-1][j])
+            path_sum[i][j] = matrix[i][j] + min_path
+    return path_sum[79][79]
+
+print(problem81())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>427337
+CPU times: user 4 ms, sys: 0 ns, total: 4 ms
+Wall time: 3.94 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-82">Problem 82<a class="anchor-link" href="#Problem-82">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [58]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">urllib.request</span> <span class="k">import</span> <span class="n">urlopen</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+    
+<span class="n">url</span> <span class="o">=</span> <span class="s1">'https://projecteuler.net/project/resources/p082_matrix.txt'</span>
+<span class="k">with</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>
+    <span class="n">DATA</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [59]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+def problem82():
+    matrix = np.array([[int(y) for y in x.split(',')] for x in DATA.split()], 
+                      dtype='uint16')
+    path_sum = np.zeros((80, 80), dtype='uint32')
+    min_path = np.zeros((80, 80), dtype='uint32')
+
+    for j in range(80):
+        for i in range(80):
+            if j == 0:
+                min_path = [0]
+            else:
+                min_path = [path_sum[i, j-1]]
+                for k in range(80):
+                    if k &lt; i:
+                        min_path.append(matrix[k:i, j].sum()
+                                        + path_sum[k, j-1])
+                    if k &gt; i:
+                        min_path.append(matrix[i+1:k+1, j].sum()
+                                        + path_sum[k, j-1])
+            path_sum[i, j] = matrix[i, j] + min(min_path)
+    return path_sum[:,79].min()
+
+print(problem82())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>260324
+CPU times: user 956 ms, sys: 0 ns, total: 956 ms
+Wall time: 958 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-83">Problem 83<a class="anchor-link" href="#Problem-83">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [60]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">urllib.request</span> <span class="k">import</span> <span class="n">urlopen</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+    
+<span class="n">url</span> <span class="o">=</span> <span class="s1">'https://projecteuler.net/project/resources/p083_matrix.txt'</span>
+<span class="k">with</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>
+    <span class="n">DATA</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+    
+<span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">path_sum</span><span class="p">,</span> <span class="n">matrix</span><span class="p">,</span> <span class="n">inf</span><span class="p">):</span>
+    <span class="n">min_around</span> <span class="o">=</span> <span class="p">[</span><span class="n">inf</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">min_around</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path_sum</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">79</span><span class="p">:</span>
+        <span class="n">min_around</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path_sum</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">j</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">min_around</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path_sum</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="mi">79</span><span class="p">:</span>
+        <span class="n">min_around</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path_sum</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">path_sum</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">min_around</span><span class="p">)</span> <span class="o">+</span> <span class="n">matrix</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [61]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+def problem83():
+    matrix = np.array([[int(y) for y in x.split(',')] for x in DATA.split()], 
+                      dtype='uint16')
+
+    inf = np.iinfo(np.uint32).max // 2
+    path_sum = np.zeros((80, 80), dtype='uint32')
+    path_sum[:] = inf
+    path_sum[0, 0] = matrix[0, 0]
+
+    visited = np.zeros((80, 80), dtype='bool')
+    visited[0, 0] = True
+    update(0, 1, path_sum, matrix, inf)
+    update(1, 0, path_sum, matrix, inf)
+    
+    while not visited[79, 79]:
+        i, j = np.unravel_index(np.ma.argmin(
+            np.ma.MaskedArray(path_sum, visited)), (80, 80))
+        visited[i, j] = True
+        if i &gt; 0 and not visited[i-1, j]:
+            update(i-1, j, path_sum, matrix, inf)
+        if i &lt; 79 and not visited[i+1, j]:
+            update(i+1, j, path_sum, matrix, inf)
+        if j &gt; 0 and not visited[i, j-1]:
+            update(i, j-1, path_sum, matrix, inf)
+        if j &lt; 79 and not visited[i, j+1]:
+            update(i, j+1, path_sum, matrix, inf)
+    return path_sum[79, 79]
+
+print(problem83())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>425185
+CPU times: user 360 ms, sys: 0 ns, total: 360 ms
+Wall time: 359 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-84">Problem 84<a class="anchor-link" href="#Problem-84">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [62]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">random</span> <span class="k">import</span> <span class="n">randint</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [63]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+def problem84():
+    jail = 10
+    g2j = 30
+    cc = [2, 17, 33]
+    ch = [7, 22, 36]
+    double = 0
+    table = [0] * 40
+    i = 0
+    for j in range(100000):
+        dice1 = randint(1, 4)
+        dice2 = randint(1, 4)
+        if dice1 == dice2:
+            double += 1
+        else:
+            double = 0
+        if double == 3:
+            i = jail
+        else:
+            i = (i + dice1 + dice2) % 40
+        if i in cc:
+            cc_open = randint(1, 16)
+            if cc_open == 1:
+                i = 0
+            elif cc_open == 2:
+                i = jail
+        if i in ch:
+            ch_open = randint(1, 16)
+            if ch_open == 1:
+                i = 0
+            elif ch_open == 2:
+                i = jail
+            elif ch_open == 3:
+                i = 11
+            elif ch_open == 4:
+                i = 24
+            elif ch_open == 5:
+                i = 39
+            elif ch_open == 6:
+                i = 5
+            elif ch_open in [7, 8]:
+                if i == ch[0]:
+                    i = 15
+                elif i == ch[1]:
+                    i = 25
+                else:
+                    i = 5
+            elif ch_open == 9:
+                if i == ch[1]:
+                    i = 28
+                else:
+                    i = 12
+            elif ch_open == 10:
+                i = (i-3)%40
+        if i == g2j:
+            i = jail
+        table[i] += 1
+    a, b, c = sorted(table, reverse=True)[:3]
+    return '{:02d}{:02d}{:02d}'.format(table.index(a),
+                                       table.index(b), table.index(c))
+
+print(problem84())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>101516
+CPU times: user 232 ms, sys: 0 ns, total: 232 ms
+Wall time: 234 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-85">Problem 85<a class="anchor-link" href="#Problem-85">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [64]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+def problem85():
+    areas = []
+    rectangles = []
+
+    for n in range(1, 3000):
+        for m in range(n, 3000//n):
+            areas.append(n * m)
+            rectangles.append(n * m * (n+1) * (m+1) // 4)
+
+    ds = [int(abs(r - 2e6)) for r in rectangles]
+    return areas[ds.index(min(ds))]
+
+print(problem85())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>2772
+CPU times: user 4 ms, sys: 0 ns, total: 4 ms
+Wall time: 6.8 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-86">Problem 86<a class="anchor-link" href="#Problem-86">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [65]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">numba</span> <span class="k">import</span> <span class="n">jit</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [66]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+@jit
+def problem86():
+    n_sol = 0
+    M = 0
+    while n_sol &lt;= 10**6:
+        M += 1
+        for a_plus_b in range(2, 2*M+1):
+            min_square = M**2 + a_plus_b**2
+            if min_square == (int(min_square**0.5)**2):
+                b_min = max(1, a_plus_b-M)
+                b_max = a_plus_b//2
+                n_sol += (b_max - b_min + 1)
+    return M
+
+print(problem86())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>1818
+CPU times: user 84 ms, sys: 0 ns, total: 84 ms
+Wall time: 83.7 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-87">Problem 87<a class="anchor-link" href="#Problem-87">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [67]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numba</span> <span class="k">import</span> <span class="n">jit</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [68]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+@jit
+def problem87():
+    limit = 5*10**7-1
+    x_max = int(limit**(1/2))
+    y_max = int(limit**(1/3))
+    z_max = int(limit**(1/4))
+    sieve = np.ones(x_max+1, dtype=np.bool)
+    sieve[0] = sieve[1] = 0
+    for i in range(2, int(limit**0.5)+1):
+        if sieve[i] == 1:
+            sieve[2*i::i] = 0
+    x_list = np.nonzero(sieve[:x_max+1])[0]
+    y_list = np.nonzero(sieve[:y_max+1])[0]
+    z_list = np.nonzero(sieve[:z_max+1])[0]
+    A = np.zeros(limit+1, dtype=np.bool)
+    for x in x_list:
+        for y in y_list:
+            for z in z_list:
+                n = x**2 + y**3 + z**4
+                if n &lt;= limit:
+                    A[n] = 1
+    return A.sum()
+
+print(problem87())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>1097343
+CPU times: user 512 ms, sys: 4 ms, total: 516 ms
+Wall time: 514 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-88">Problem 88<a class="anchor-link" href="#Problem-88">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [69]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+def problem88():
+    k_max = 12000
+    product_max = 2 * k_max
+    a_max = k_max // 4
+    m_max = k_max
+    prod = 1
+    mps = [2*k_max] * (k_max+1)
+    mps[0] = mps[1] = 0
+    for a in range(1, a_max//prod+1):
+        prod = a
+        for b in range(a, a_max//prod+1):
+            prod = a*b
+            for c in range(b, a_max//prod+1):
+                prod = a*b*c
+                for d in range(c, a_max//prod+1):
+                    prod = a*b*c*d
+                    for e in range(d, a_max//prod+1):
+                        prod = a*b*c*d*e
+                        for f in range(e, a_max//prod+1):
+                            prod = a*b*c*d*e*f
+                            for g in range(f, a_max//prod+1):
+                                prod = a*b*c*d*e*f*g
+                                for h in range(g, a_max//prod+1):
+                                    prod = a*b*c*d*e*f*g*h
+                                    for i in range(h, a_max//prod+1):
+                                        prod = a*b*c*d*e*f*g*h*i
+                                        for j in range(i, a_max//prod+1):
+                                            prod = a*b*c*d*e*f*g*h*i*j
+                                            for k in range(j, a_max//prod+1):
+                                                prod = a*b*c*d*e*f*g*h*i*j*k
+                                                l_min = max(2, k)
+                                                l_max = k_max // (2*prod)
+                                                for l in range(l_min,
+                                                               l_max+1):
+                                                    for m in range(l,
+                                                                   k_max+1):
+                                                        prod = (a*b*c*d*e*f*g
+                                                                *h*i*j*k*l*m)
+                                                        s = (a+b+c+d+e+f+g+h
+                                                             +i+j+k+l+m)
+                                                        kk = prod - s + 13
+                                                        if kk &gt; k_max:
+                                                            break
+                                                        if prod &lt; mps[kk]:
+                                                            mps[kk] = prod
+    return sum(set(mps))
+
+print(problem88())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>7587457
+CPU times: user 232 ms, sys: 0 ns, total: 232 ms
+Wall time: 235 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-89">Problem 89<a class="anchor-link" href="#Problem-89">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [70]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">urllib.request</span> <span class="k">import</span> <span class="n">urlopen</span>
+    
+<span class="n">url</span> <span class="o">=</span> <span class="s1">'https://projecteuler.net/project/resources/p089_roman.txt'</span>
+<span class="k">with</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>
+    <span class="n">DATA</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+    
+<span class="k">def</span> <span class="nf">minimize_form</span><span class="p">(</span><span class="n">number</span><span class="p">):</span>
+    <span class="n">number</span> <span class="o">=</span> <span class="n">number</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'VIIII'</span><span class="p">,</span> <span class="s1">'IX'</span><span class="p">)</span>
+    <span class="n">number</span> <span class="o">=</span> <span class="n">number</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'IIII'</span><span class="p">,</span> <span class="s1">'IV'</span><span class="p">)</span>
+    <span class="n">number</span> <span class="o">=</span> <span class="n">number</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'LXXXX'</span><span class="p">,</span> <span class="s1">'XC'</span><span class="p">)</span>
+    <span class="n">number</span> <span class="o">=</span> <span class="n">number</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'XXXX'</span><span class="p">,</span> <span class="s1">'XL'</span><span class="p">)</span>
+    <span class="n">number</span> <span class="o">=</span> <span class="n">number</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'DCCCC'</span><span class="p">,</span> <span class="s1">'CM'</span><span class="p">)</span>
+    <span class="n">number</span> <span class="o">=</span> <span class="n">number</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'CCCC'</span><span class="p">,</span> <span class="s1">'CD'</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">number</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [71]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+def problem89():
+    return (sum([len(x) for x in DATA.split()])
+            - sum([len(minimize_form(x)) for x in DATA.split()]))
+
+print(problem89())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>743
+CPU times: user 4 ms, sys: 0 ns, total: 4 ms
+Wall time: 1.1 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-90">Problem 90<a class="anchor-link" href="#Problem-90">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [72]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">combinations</span><span class="p">,</span> <span class="n">product</span>
+
+<span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="n">square</span><span class="p">,</span> <span class="n">pairs</span><span class="p">):</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">square</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">square</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="ow">in</span> <span class="n">pairs</span> <span class="ow">or</span> <span class="p">(</span><span class="n">square</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">square</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="ow">in</span> <span class="n">pairs</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [73]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+def problem90():
+    arrangements = [set(x) | {'6', '9'} if ('6' in x or '9' in x)
+                    else set(x) for x in combinations('0123456789', 6)]
+    squares = ['01', '04', '09', '16', '25', '36', '49', '64', '81']
+    c = 0
+    for dice1 in arrangements:
+        for dice2 in arrangements:
+            pairs = list(product(dice1, dice2))
+            flag = True
+            for square in squares:
+                if not check(square, pairs):
+                    flag = False
+                    break
+            if flag == True:
+                c += 1
+    return c//2
+
+
+print(problem90())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>1217
+CPU times: user 360 ms, sys: 0 ns, total: 360 ms
+Wall time: 360 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-91">Problem 91<a class="anchor-link" href="#Problem-91">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [74]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">numba</span> <span class="k">import</span> <span class="n">jit</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [75]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nd">@jit</span>
+<span class="k">def</span> <span class="nf">problem91</span><span class="p">():</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">51</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="n">i</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">j</span><span class="o">**</span><span class="mi">2</span>
+            <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">51</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">51</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">a</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">b</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="k">if</span> <span class="n">a</span> <span class="o">==</span> <span class="n">i</span> <span class="ow">and</span> <span class="n">b</span> <span class="o">==</span> <span class="n">j</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="k">if</span> <span class="n">a</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">b</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">i</span><span class="o">-</span><span class="n">a</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">j</span><span class="o">-</span><span class="n">b</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">==</span> <span class="n">c</span><span class="p">:</span>
+                        <span class="n">s</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">51</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">k</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">k</span><span class="o">**</span><span class="mi">2</span> <span class="o">==</span> <span class="n">c</span> <span class="o">+</span> <span class="p">(</span><span class="n">i</span><span class="o">-</span><span class="n">k</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">j</span><span class="o">-</span><span class="n">k</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">:</span>
+                    <span class="n">s</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="mi">2</span><span class="o">*</span><span class="n">s</span> <span class="o">+</span> <span class="mi">50</span><span class="o">*</span><span class="mi">50</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">problem91</span><span class="p">())</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>14234
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-92">Problem 92<a class="anchor-link" href="#Problem-92">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [76]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">numba</span> <span class="k">import</span> <span class="n">jit</span>
+
+<span class="nd">@jit</span>
+<span class="k">def</span> <span class="nf">make_sum_digits2_table</span><span class="p">():</span>
+    <span class="n">sum_digits2_table</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">10</span><span class="o">**</span><span class="mi">7</span>
+    <span class="n">digits2</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)]</span>
+    <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i2</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">i3</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">i4</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">i5</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+                        <span class="k">for</span> <span class="n">i6</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+                            <span class="k">for</span> <span class="n">i7</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+                                <span class="n">num</span> <span class="o">=</span> <span class="p">(</span><span class="n">i1</span><span class="o">+</span><span class="n">i2</span><span class="o">*</span><span class="mi">10</span><span class="o">+</span><span class="n">i3</span><span class="o">*</span><span class="mi">100</span><span class="o">+</span><span class="n">i4</span><span class="o">*</span><span class="mi">1000</span><span class="o">+</span><span class="n">i5</span><span class="o">*</span><span class="mi">10000</span>
+                                       <span class="o">+</span><span class="n">i6</span><span class="o">*</span><span class="mi">100000</span><span class="o">+</span><span class="n">i7</span><span class="o">*</span><span class="mi">1000000</span><span class="p">)</span>
+                                <span class="n">sd2</span> <span class="o">=</span> <span class="p">(</span><span class="n">digits2</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span><span class="o">+</span><span class="n">digits2</span><span class="p">[</span><span class="n">i2</span><span class="p">]</span><span class="o">+</span><span class="n">digits2</span><span class="p">[</span><span class="n">i3</span><span class="p">]</span>
+                                       <span class="o">+</span><span class="n">digits2</span><span class="p">[</span><span class="n">i4</span><span class="p">]</span><span class="o">+</span><span class="n">digits2</span><span class="p">[</span><span class="n">i5</span><span class="p">]</span>
+                                       <span class="o">+</span><span class="n">digits2</span><span class="p">[</span><span class="n">i6</span><span class="p">]</span><span class="o">+</span><span class="n">digits2</span><span class="p">[</span><span class="n">i7</span><span class="p">])</span>
+                                <span class="n">sum_digits2_table</span><span class="p">[</span><span class="n">num</span><span class="p">]</span> <span class="o">=</span> <span class="n">sd2</span>
+    <span class="k">return</span> <span class="n">sum_digits2_table</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [77]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+@jit
+def problem92():
+    sum_digits2_table = make_sum_digits2_table()
+    chain_end = [0] * 10**7
+    chain_end[1] = 1
+    chain_end[89] = 2
+    for i in range(1, 10**7):
+        j = i
+        while chain_end[j] == 0:
+            j = sum_digits2_table[j]
+        chain_end[i] = chain_end[j]
+        
+    c = 0
+    for i in range(10**7):
+        if chain_end[i] == 2:
+            c += 1
+    return c
+
+print(problem92())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>8581146
+CPU times: user 432 ms, sys: 16 ms, total: 448 ms
+Wall time: 451 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-93">Problem 93<a class="anchor-link" href="#Problem-93">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [78]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">combinations</span><span class="p">,</span> <span class="n">permutations</span>
+<span class="kn">from</span> <span class="nn">operator</span> <span class="k">import</span> <span class="n">add</span><span class="p">,</span> <span class="n">truediv</span><span class="p">,</span> <span class="n">mul</span><span class="p">,</span> <span class="n">sub</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [79]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+def problem93():
+    combos = dict()
+    ops = [add, truediv, mul, sub,
+           lambda a, b: sub(b, a), lambda a, b: truediv(b, a)]
+    for four_digit in list(combinations(range(1, 10), 4)):
+        A = [0]*10000
+        for (a, b, c, d) in permutations(four_digit):
+            for op1 in ops:
+                for op2 in ops:
+                    for op3 in ops:
+                        try:
+                            num = op3(op2(op1(a,b),c),d)
+                        except ZeroDivisionError:
+                            continue
+                        if num &gt; 0 and num - int(num) &lt; 0.001:
+                            A[int(num)] = 1
+        A[0] = 1
+        combos[four_digit] = A.index(0) - 1
+    max_combo = max(combos, key=combos.get)
+    return ''.join([str(x) for x in max_combo])
+
+print(problem93())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>1258
+CPU times: user 304 ms, sys: 0 ns, total: 304 ms
+Wall time: 303 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-94">Problem 94<a class="anchor-link" href="#Problem-94">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [80]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">numba</span> <span class="k">import</span> <span class="n">jit</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [81]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+@jit
+def problem94():
+    n_max = (10**9 - 2) // 6
+    s = 0
+    for n in range(2, n_max+1):
+        h2 = 3*n*n + 4*n + 1
+        if h2 == int(h2**0.5)**2:
+            s += (6*n+2)
+        h2 = 3*n*n - 4*n + 1
+        if h2 == int(h2**0.5)**2:
+            s += (6*n-2)
+    n = n_max+1
+    h2 = 3*n*n - 4*n + 1
+    if h2 == int(h2**0.5)**2:
+        s += (6*n-2)
+    return s
+
+print(problem94())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>518408346
+CPU times: user 632 ms, sys: 8 ms, total: 640 ms
+Wall time: 639 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-95">Problem 95<a class="anchor-link" href="#Problem-95">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [82]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numba</span> <span class="k">import</span> <span class="n">jit</span>
+
+<span class="nd">@jit</span>
+<span class="k">def</span> <span class="nf">get_proper_sum</span><span class="p">(</span><span class="n">limit</span><span class="p">):</span>
+    <span class="n">sieve</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">limit</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">proper_sum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">limit</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+    <span class="n">current_n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">limit</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">limit</span><span class="o">**</span><span class="mf">0.5</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">sieve</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">sieve</span><span class="p">[</span><span class="n">p</span><span class="p">::</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">limit</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+                <span class="n">temp</span> <span class="o">=</span> <span class="n">proper_sum</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+                <span class="k">while</span> <span class="n">current_n</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">%</span> <span class="n">p</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">current_n</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">//=</span> <span class="n">p</span>
+                    <span class="n">proper_sum</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">proper_sum</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">*</span><span class="n">p</span> <span class="o">+</span> <span class="n">temp</span>
+    <span class="n">current_n</span> <span class="o">=</span> <span class="p">(</span><span class="n">current_n</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">current_n</span>
+    <span class="n">proper_sum</span> <span class="o">=</span> <span class="n">proper_sum</span> <span class="o">*</span> <span class="n">current_n</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">limit</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">proper_sum</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [83]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+@jit
+def problem95():
+    limit = 10**6
+    proper_sum = get_proper_sum(limit)
+    checked = np.zeros(limit+1, dtype=np.int8)
+    checked[proper_sum &gt; limit] = -1
+    checked[proper_sum == 1] = -1
+    checked[1] = -1
+    len_max = 0
+    start_min = 0
+    for i in range(2, limit+1):
+        if checked[i] != 0:
+            continue
+        next_i = i
+        while checked[next_i] == 0:
+            checked[next_i] = 1
+            next_i = proper_sum[next_i]
+        if checked[next_i] == 1:
+            j = i
+            while j != next_i:
+                checked[j] = -1
+                j = proper_sum[j]
+            chain_len = 1
+            chain_min = next_i
+            j = proper_sum[next_i]
+            while j != next_i:
+                checked[j] = -1
+                chain_len += 1
+                if j &lt; chain_min:
+                    chain_min = j
+                j = proper_sum[j]
+            if chain_len &gt; len_max:
+                len_max = chain_len
+                start_min = chain_min
+        else:
+            j = i
+            while checked[j] == 1:
+                checked[j] = -1
+                j = proper_sum[j]
+    return start_min
+
+print(problem95())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>14316
+CPU times: user 808 ms, sys: 0 ns, total: 808 ms
+Wall time: 808 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-96">Problem 96<a class="anchor-link" href="#Problem-96">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [84]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">urllib.request</span> <span class="k">import</span> <span class="n">urlopen</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+    
+<span class="n">url</span> <span class="o">=</span> <span class="s1">'https://projecteuler.net/project/resources/p096_sudoku.txt'</span>
+<span class="k">with</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>
+    <span class="n">DATA</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">scan</span><span class="p">(</span><span class="n">sudoku</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">9</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">sudoku</span><span class="p">[</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,:,:,</span><span class="n">num</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">c_list</span><span class="p">,</span> <span class="n">d_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">sudoku</span><span class="p">[</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,:,:,</span><span class="n">num</span><span class="p">])</span>
+                    <span class="k">return</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c_list</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">d_list</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">num</span>
+    <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">9</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">sudoku</span><span class="p">[:,:,</span><span class="n">c</span><span class="p">,</span><span class="n">d</span><span class="p">,</span><span class="n">num</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">a_list</span><span class="p">,</span> <span class="n">b_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">sudoku</span><span class="p">[:,:,</span><span class="n">c</span><span class="p">,</span><span class="n">d</span><span class="p">,</span><span class="n">num</span><span class="p">])</span>
+                    <span class="k">return</span> <span class="n">a_list</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">b_list</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">num</span>
+    <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">9</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">sudoku</span><span class="p">[</span><span class="n">a</span><span class="p">,:,</span><span class="n">c</span><span class="p">,:,</span><span class="n">num</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">b_list</span><span class="p">,</span> <span class="n">d_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">sudoku</span><span class="p">[</span><span class="n">a</span><span class="p">,:,</span><span class="n">c</span><span class="p">,:,</span><span class="n">num</span><span class="p">])</span>
+                    <span class="k">return</span> <span class="n">a</span><span class="p">,</span> <span class="n">b_list</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">c</span><span class="p">,</span> <span class="n">d_list</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">num</span>
+    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">sudoku</span><span class="p">[</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">d</span><span class="p">,:]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">num_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">sudoku</span><span class="p">[</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">d</span><span class="p">,:])</span>
+                        <span class="k">return</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">num_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span>
+
+<span class="k">def</span> <span class="nf">fill</span><span class="p">(</span><span class="n">sudoku</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">num</span><span class="p">):</span>
+    <span class="n">sudoku</span><span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="n">num</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">sudoku</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">num</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">sudoku</span><span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="p">:,</span> <span class="n">c</span><span class="p">,</span> <span class="p">:,</span> <span class="n">num</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">sudoku</span><span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">sudoku</span><span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">num</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="k">def</span> <span class="nf">scan_and_fill</span><span class="p">(</span><span class="n">sudoku</span><span class="p">):</span>
+    <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">num</span> <span class="o">=</span> <span class="n">scan</span><span class="p">(</span><span class="n">sudoku</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">num</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="n">fill</span><span class="p">(</span><span class="n">sudoku</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">num</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">True</span>
+
+<span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="n">sudoku</span><span class="p">):</span>
+    <span class="n">unknown</span> <span class="o">=</span> <span class="mi">81</span> <span class="o">-</span> <span class="p">(</span><span class="n">sudoku</span> <span class="o">==</span> <span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="k">while</span> <span class="n">unknown</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">scan_and_fill</span><span class="p">(</span><span class="n">sudoku</span><span class="p">):</span>
+            <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unravel_index</span><span class="p">(</span><span class="n">sudoku</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">argmin</span><span class="p">(),</span>
+                                          <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+            <span class="n">num_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">sudoku</span><span class="p">[</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">d</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="n">num_list</span><span class="p">:</span>
+                <span class="n">new_sudoku</span> <span class="o">=</span> <span class="n">sudoku</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                <span class="n">fill</span><span class="p">(</span><span class="n">new_sudoku</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">num</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">solve</span><span class="p">(</span><span class="n">new_sudoku</span><span class="p">):</span>
+                    <span class="n">sudoku</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">new_sudoku</span><span class="p">[:]</span>
+                    <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="n">unknown</span> <span class="o">-=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="kc">True</span>
+
+<span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">quiz</span><span class="p">):</span>
+    <span class="n">sudoku</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">9</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">9</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">9</span><span class="p">):</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="n">row</span> <span class="o">//</span> <span class="mi">3</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="n">row</span> <span class="o">%</span> <span class="mi">3</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="n">col</span> <span class="o">//</span> <span class="mi">3</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">col</span> <span class="o">%</span> <span class="mi">3</span>
+            <span class="n">num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">quiz</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">col</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">num</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">fill</span><span class="p">(</span><span class="n">sudoku</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">num</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">sudoku</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [85]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+def problem96():
+    s = 0
+    for i in range(50):
+        quiz = DATA.split()[11*i+2:11*i+11]
+        sudoku = read(quiz)
+        solve(sudoku)
+        a, b, c = np.nonzero(sudoku[0,0,0,:])[1]
+        s += (a+1)*100 + (b+1)*10 + (c+1)
+    return s
+    
+print(problem96())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>24702
+CPU times: user 552 ms, sys: 0 ns, total: 552 ms
+Wall time: 552 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-97">Problem 97<a class="anchor-link" href="#Problem-97">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [86]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+def problem97():
+    28433*2**7830457+1
+    two_to_100000 = (2**100000) % 10**10
+    two_to_30457 = (2**30457) % 10**10
+    return (28433 * two_to_100000**78 * two_to_30457 + 1) % 10**10
+
+print(problem97())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>8739992577
+CPU times: user 0 ns, sys: 0 ns, total: 0 ns
+Wall time: 86.5 µs
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-98">Problem 98<a class="anchor-link" href="#Problem-98">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [87]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">urllib.request</span> <span class="k">import</span> <span class="n">urlopen</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">defaultdict</span>
+    
+<span class="n">url</span> <span class="o">=</span> <span class="s1">'https://projecteuler.net/project/resources/p098_words.txt'</span>
+<span class="k">with</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>
+    <span class="n">DATA</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [88]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+def problem98():  
+    word_list = DATA.strip('"').split('","')
+    anagram_dict = defaultdict(list)
+    for word in word_list:
+        anagram_dict[''.join(sorted(word))].append(word)
+    filter_dict = dict((key, value)
+                       for (key, value) in anagram_dict.items() if len(value)&gt;1)
+
+    square_dict = dict()
+    for i in set(len(key) for key in filter_dict.keys()):
+        square_max = int((10**i-1)**0.5)
+        square_min = int((10**(i-1)-1)**0.5)+1
+        square_dict[i] = [x**2 for x in range(square_min, square_max+1)]
+        
+    s_max = 0
+    for key in filter_dict:
+        if len(filter_dict[key]) == 2:
+            word1, word2 = filter_dict[key]
+            for square in square_dict[len(key)]:
+                match = {w: s for w, s in zip(word1, str(square))}
+                reverse_match = {s: w for w, s in zip(word1, str(square))}
+                if len(match) != len(key) or len(reverse_match) != len(key):
+                    continue
+                square2 = int(''.join([match[c] for c in word2]))
+                if square2 in square_dict[len(key)]:
+                    if square &gt; s_max:
+                        s_max = square
+                    if square2 &gt; s_max:
+                        s_max = square2
+    return s_max
+
+print(problem98())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>18769
+CPU times: user 116 ms, sys: 0 ns, total: 116 ms
+Wall time: 115 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-99">Problem 99<a class="anchor-link" href="#Problem-99">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [89]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">urllib.request</span> <span class="k">import</span> <span class="n">urlopen</span>
+    
+<span class="n">url</span> <span class="o">=</span> <span class="s1">'https://projecteuler.net/project/resources/p099_base_exp.txt'</span>
+<span class="k">with</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>
+    <span class="n">DATA</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [90]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+def problem99():
+    x_max = 1
+    y_max = 1
+    line_max = 0
+    for line, pair in enumerate(DATA.split(), 1):
+        x, y = [int(a) for a in pair.split(',')]
+        if x &gt; x_max**(y_max/y):
+            x_max, y_max = x, y
+            line_max = line
+    return line_max
+
+print(problem99())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>709
+CPU times: user 4 ms, sys: 0 ns, total: 4 ms
+Wall time: 1.05 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-100">Problem 100<a class="anchor-link" href="#Problem-100">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [91]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+def problem100():
+    pell_fund = (1, 1)
+    x, y = pell_fund
+    while x &lt;= 2*10**12-1:
+        x, y = 3*x + 4*y, 2*x + 3*y
+    return (y+1)//2
+    
+print(problem100())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>756872327473
+CPU times: user 0 ns, sys: 0 ns, total: 0 ns
+Wall time: 122 µs
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    </div>
+  </div>
+
+    </div>
+    <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
+<li><a class="tag p-category" href="../../categories/numba/" rel="tag">numba</a></li>
+            <li><a class="tag p-category" href="../../categories/project-euler/" rel="tag">project euler</a></li>
+            <li><a class="tag p-category" href="../../categories/python/" rel="tag">python</a></li>
+        </ul>
+<ul class="pager hidden-print">
+<li class="previous">
+                <a href="../grapheme-to-phoneme/" rel="prev" title="How to build a Grapheme-to-Phoneme (G2P) model using PyTorch">Previous post</a>
+            </li>
+        </ul></nav></aside><section class="comments hidden-print"><h2>Comments</h2>
+                        <div id="disqus_thread"></div>
+        <script>
+        var disqus_shortname ="fehiepsi-github-io",
+            disqus_url="https://fehiepsi.github.io/blog/projecteuler-second50/",
+        disqus_title="Solutions to Project Euler's second 50 problems",
+        disqus_identifier="cache/posts/projecteuler-second50.html",
+        disqus_config = function () {
+            this.language = "en";
+        };
+        (function() {
+            var dsq = document.createElement('script'); dsq.async = true;
+            dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script><noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
+</noscript>
+    <a href="https://disqus.com" class="dsq-brlink" rel="nofollow">Comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+        </section><script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js" integrity="sha256-ExtbCSBuYA7kq1Pz362ibde9nnsHYPt6JxuxYeZbU+c=" crossorigin="anonymous"></script><script>
+                renderMathInElement(document.body,
+                    {
+                        
+delimiters: [
+    {left: "$$", right: "$$", display: true},
+    {left: "\\[", right: "\\]", display: true},
+    {left: "$", right: "$", display: false},
+    {left: "\\(", right: "\\)", display: false}
+]
+
+                    }
+                );
+            </script></article><script>var disqus_shortname="fehiepsi-github-io";(function(){var a=document.createElement("script");a.async=true;a.src="https://"+disqus_shortname+".disqus.com/count.js";(document.getElementsByTagName("head")[0]||document.getElementsByTagName("body")[0]).appendChild(a)}());</script>
+</div>
+        <!--End of body content-->
+
+        <footer id="footer"><div class="text-center">
+<p>
+<span class="fa-stack fa-2x">
+  <a href="../../rss.xml">
+    <i class="fa fa-circle fa-stack-2x"></i>
+    <i class="fa fa-rss fa-inverse fa-stack-1x"></i>
+  </a>
+</span>
+<span class="fa-stack fa-2x">
+  <a href="https://twitter.com/fehiepsi">
+    <i class="fa fa-circle fa-stack-2x"></i>
+    <i class="fa fa-twitter fa-inverse fa-stack-1x"></i>
+  </a>
+</span>
+<span class="fa-stack fa-2x">
+  <a href="https://github.com/fehiepsi">
+    <i class="fa fa-circle fa-stack-2x"></i>
+    <i class="fa fa-github fa-inverse fa-stack-1x"></i>
+  </a>
+</span>
+<span class="fa-stack fa-2x">
+  <a href="https://fehiepsi.wordpress.com">
+    <i class="fa fa-circle fa-stack-2x"></i>
+    <i class="fa fa-wordpress fa-inverse fa-stack-1x"></i>
+  </a>
+</span>
+<span class="fa-stack fa-2x">
+  <a href="mailto:fehiepsi@gmail.com">
+    <i class="fa fa-circle fa-stack-2x"></i>
+    <i class="fa fa-envelope fa-inverse fa-stack-1x"></i>
+  </a>
+</span>
+</p>
+<p>
+  Contents © 2017  <a href="mailto:fehiepsi@gmail.com">fehiepsi</a>
+  —
+  
+<a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+<img alt="Creative Commons License BY-NC-SA" style="border-width:0; margin-bottom:12px;" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png"></a>
+  —
+  Powered by <a href="https://getnikola.com" rel="nofollow">Nikola</a>
+</p>
+</div>
+            
+        </footer>
+</div>
+</div>
+
+            <script src="../../assets/js/all-nocdn.js"></script><script>$('a.image-reference:not(.islink) img:not(.islink)').parent().colorbox({rel:"gal",maxWidth:"100%",maxHeight:"100%",scalePhotos:true});</script><!-- fancy dates --><script>
+    moment.locale("en");
+    fancydates(0, "YYYY-MM-DD HH:mm");
+    </script><!-- end fancy dates -->
+</body>
+</html>

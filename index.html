@@ -15,7 +15,7 @@ article: http://ogp.me/ns/article#
 <meta name="generator" content="Nikola (getnikola.com)">
 <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml">
 <link rel="canonical" href="https://fehiepsi.github.io/">
-<!--[if lt IE 9]><script src="assets/js/html5.js"></script><![endif]--><link rel="prefetch" href="blog/grapheme-to-phoneme/" type="text/html">
+<!--[if lt IE 9]><script src="assets/js/html5.js"></script><![endif]--><link rel="prefetch" href="blog/projecteuler-second50/" type="text/html">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
 </head>
 <body>
@@ -65,7 +65,197 @@ article: http://ogp.me/ns/article#
     
     
 <div class="postindex">
-    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="blog/grapheme-to-phoneme/" class="u-url">How to build a Grapheme-to-Phoneme (G2P) model using PyTorch</a></h1>
+    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="blog/projecteuler-second50/" class="u-url">Solutions to Project Euler's second 50 problems</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                fehiepsi
+            </span></p>
+            <p class="dateline"><a href="blog/projecteuler-second50/" rel="bookmark"><time class="published dt-published" datetime="2017-10-12T03:08:50+09:00" title="2017-10-12 03:08">2017-10-12 03:08</time></a></p>
+                <p class="commentline">            <a href="blog/projecteuler-second50/#disqus_thread" data-disqus-identifier="cache/posts/projecteuler-second50.html">Comments</a>
+
+
+        </p>
+</div>
+    </header><div class="p-summary entry-summary">
+    <div tabindex="-1" id="notebook" class="border-box-sizing">
+    <div class="container" id="notebook-container">
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>These are codes to solve the <a href="https://projecteuler.net/archives;page=2">second 50 problems</a> in <a href="http://projecteuler.net/">Project Euler</a>. These <em>python</em> codes will give solutions in <strong>less than 1 second</strong>. This is achieved by using the excellent <strong>numba</strong> <a href="http://numba.pydata.org/">package</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-51">Problem 51<a class="anchor-link" href="blog/projecteuler-second50/#Problem-51">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">is_prime</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">3</span>
+    <span class="k">elif</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">3</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="o">**</span><span class="mf">0.5</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">%</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">n</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="kc">True</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+def problem51(max_digits=6):
+    position_list = [[i, j, k] for i in range(6) for j in range(i+1, 6)
+                     for k in range(j+1, 6)]
+    for origin in range(10**(max_digits-3)):
+        for position in position_list:
+            start_digit = 0 if position[0] == 0 else 1
+            fail_count = start_digit
+            answer = []
+            for digit in range(start_digit, 10):
+                origin_str = "{:0{}d}".format(origin, max_digits-3)
+                expanded_digits = [str(digit)] * 6
+                expanded_digits[position[0]] = origin_str[0]
+                expanded_digits[position[1]] = origin_str[1]
+                expanded_digits[position[2]] = origin_str[2]
+                generated_number = int("".join(expanded_digits))
+                if is_prime(generated_number) == False:
+                    fail_count += 1
+                    if fail_count == 3:
+                        break
+                else:
+                    answer.append(generated_number)
+            if len(answer) == 8:
+                return answer[0]
+
+print(problem51())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>121313
+CPU times: user 40 ms, sys: 0 ns, total: 40 ms
+Wall time: 40.9 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-52">Problem 52<a class="anchor-link" href="blog/projecteuler-second50/#Problem-52">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+def problem52(limit=10**7):
+    for i in range(1, limit):
+        sorted_i = sorted(str(i))
+        if sorted_i == sorted(str(2*i)):
+            if sorted_i == sorted(str(3*i)):
+                if sorted_i == sorted(str(4*i)):
+                    if sorted_i == sorted(str(5*i)):
+                        if sorted_i == sorted(str(6*i)):
+                            return i
+
+print(problem52())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>142857
+CPU times: user 208 ms, sys: 0 ns, total: 208 ms
+Wall time: 205 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Problem-53">Problem 53<a class="anchor-link" href="blog/projecteuler-second50/#Problem-53">¶</a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p class="more"><a href="blog/projecteuler-second50/">Read more…</a></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+    </div>
+    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="blog/grapheme-to-phoneme/" class="u-url">How to build a Grapheme-to-Phoneme (G2P) model using PyTorch</a></h1>
         <div class="metadata">
             <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 fehiepsi
@@ -277,7 +467,9 @@ article: http://ogp.me/ns/article#
 
 
 <div class="output_area">
+
 <div class="prompt"></div>
+
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>233168
@@ -318,7 +510,9 @@ article: http://ogp.me/ns/article#
 
 
 <div class="output_area">
+
 <div class="prompt"></div>
+
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>4613732
