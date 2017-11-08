@@ -13,4 +13,4 @@ My name is Du Phan. I am currently doing Math PhD at POSTECH, Korea. My research
 
 My hobbies include playing flute, chess, and badminton, studying physics, and reading.
 
-<img src="/images/DuOanh.JPG" alt="Du and Oanh" width="200">
+<img src="/images/DuOanh.jpg" alt="Du and Oanh" width="200">
