@@ -1,7 +1,7 @@
 *~
 .ipynb_checkpoints
 cache
-.doit.db
+.doit.db*
 __pycache__
 output
 
