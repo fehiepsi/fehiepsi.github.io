@@ -952,12 +952,6 @@ CONTENT_FOOTER = """
   </a>
 </span>
 <span class="fa-stack fa-2x">
-  <a href="mailto:{email}">
-    <i class="fa fa-circle fa-stack-2x"></i>
-    <i class="fa fa-envelope fa-inverse fa-stack-1x fa-inverse"></i>
-  </a>
-</span>
-<span class="fa-stack fa-2x">
   <a href="https://fehiepsi.wordpress.com/">
     <i class="fa fa-circle fa-stack-2x"></i>
     <i class="fa fa-wordpress fa-stack-1x fa-inverse"></i>
