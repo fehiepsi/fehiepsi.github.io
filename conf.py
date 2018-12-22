@@ -16,7 +16,7 @@ import time
 
 
 # Data about this site
-BLOG_AUTHOR = "Du Phan"  # (translatable)
+BLOG_AUTHOR = "fehiepsi"  # (translatable)
 BLOG_TITLE = "fehiepsi's blog"  # (translatable)
 # This is the main URL for your site. It will be used
 # in a prominent link. Don't forget the protocol (http/https)!
@@ -982,7 +982,7 @@ CONTENT_FOOTER_FORMATS = {
         (),
         {
             "email": BLOG_EMAIL,
-            "author": BLOG_AUTHOR,
+            "author": "Du Phan",
             "date": time.gmtime().tm_year,
             "license": LICENSE
         }
