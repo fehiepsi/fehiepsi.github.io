@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
+<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article#
+" lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,11 +10,11 @@
 <link href="../../assets/css/nikola_ipython.css" rel="stylesheet" type="text/css">
 <meta name="theme-color" content="#5670d4">
 <meta name="generator" content="Nikola (getnikola.com)">
-<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../../rss.xml">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="../../rss.xml">
 <link rel="canonical" href="https://fehiepsi.github.io/blog/grapheme-to-phoneme/">
-<!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><link href="https://fehiepsi.github.io/assets/css/prompt.css" rel="stylesheet" type="text/css">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
-<meta name="author" content="fehiepsi">
+<!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><link href="https://fehiepsi.github.io/assets/css/custom_ipython.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+<meta name="author" content="Du Phan">
 <link rel="prev" href="../rudin-complex-analysis/" title="Some solutions to Rudin's complex analysis book" type="text/html">
 <link rel="next" href="../projecteuler-second50/" title="Solutions to Project Euler's second 50 problems" type="text/html">
 <meta property="og:site_name" content="fehiepsi's blog">
@@ -31,9 +32,9 @@ Grapheme-to-Phoneme (G2P) model is one of the core components of a typical Text-
 <meta property="og:type" content="article">
 <meta property="article:published_time" content="2017-06-15T20:25:53+09:00">
 <meta property="article:tag" content="deep learning">
-<meta property="article:tag" content="G2P">
 <meta property="article:tag" content="pytorch">
 <meta property="article:tag" content="seq2seq">
+<meta property="article:tag" content="torchtext">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
 </head>
 <body>
@@ -41,39 +42,37 @@ Grapheme-to-Phoneme (G2P) model is one of the core components of a typical Text-
 
 <!-- Menubar -->
 
-<nav class="navbar navbar-inverse navbar-static-top"><div class="container">
+<nav class="navbar navbar-expand-md static-top mb-4
+navbar-dark bg-dark
+"><div class="container">
 <!-- This keeps the margins nice -->
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="https://fehiepsi.github.io/">
+        <a class="navbar-brand" href="https://fehiepsi.github.io/">
 
-                <span id="blog-title">fehiepsi's blog</span>
-            </a>
-        </div>
-<!-- /.navbar-header -->
-        <div class="collapse navbar-collapse" id="bs-navbar" aria-expanded="false">
-            <ul class="nav navbar-nav">
-<li>
-<a href="../../archive/">Archives</a>
+            <span id="blog-title">fehiepsi's blog</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="bs-navbar">
+            <ul class="navbar-nav mr-auto">
+<li class="nav-item">
+<a href="../../archive/" class="nav-link">Archive</a>
                 </li>
-<li>
-<a href="../../categories/index.html">Tags</a>
+<li class="nav-item">
+<a href="../../categories/" class="nav-link">Tags</a>
                 </li>
-<li>
-<a href="../../about/">About</a>
+<li class="nav-item">
+<a href="../../about/" class="nav-link">About</a>
 
                 
             </li>
 </ul>
-<ul class="nav navbar-nav navbar-right">
-<li>
-    <a href="index.ipynb" id="sourcelink">Source</a>
+<ul class="navbar-nav navbar-right">
+<li class="nav-item">
+    <a href="index.ipynb" id="sourcelink" class="nav-link">Source</a>
     </li>
+
 
                 
             </ul>
@@ -84,16 +83,18 @@ Grapheme-to-Phoneme (G2P) model is one of the core components of a typical Text-
 </nav><!-- End of Menubar --><div class="container" id="content" role="main">
     <div class="body-content">
         <!--Body content-->
-        <div class="row">
-            
-            
+        
+        
 <article class="post-text h-entry hentry postpage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">How to build a Grapheme-to-Phoneme (G2P) model using PyTorch</a></h1>
 
         <div class="metadata">
             <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
-                    fehiepsi
+                    Du Phan
             </span></p>
-            <p class="dateline"><a href="." rel="bookmark"><time class="published dt-published" datetime="2017-06-15T20:25:53+09:00" itemprop="datePublished" title="2017-06-15 20:25">2017-06-15 20:25</time></a></p>
+            <p class="dateline">
+            <a href="." rel="bookmark">
+            <time class="published dt-published" datetime="2017-06-15T20:25:53+09:00" itemprop="datePublished" title="2017-06-15">2017-06-15</time></a>
+            </p>
                 <p class="commentline">
         
     <a href="#disqus_thread" data-disqus-identifier="cache/posts/grapheme-to-phoneme.html">Comments</a>
@@ -107,9 +108,7 @@ Grapheme-to-Phoneme (G2P) model is one of the core components of a typical Text-
         
 
     </header><div class="e-content entry-content" itemprop="articleBody text">
-    <div tabindex="-1" id="notebook" class="border-box-sizing">
-    <div class="container" id="notebook-container">
-
+    <div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
@@ -163,7 +162,7 @@ Grapheme-to-Phoneme (G2P) model is one of the core components of a typical Text-
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>First, we will import necessary modules. You can install PyTorch as suggested in its <a href="http://pytorch.org/">main page</a>. To install <a href="https://github.com/pytorch/text">torchtext</a>, simply call</p>
 <blockquote>
-<p>git install git+<a href="https://github.com/pytorch/text.git">https://github.com/pytorch/text.git</a></p>
+<p>pip install git+<a href="https://github.com/pytorch/text.git">https://github.com/pytorch/text.git</a></p>
 </blockquote>
 <p>Due to <a href="https://github.com/pytorch/text/pull/28">this bug</a>, it is important to update your <code>torchtext</code> to the lastest version (using the above installing command is enough).</p>
 
@@ -1476,15 +1475,13 @@ Word error rate (WER): 40.66
 </div>
 </div>
 </div>
-    </div>
-  </div>
-
+</div>
     </div>
     <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
 <li><a class="tag p-category" href="../../categories/deep-learning/" rel="tag">deep learning</a></li>
-            <li><a class="tag p-category" href="../../categories/g2p/" rel="tag">G2P</a></li>
             <li><a class="tag p-category" href="../../categories/pytorch/" rel="tag">pytorch</a></li>
             <li><a class="tag p-category" href="../../categories/seq2seq/" rel="tag">seq2seq</a></li>
+            <li><a class="tag p-category" href="../../categories/torchtext/" rel="tag">torchtext</a></li>
         </ul>
 <ul class="pager hidden-print">
 <li class="previous">
@@ -1522,64 +1519,74 @@ Word error rate (WER): 40.66
 delimiters: [
     {left: "$$", right: "$$", display: true},
     {left: "\\[", right: "\\]", display: true},
+    {left: "\\begin{equation*}", right: "\\end{equation*}", display: true},
     {left: "$", right: "$", display: false},
     {left: "\\(", right: "\\)", display: false}
 ]
 
                     }
                 );
-            </script></article><script>var disqus_shortname="fehiepsi-github-io";(function(){var a=document.createElement("script");a.async=true;a.src="https://"+disqus_shortname+".disqus.com/count.js";(document.getElementsByTagName("head")[0]||document.getElementsByTagName("body")[0]).appendChild(a)}());</script>
-</div>
-        <!--End of body content-->
-
-        <footer id="footer"><div class="text-center">
+            </script></article><script>var disqus_shortname="fehiepsi-github-io";(function(){var a=document.createElement("script");a.async=true;a.src="https://"+disqus_shortname+".disqus.com/count.js";(document.getElementsByTagName("head")[0]||document.getElementsByTagName("body")[0]).appendChild(a)}());</script><!--End of body content--><footer id="footer"><div class="text-center">
 <p>
 <span class="fa-stack fa-2x">
   <a href="../../rss.xml">
     <i class="fa fa-circle fa-stack-2x"></i>
-    <i class="fa fa-rss fa-inverse fa-stack-1x"></i>
+    <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
   </a>
 </span>
 <span class="fa-stack fa-2x">
   <a href="https://twitter.com/fehiepsi">
     <i class="fa fa-circle fa-stack-2x"></i>
-    <i class="fa fa-twitter fa-inverse fa-stack-1x"></i>
+    <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
   </a>
 </span>
 <span class="fa-stack fa-2x">
   <a href="https://github.com/fehiepsi">
     <i class="fa fa-circle fa-stack-2x"></i>
-    <i class="fa fa-github fa-inverse fa-stack-1x"></i>
+    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
   </a>
 </span>
 <span class="fa-stack fa-2x">
-  <a href="https://fehiepsi.wordpress.com">
+  <a href="https://www.linkedin.com/in/phandu">
     <i class="fa fa-circle fa-stack-2x"></i>
-    <i class="fa fa-wordpress fa-inverse fa-stack-1x"></i>
+    <i class="fa fa-linkedin fa-inverse fa-stack-1x fa-inverse"></i>
   </a>
 </span>
 <span class="fa-stack fa-2x">
   <a href="mailto:fehiepsi@gmail.com">
     <i class="fa fa-circle fa-stack-2x"></i>
-    <i class="fa fa-envelope fa-inverse fa-stack-1x"></i>
+    <i class="fa fa-envelope fa-inverse fa-stack-1x fa-inverse"></i>
+  </a>
+</span>
+<span class="fa-stack fa-2x">
+  <a href="https://fehiepsi.wordpress.com/">
+    <i class="fa fa-circle fa-stack-2x"></i>
+    <i class="fa fa-wordpress fa-stack-1x fa-inverse"></i>
   </a>
 </span>
 </p>
 <p>
-  Contents © 2017         <a href="mailto:fehiepsi@gmail.com">fehiepsi</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+  Contents © 2018         <a href="mailto:fehiepsi@gmail.com">Du Phan</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
 <img alt="Creative Commons License BY-NC-SA" style="border-width:0; margin-bottom:12px;" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png"></a>
 </p>
 </div>
+
             
         </footer>
 </div>
 </div>
 
 
-            <script src="../../assets/js/all-nocdn.js"></script><script>$('a.image-reference:not(.islink) img:not(.islink)').parent().colorbox({rel:"gal",maxWidth:"100%",maxHeight:"100%",scalePhotos:true});</script><!-- fancy dates --><script>
+        <script src="../../assets/js/all-nocdn.js"></script><!-- fancy dates --><script>
     moment.locale("en");
-    fancydates(0, "YYYY-MM-DD HH:mm");
-    </script><!-- end fancy dates -->
+    fancydates(2, "YYYY-MM-DD HH:mm");
+    </script><!-- end fancy dates --><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element) {
+            return element.getElementsByTagName('img')[0].alt;
+    }});
+    </script>
 </body>
 </html>

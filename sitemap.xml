@@ -7,78 +7,82 @@
                         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
  <url>
   <loc>https://fehiepsi.github.io/</loc>
-  <lastmod>2017-11-08T06:15:00Z</lastmod>
+  <lastmod>2018-12-22T04:33:00Z</lastmod>
  </url>
  <url>
   <loc>https://fehiepsi.github.io/about/</loc>
-  <lastmod>2017-11-08T06:15:00Z</lastmod>
+  <lastmod>2018-12-22T04:33:00Z</lastmod>
  </url>
  <url>
   <loc>https://fehiepsi.github.io/archive/</loc>
-  <lastmod>2017-11-08T06:15:00Z</lastmod>
+  <lastmod>2018-12-22T04:33:00Z</lastmod>
  </url>
  <url>
   <loc>https://fehiepsi.github.io/blog/grapheme-to-phoneme/</loc>
-  <lastmod>2017-11-08T06:15:00Z</lastmod>
+  <lastmod>2018-12-22T04:33:00Z</lastmod>
  </url>
  <url>
   <loc>https://fehiepsi.github.io/blog/projecteuler-first50/</loc>
-  <lastmod>2017-11-08T06:15:00Z</lastmod>
+  <lastmod>2018-12-22T04:33:00Z</lastmod>
  </url>
  <url>
   <loc>https://fehiepsi.github.io/blog/projecteuler-second50/</loc>
-  <lastmod>2017-11-08T06:15:00Z</lastmod>
+  <lastmod>2018-12-22T04:33:00Z</lastmod>
  </url>
  <url>
   <loc>https://fehiepsi.github.io/blog/rudin-complex-analysis/</loc>
-  <lastmod>2017-11-08T06:15:00Z</lastmod>
+  <lastmod>2018-12-22T04:33:00Z</lastmod>
  </url>
  <url>
   <loc>https://fehiepsi.github.io/categories/</loc>
-  <lastmod>2017-11-08T06:15:00Z</lastmod>
+  <lastmod>2018-12-22T04:33:00Z</lastmod>
+ </url>
+ <url>
+  <loc>https://fehiepsi.github.io/categories/algorithm/</loc>
+  <lastmod>2018-12-22T04:33:00Z</lastmod>
  </url>
  <url>
   <loc>https://fehiepsi.github.io/categories/complex-analysis/</loc>
-  <lastmod>2017-11-08T06:15:00Z</lastmod>
+  <lastmod>2018-12-22T04:33:00Z</lastmod>
  </url>
  <url>
   <loc>https://fehiepsi.github.io/categories/deep-learning/</loc>
-  <lastmod>2017-11-08T06:15:00Z</lastmod>
+  <lastmod>2018-12-22T04:33:00Z</lastmod>
  </url>
  <url>
-  <loc>https://fehiepsi.github.io/categories/g2p/</loc>
-  <lastmod>2017-11-08T06:15:00Z</lastmod>
+  <loc>https://fehiepsi.github.io/categories/jupyter/</loc>
+  <lastmod>2018-12-22T04:33:00Z</lastmod>
  </url>
  <url>
-  <loc>https://fehiepsi.github.io/categories/latex/</loc>
-  <lastmod>2017-11-08T06:15:00Z</lastmod>
+  <loc>https://fehiepsi.github.io/categories/katex/</loc>
+  <lastmod>2018-12-22T04:33:00Z</lastmod>
  </url>
  <url>
-  <loc>https://fehiepsi.github.io/categories/mathjax/</loc>
-  <lastmod>2017-11-08T06:15:00Z</lastmod>
+  <loc>https://fehiepsi.github.io/categories/math/</loc>
+  <lastmod>2018-12-22T04:33:00Z</lastmod>
  </url>
  <url>
   <loc>https://fehiepsi.github.io/categories/numba/</loc>
-  <lastmod>2017-11-08T06:15:00Z</lastmod>
+  <lastmod>2018-12-22T04:33:00Z</lastmod>
  </url>
  <url>
   <loc>https://fehiepsi.github.io/categories/project-euler/</loc>
-  <lastmod>2017-11-08T06:15:00Z</lastmod>
+  <lastmod>2018-12-22T04:33:00Z</lastmod>
  </url>
  <url>
   <loc>https://fehiepsi.github.io/categories/python/</loc>
-  <lastmod>2017-11-08T06:15:00Z</lastmod>
+  <lastmod>2018-12-22T04:33:00Z</lastmod>
  </url>
  <url>
   <loc>https://fehiepsi.github.io/categories/pytorch/</loc>
-  <lastmod>2017-11-08T06:15:00Z</lastmod>
- </url>
- <url>
-  <loc>https://fehiepsi.github.io/categories/rudin/</loc>
-  <lastmod>2017-11-08T06:15:00Z</lastmod>
+  <lastmod>2018-12-22T04:33:00Z</lastmod>
  </url>
  <url>
   <loc>https://fehiepsi.github.io/categories/seq2seq/</loc>
-  <lastmod>2017-11-08T06:15:00Z</lastmod>
+  <lastmod>2018-12-22T04:33:00Z</lastmod>
+ </url>
+ <url>
+  <loc>https://fehiepsi.github.io/categories/torchtext/</loc>
+  <lastmod>2018-12-22T04:33:00Z</lastmod>
  </url>
 </urlset>
