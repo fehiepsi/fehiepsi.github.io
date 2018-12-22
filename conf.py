@@ -1240,7 +1240,7 @@ MARKDOWN_EXTENSIONS = ['markdown.extensions.fenced_code', 'markdown.extensions.c
 # before </head>
 # (translatable)
 EXTRA_HEAD_DATA = """
-<link href="{}assets/css/custom_ipython.css" rel="stylesheet" type="text/css">
+<link href="{}assets/css/custom.css" rel="stylesheet" type="text/css">
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
 """.format(SITE_URL)
 # Google Analytics or whatever else you use. Added to the bottom of <body>
