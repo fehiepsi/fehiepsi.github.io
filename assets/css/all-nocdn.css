@@ -856,7 +856,11 @@ ul.pager li a {
     border-bottom-left-radius: 0;
 }
 
-header {
+li.nav-item > a#sourcelink {
+  display: none;
+}
+
+article.h-entry > header {
   text-align: center;
 }
 
