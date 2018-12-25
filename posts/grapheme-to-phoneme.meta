@@ -1,4 +1,4 @@
 .. title: How to build a Grapheme-to-Phoneme (G2P) model using PyTorch
 .. slug: grapheme-to-phoneme
-.. date: 2017-06-15 20:25:53 UTC+09:00
+.. date: 2017-06-15 20:25 UTC+9
 .. tags: deep learning, seq2seq, pytorch, torchtext
