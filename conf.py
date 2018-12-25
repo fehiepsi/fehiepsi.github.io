@@ -270,7 +270,7 @@ DATE_FANCINESS = 2
 # One or more folders containing files to be copied as-is into the output.
 # The format is a dictionary of {source: relative destination}.
 # Default is:
-FILES_FOLDERS = {'files': 'files'}
+# FILES_FOLDERS = {'files': ''}
 # Which means copy 'files' into 'output'
 
 # One or more folders containing code listings to be processed and published on
@@ -876,7 +876,7 @@ IMAGE_FOLDERS = {'images': 'images'}
 # Used to create favicon link like this:
 # <link rel="name" href="file" sizes="size"/>
 FAVICONS = (
-    ("icon", "/files/favicon.ico", "16x16"),
+    ("icon", "/favicon.ico", "16x16"),
     # ("icon", "/icon_128x128.png", "128x128"),
 )
 
@@ -1099,7 +1099,7 @@ delimiters: [
 """
 
 # Do you want to customize the nbconversion of your IPython notebook?
-IPYNB_CONFIG = {"Exporter": {"template_file": "files/nbextensions.tpl"}}
+IPYNB_CONFIG = {"Exporter": {"template_file": "files/assets/templates/nbextensions.tpl"}}
 # With the following example configuration you can use a custom jinja template
 # called `toggle.tpl` which has to be located in your site/blog main folder:
 # IPYNB_CONFIG = {'Exporter':{'template_file': 'toggle'}}
