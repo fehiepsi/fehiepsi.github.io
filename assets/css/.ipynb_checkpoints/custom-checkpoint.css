@@ -1,0 +1,21 @@
+li.nav-item > a#sourcelink {
+  display: none;
+}
+
+article.h-entry > header {
+  text-align: center;
+}
+
+blockquote > p {
+  font-size: 1.1rem;
+}
+
+div.prompt {
+  min-width: 12ex;
+  font-size: 12px;
+  background-color: #FFFFFF;
+}
+
+div.input_area pre {
+  font-size: 15px;
+}

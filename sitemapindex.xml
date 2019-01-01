@@ -10,12 +10,20 @@
   <lastmod>2018-12-25T16:10:00Z</lastmod>
  </sitemap>
  <sitemap>
+  <loc>https://fehiepsi.github.io/categories/bayesian.xml</loc>
+  <lastmod>2019-01-01T20:45:00Z</lastmod>
+ </sitemap>
+ <sitemap>
   <loc>https://fehiepsi.github.io/categories/complex-analysis.xml</loc>
   <lastmod>2018-12-25T16:10:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://fehiepsi.github.io/categories/deep-learning.xml</loc>
   <lastmod>2018-12-25T16:10:00Z</lastmod>
+ </sitemap>
+ <sitemap>
+  <loc>https://fehiepsi.github.io/categories/hidden-markov-model.xml</loc>
+  <lastmod>2019-01-01T20:45:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://fehiepsi.github.io/categories/jupyter.xml</loc>
@@ -38,12 +46,16 @@
   <lastmod>2018-12-25T16:10:00Z</lastmod>
  </sitemap>
  <sitemap>
+  <loc>https://fehiepsi.github.io/categories/pyro.xml</loc>
+  <lastmod>2019-01-01T20:45:00Z</lastmod>
+ </sitemap>
+ <sitemap>
   <loc>https://fehiepsi.github.io/categories/python.xml</loc>
   <lastmod>2018-12-25T16:10:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://fehiepsi.github.io/categories/pytorch.xml</loc>
-  <lastmod>2018-12-25T16:10:00Z</lastmod>
+  <lastmod>2019-01-01T20:45:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://fehiepsi.github.io/categories/seq2seq.xml</loc>
@@ -55,10 +67,10 @@
  </sitemap>
  <sitemap>
   <loc>https://fehiepsi.github.io/rss.xml</loc>
-  <lastmod>2018-12-25T16:10:00Z</lastmod>
+  <lastmod>2019-01-01T20:45:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://fehiepsi.github.io/sitemap.xml</loc>
-  <lastmod>2018-12-25T16:10:00Z</lastmod>
+  <lastmod>2019-01-01T20:45:00Z</lastmod>
  </sitemap>
 </sitemapindex>

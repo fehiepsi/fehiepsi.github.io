@@ -1,9 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>fehiepsi's blog</title><link>https://fehiepsi.github.io/</link><description>a math student, a data science and AI novice, a zen mind</description><atom:link href="https://fehiepsi.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2018 &lt;a href="mailto:fehiepsi@gmail.com"&gt;Du Phan&lt;/a&gt; 
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>fehiepsi's blog</title><link>https://fehiepsi.github.io/</link><description>a math student, a data science and AI novice, a zen mind</description><atom:link href="https://fehiepsi.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2019 &lt;a href="mailto:fehiepsi@gmail.com"&gt;Du Phan&lt;/a&gt; 
 &lt;a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/"&gt;
 &lt;img alt="Creative Commons License BY-NC-SA"
 style="border-width:0; margin-bottom:12px;"
-src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png"&gt;&lt;/a&gt;</copyright><lastBuildDate>Tue, 25 Dec 2018 16:10:34 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Solutions to Project Euler's second 50 problems</title><link>https://fehiepsi.github.io/blog/projecteuler-second50/</link><dc:creator>fehiepsi</dc:creator><description>&lt;div tabindex="-1" id="notebook" class="border-box-sizing"&gt;
+src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png"&gt;&lt;/a&gt;</copyright><lastBuildDate>Tue, 01 Jan 2019 21:54:29 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Sampling Hidden Markov Model with Pyro</title><link>https://fehiepsi.github.io/blog/sampling-hmm-pyro/</link><dc:creator>fehiepsi</dc:creator><description>&lt;div tabindex="-1" id="notebook" class="border-box-sizing"&gt;
+    &lt;div class="container" id="notebook-container"&gt;
+
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;p&gt;To understand the multimodal phenomenon of unsupervised &lt;a href="https://en.wikipedia.org/wiki/Hidden_Markov_model"&gt;hidden Markov models&lt;/a&gt; (HMM) when reading &lt;a href="https://discourse.pymc.io/t/how-to-marginalized-markov-chain-with-categorical/2230"&gt;some discussions in PyMC discourse&lt;/a&gt;, I decide to reimplement in &lt;a href="http://pyro.ai/"&gt;Pyro&lt;/a&gt; various &lt;a href="https://github.com/stan-dev/example-models/tree/master/misc/hmm"&gt;models from Stan&lt;/a&gt;. The main reference which we'll use is &lt;a href="https://mc-stan.org/docs/2_18/stan-users-guide/hmms-section.html"&gt;Stan User's Guide&lt;/a&gt;.&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing code_cell rendered"&gt;
+&lt;div class="input"&gt;
+&lt;div class="prompt input_prompt"&gt;In [1]:&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+    &lt;div class="input_area"&gt;
+&lt;div class=" highlight hl-ipython3"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="k"&gt;matplotlib&lt;/span&gt; inline
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;matplotlib.pyplot&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;plt&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;seaborn&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;sns&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;sns&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;set&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;palette&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"bright"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;torch&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;warnings&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;warnings&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;simplefilter&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"ignore"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ne"&gt;FutureWarning&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;# this post assumes a Pyro version in dev branch (dated 2019-01-01):&lt;/span&gt;
+&lt;span class="c1"&gt;# pip install git+https://github.com/uber/pyro@4e42613&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;pyro&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;pyro.distributions&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;dist&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pyro.infer.mcmc&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;MCMC&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;NUTS&lt;/span&gt;
+
+&lt;span class="n"&gt;pyro&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;set_rng_seed&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;p&gt;As in Stan user's guide, we use the notation &lt;code&gt;categories&lt;/code&gt; for latent states and &lt;code&gt;words&lt;/code&gt; for observations. The following data information is taken from Stan's &lt;a href="https://github.com/stan-dev/example-models/blob/master/misc/hmm/hmm.data.R"&gt;example-models repository&lt;/a&gt;.&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing code_cell rendered"&gt;
+&lt;div class="input"&gt;
+&lt;div class="prompt input_prompt"&gt;In [2]:&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+    &lt;div class="input_area"&gt;
+&lt;div class=" highlight hl-ipython3"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;num_categories&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;
+&lt;span class="n"&gt;num_words&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;10&lt;/span&gt;
+&lt;span class="n"&gt;num_supervised_data&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;100&lt;/span&gt;
+&lt;span class="n"&gt;num_data&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;600&lt;/span&gt;
+
+&lt;span class="n"&gt;transition_prior&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;torch&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;full&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;num_categories&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mf"&gt;1.&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;emission_prior&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;torch&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;full&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;num_words&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mf"&gt;0.1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;transition_prob&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;dist&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Dirichlet&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;transition_prior&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sample&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;torch&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Size&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="n"&gt;num_categories&lt;/span&gt;&lt;span class="p"&gt;]))&lt;/span&gt;
+&lt;span class="n"&gt;emission_prob&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;dist&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Dirichlet&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;emission_prior&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sample&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;torch&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Size&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="n"&gt;num_categories&lt;/span&gt;&lt;span class="p"&gt;]))&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;p&gt;We need to generate data randomly from the above transition probability and emission probability. In addition, we will generate an initial category from the equilibrium distribution of its Markov chain.
+&lt;/p&gt;&lt;p&gt;&lt;a href="https://fehiepsi.github.io/blog/sampling-hmm-pyro/"&gt;Read more…&lt;/a&gt; (4 min remaining to read)&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</description><category>bayesian</category><category>hidden markov model</category><category>pyro</category><category>pytorch</category><guid>https://fehiepsi.github.io/blog/sampling-hmm-pyro/</guid><pubDate>Tue, 01 Jan 2019 11:54:00 GMT</pubDate></item><item><title>Solutions to Project Euler's second 50 problems</title><link>https://fehiepsi.github.io/blog/projecteuler-second50/</link><dc:creator>fehiepsi</dc:creator><description>&lt;div tabindex="-1" id="notebook" class="border-box-sizing"&gt;
     &lt;div class="container" id="notebook-container"&gt;
 
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
@@ -249,16 +322,8 @@ Wall time: 205 ms
 &lt;/div&gt;
 &lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
-&lt;p&gt;&lt;a href="https://docs.python.org/3/library/argparse.html"&gt;argparse&lt;/a&gt; is a default python module which is used for command-line script parsing. To run this notebook as a python script, simply comment out all the markdown cell and change the following code cell to the real &lt;code&gt;argparse&lt;/code&gt; &lt;a href="https://docs.python.org/3/howto/argparse.html"&gt;code&lt;/a&gt;.&lt;/p&gt;
-
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
-&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
-&lt;p&gt;&lt;a href="https://fehiepsi.github.io/blog/grapheme-to-phoneme/"&gt;Read more…&lt;/a&gt; (28 min remaining to read)&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</description><category>deep learning</category><category>pytorch</category><category>seq2seq</category><category>torchtext</category><guid>https://fehiepsi.github.io/blog/grapheme-to-phoneme/</guid><pubDate>Fri, 16 Jun 2017 05:25:00 GMT</pubDate></item><item><title>Some solutions to Rudin's complex analysis book</title><link>https://fehiepsi.github.io/blog/rudin-complex-analysis/</link><dc:creator>fehiepsi</dc:creator><description>&lt;div tabindex="-1" id="notebook" class="border-box-sizing"&gt;
+&lt;p&gt;&lt;a href="https://docs.python.org/3/library/argparse.html"&gt;argparse&lt;/a&gt; is a default python module which is used for command-line script parsing. To run this notebook as a python script, simply comment out all the markdown cell and change the following code cell to the real &lt;code&gt;argparse&lt;/code&gt; &lt;a href="https://docs.python.org/3/howto/argparse.html"&gt;code&lt;/a&gt;.
+&lt;/p&gt;&lt;p&gt;&lt;a href="https://fehiepsi.github.io/blog/grapheme-to-phoneme/"&gt;Read more…&lt;/a&gt; (28 min remaining to read)&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</description><category>deep learning</category><category>pytorch</category><category>seq2seq</category><category>torchtext</category><guid>https://fehiepsi.github.io/blog/grapheme-to-phoneme/</guid><pubDate>Fri, 16 Jun 2017 05:25:00 GMT</pubDate></item><item><title>Some solutions to Rudin's complex analysis book</title><link>https://fehiepsi.github.io/blog/rudin-complex-analysis/</link><dc:creator>fehiepsi</dc:creator><description>&lt;div tabindex="-1" id="notebook" class="border-box-sizing"&gt;
     &lt;div class="container" id="notebook-container"&gt;
 
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
