@@ -164,8 +164,8 @@ navbar-dark bg-dark
 <span class="n">num_supervised_data</span> <span class="o">=</span> <span class="mi">100</span>
 <span class="n">num_data</span> <span class="o">=</span> <span class="mi">600</span>
 
-<span class="n">transition_prior</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">num_categories</span><span class="p">,</span> <span class="mf">1.</span><span class="p">)</span>
-<span class="n">emission_prior</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">num_words</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+<span class="n">transition_prior</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">num_categories</span><span class="p">)</span><span class="o">.</span><span class="n">fill_</span><span class="p">(</span><span class="mf">1.</span><span class="p">)</span>
+<span class="n">emission_prior</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">num_words</span><span class="p">)</span><span class="o">.</span><span class="n">fill_</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
 
 <span class="n">transition_prob</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">Dirichlet</span><span class="p">(</span><span class="n">transition_prior</span><span class="p">)</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([</span><span class="n">num_categories</span><span class="p">]))</span>
 <span class="n">emission_prob</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">Dirichlet</span><span class="p">(</span><span class="n">emission_prior</span><span class="p">)</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([</span><span class="n">num_categories</span><span class="p">]))</span>
@@ -333,10 +333,10 @@ navbar-dark bg-dark
 
  
  
-<div id="c3a7cf51-bcc4-431d-847f-b1a99cbfc124"></div>
+<div id="8452a917-d4b3-4958-9674-8c3fac94558d"></div>
 <div class="output_subarea output_widget_view ">
 <script type="text/javascript">
-var element = $('#c3a7cf51-bcc4-431d-847f-b1a99cbfc124');
+var element = $('#8452a917-d4b3-4958-9674-8c3fac94558d');
 </script><script type="application/vnd.jupyter.widget-view+json">
 {"model_id": "b5b91497ea644497bc2b75610d034824", "version_major": 2, "version_minor": 0}
 </script>
@@ -471,10 +471,10 @@ var element = $('#c3a7cf51-bcc4-431d-847f-b1a99cbfc124');
 
  
  
-<div id="124c90d9-631f-44f9-a296-5dc23d56ccde"></div>
+<div id="0a3cd8e6-0e72-45ed-a5ec-8a110440c6b1"></div>
 <div class="output_subarea output_widget_view ">
 <script type="text/javascript">
-var element = $('#124c90d9-631f-44f9-a296-5dc23d56ccde');
+var element = $('#0a3cd8e6-0e72-45ed-a5ec-8a110440c6b1');
 </script><script type="application/vnd.jupyter.widget-view+json">
 {"model_id": "fe8328fdb6fe4950b7aab49a1130d55e", "version_major": 2, "version_minor": 0}
 </script>
@@ -602,10 +602,10 @@ var element = $('#124c90d9-631f-44f9-a296-5dc23d56ccde');
 
  
  
-<div id="443692a4-bbf2-4fd0-ba2c-c6bdf75ee77e"></div>
+<div id="780a3bf7-677f-476b-b5f3-6ff2ff1a34ca"></div>
 <div class="output_subarea output_widget_view ">
 <script type="text/javascript">
-var element = $('#443692a4-bbf2-4fd0-ba2c-c6bdf75ee77e');
+var element = $('#780a3bf7-677f-476b-b5f3-6ff2ff1a34ca');
 </script><script type="application/vnd.jupyter.widget-view+json">
 {"model_id": "82526a415eb94477b48d2935896f11a7", "version_major": 2, "version_minor": 0}
 </script>
