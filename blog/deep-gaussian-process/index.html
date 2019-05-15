@@ -552,7 +552,7 @@ download complete.
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Now, we initialize inducing points for the first layer by using k-mean of X. It is not necessary though, an taking a random subset of X also works.</p>
+<p>Now, we initialize inducing points for the first layer by using k-mean of X. It is not necessary though, and taking a random subset of X also works.</p>
 
 </div>
 </div>
@@ -608,8 +608,7 @@ download complete.
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">LinearT</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="sd">"""Linear transform and transpose</span>
-<span class="sd">    """</span>
+    <span class="sd">"""Linear transform and transpose"""</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim_in</span><span class="p">,</span> <span class="n">dim_out</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">LinearT</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">dim_in</span><span class="p">,</span> <span class="n">dim_out</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -706,7 +705,7 @@ download complete.
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>During early iterations of training process, we want to play more weight on mean function, which is PCA of the input, and reduce the effect of the first layer's kernel. To achieve that, we'll force inducing output of the first layer to be small by setting a small initial <code>u_scale_tril</code>.</p>
+<p>During early iterations of training process, we want to play more weight on mean function, which is PCA of the input, and reduce the effect of the first layer's kernel. To achieve that, we'll force the inducing outputs of the first layer to be small by setting small initial <code>u_scale_tril</code>.</p>
 
 </div>
 </div>
@@ -1005,7 +1004,7 @@ Test set: Accuracy: 9702/10000 (97.02%)
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In [4], the authors run 2-layer Deep GP for more than 300 epochs and achieve 97,94% accuaracy. Despite that stacking many layers can improve performance of Gaussian Process, it seems to me that following the line of deep kernel is a more reliable approach. Kernels, which are usually underrated, are indeed the core of Gaussian Process. As demonstrated in <a href="http://pyro.ai/examples/dkl.html">Pyro's Deep Kernel Learning example</a>, we can achieve a state-of-the-art result without having to tuning hyperparameters or using many tricks as in the above example (e.g. fixing a linear mean function, reducing the kernel effect of the first layer).</p>
+<p>In [4], the authors run 2-layer Deep GP for more than 300 epochs and achieve 97,94% accuaracy. Despite that stacking many layers can improve performance of Gaussian Processes, it seems to me that following the line of deep kernels is a more reliable approach. Kernels, which are usually underrated, are indeed the core of Gaussian Processes. As demonstrated in <a href="http://pyro.ai/examples/dkl.html">Pyro's Deep Kernel Learning example</a>, we can achieve a state-of-the-art result without having to tuning hyperparameters or using many tricks as in the above example (e.g. fixing a linear mean function, reducing the kernel effect of the first layer).</p>
 
 </div>
 </div>
