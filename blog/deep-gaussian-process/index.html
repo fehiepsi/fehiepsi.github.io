@@ -3,20 +3,30 @@
 " lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="description" content="a math student, a data science and AI novice, a zen mind">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>fehiepsi's blog</title>
-<link href="assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
-<link href="assets/css/ipython.min.css" rel="stylesheet" type="text/css">
-<link href="assets/css/nikola_ipython.css" rel="stylesheet" type="text/css">
+<title>Inferences for Deep Gaussian Process models in Pyro | fehiepsi's blog</title>
+<link href="../../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/ipython.min.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/nikola_ipython.css" rel="stylesheet" type="text/css">
 <meta name="theme-color" content="#5670d4">
 <meta name="generator" content="Nikola (getnikola.com)">
-<link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml">
-<link rel="canonical" href="https://fehiepsi.github.io/">
-<link rel="icon" href="favicon.ico" sizes="16x16">
-<!--[if lt IE 9]><script src="assets/js/html5.js"></script><![endif]--><link href="https://fehiepsi.github.io/assets/css/custom.css" rel="stylesheet" type="text/css">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="../../rss.xml">
+<link rel="canonical" href="https://fehiepsi.github.io/blog/deep-gaussian-process/">
+<link rel="icon" href="../../favicon.ico" sizes="16x16">
+<!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><link href="https://fehiepsi.github.io/assets/css/custom.css" rel="stylesheet" type="text/css">
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
-<link rel="prefetch" href="blog/deep-gaussian-process/" type="text/html">
+<meta name="author" content="fehiepsi">
+<link rel="prev" href="../sampling-hmm-pyro/" title="Sampling Hidden Markov Model with Pyro" type="text/html">
+<meta property="og:site_name" content="fehiepsi's blog">
+<meta property="og:title" content="Inferences for Deep Gaussian Process models in Pyro">
+<meta property="og:url" content="https://fehiepsi.github.io/blog/deep-gaussian-process/">
+<meta property="og:description" content="In this tutorial, I want to illustrate how to use Pyro's Gaussian Processes module to create and train some deep Gaussian Process models. For the background on how to use this module, readers can chec">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2019-05-15T12:43:00+05:00">
+<meta property="article:tag" content="deep learning">
+<meta property="article:tag" content="gaussian process">
+<meta property="article:tag" content="pyro">
+<meta property="article:tag" content="pytorch">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
 </head>
 <body>
@@ -39,16 +49,16 @@ navbar-dark bg-dark
         <div class="collapse navbar-collapse" id="bs-navbar">
             <ul class="navbar-nav mr-auto">
 <li class="nav-item">
-<a href="archive/" class="nav-link">Archive</a>
+<a href="../../archive/" class="nav-link">Archive</a>
                 </li>
 <li class="nav-item">
-<a href="categories/" class="nav-link">Tags</a>
+<a href="../../categories/" class="nav-link">Tags</a>
                 </li>
 <li class="nav-item">
-<a href="about/" class="nav-link">About</a>
+<a href="../../about/" class="nav-link">About</a>
                 </li>
 <li class="nav-item">
-<a href="rethinking-pyro/" class="nav-link">rethinking-pyro</a>
+<a href="../../rethinking-pyro/" class="nav-link">rethinking-pyro</a>
 
                 
             </li>
@@ -59,7 +69,14 @@ navbar-dark bg-dark
 <!-- End of custom search -->
 
 
-            <ul class="navbar-nav navbar-right"></ul>
+            <ul class="navbar-nav navbar-right">
+<li class="nav-item">
+    <a href="index.ipynb" id="sourcelink" class="nav-link">Source</a>
+    </li>
+
+
+                
+            </ul>
 </div>
 <!-- /.navbar-collapse -->
     </div>
@@ -69,29 +86,29 @@ navbar-dark bg-dark
         <!--Body content-->
         
         
+<article class="post-text h-entry hentry postpage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">Inferences for Deep Gaussian Process models in Pyro</a></h1>
 
-    
-
-
-    
-<div class="postindex">
-    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="blog/deep-gaussian-process/" class="u-url">Inferences for Deep Gaussian Process models in Pyro</a></h1>
         <div class="metadata">
             <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
-                fehiepsi
+                    fehiepsi
             </span></p>
             <p class="dateline">
-            <a href="blog/deep-gaussian-process/" rel="bookmark">
+            <a href="." rel="bookmark">
             <time class="published dt-published" datetime="2019-05-15T12:43:00+05:00" itemprop="datePublished" title="2019-05-15">2019-05-15</time></a>
             </p>
                 <p class="commentline">
         
-    <a href="blog/deep-gaussian-process/#disqus_thread" data-disqus-identifier="cache/posts/deep-gaussian-process.html">Comments</a>
+    <a href="#disqus_thread" data-disqus-identifier="cache/posts/deep-gaussian-process.html">Comments</a>
 
 
+            
         </p>
-</div>
-    </header><div class="p-summary entry-summary">
+<p class="sourceline"><a href="index.ipynb" class="sourcelink">Source</a></p>
+
+        </div>
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
     <div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
@@ -141,7 +158,7 @@ navbar-dark bg-dark
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="HMC-with-Heaviside-data">HMC with Heaviside data<a class="anchor-link" href="blog/deep-gaussian-process/#HMC-with-Heaviside-data">¶</a>
+<h3 id="HMC-with-Heaviside-data">HMC with Heaviside data<a class="anchor-link" href="#HMC-with-Heaviside-data">¶</a>
 </h3>
 </div>
 </div>
@@ -457,7 +474,7 @@ navbar-dark bg-dark
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="SVI-with-MNIST-data">SVI with MNIST data<a class="anchor-link" href="blog/deep-gaussian-process/#SVI-with-MNIST-data">¶</a>
+<h3 id="SVI-with-MNIST-data">SVI with MNIST data<a class="anchor-link" href="#SVI-with-MNIST-data">¶</a>
 </h3>
 </div>
 </div>
@@ -997,7 +1014,7 @@ Test set: Accuracy: 9702/10000 (97.02%)
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="References">References<a class="anchor-link" href="blog/deep-gaussian-process/#References">¶</a>
+<h4 id="References">References<a class="anchor-link" href="#References">¶</a>
 </h4>
 <p>[1] <code>MCMC for Variationally Sparse Gaussian Processes</code> <a href="https://arxiv.org/abs/1506.04000">arxiv</a><br>
 James Hensman, Alexander G. de G. Matthews, Maurizio Filippone, Zoubin Ghahramani</p>
@@ -1011,616 +1028,39 @@ Hugh Salimbeni, Marc Peter Deisenroth</p>
 </div>
 </div>
     </div>
-    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="blog/sampling-hmm-pyro/" class="u-url">Sampling Hidden Markov Model with Pyro</a></h1>
-        <div class="metadata">
-            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
-                fehiepsi
-            </span></p>
-            <p class="dateline">
-            <a href="blog/sampling-hmm-pyro/" rel="bookmark">
-            <time class="published dt-published" datetime="2019-01-01T16:54:00+05:00" itemprop="datePublished" title="2019-01-01">2019-01-01</time></a>
-            </p>
-                <p class="commentline">
+    <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
+<li><a class="tag p-category" href="../../categories/deep-learning/" rel="tag">deep learning</a></li>
+            <li><a class="tag p-category" href="../../categories/gaussian-process/" rel="tag">gaussian process</a></li>
+            <li><a class="tag p-category" href="../../categories/pyro/" rel="tag">pyro</a></li>
+            <li><a class="tag p-category" href="../../categories/pytorch/" rel="tag">pytorch</a></li>
+        </ul>
+<ul class="pager hidden-print">
+<li class="previous">
+                <a href="../sampling-hmm-pyro/" rel="prev" title="Sampling Hidden Markov Model with Pyro">Previous post</a>
+            </li>
+        </ul></nav></aside><section class="comments hidden-print"><h2>Comments</h2>
         
-    <a href="blog/sampling-hmm-pyro/#disqus_thread" data-disqus-identifier="cache/posts/sampling-hmm-pyro.html">Comments</a>
-
-
-        </p>
-</div>
-    </header><div class="p-summary entry-summary">
-    <div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>To understand the multimodal phenomenon of unsupervised <a href="https://en.wikipedia.org/wiki/Hidden_Markov_model">hidden Markov models</a> (HMM) when reading <a href="https://discourse.pymc.io/t/how-to-marginalized-markov-chain-with-categorical/2230">some discussions in PyMC discourse</a>, I decide to reimplement in <a href="http://pyro.ai/">Pyro</a> various <a href="https://github.com/stan-dev/example-models/tree/master/misc/hmm">models from Stan</a>. The main reference which we'll use is <a href="https://mc-stan.org/docs/2_18/stan-users-guide/hmms-section.html">Stan User's Guide</a>.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In [1]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">matplotlib</span> inline
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span><span class="p">;</span> <span class="n">sns</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">palette</span><span class="o">=</span><span class="s2">"bright"</span><span class="p">)</span>
-<span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">import</span> <span class="nn">warnings</span><span class="p">;</span> <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">"ignore"</span><span class="p">,</span> <span class="ne">FutureWarning</span><span class="p">)</span>
-
-<span class="c1"># this post assumes a Pyro version in dev branch (dated 2019-01-01):</span>
-<span class="c1"># pip install git+https://github.com/uber/pyro@4e42613</span>
-<span class="kn">import</span> <span class="nn">pyro</span>
-<span class="kn">import</span> <span class="nn">pyro.distributions</span> <span class="k">as</span> <span class="nn">dist</span>
-<span class="kn">from</span> <span class="nn">pyro.infer.mcmc</span> <span class="k">import</span> <span class="n">MCMC</span><span class="p">,</span> <span class="n">NUTS</span>
-
-<span class="n">pyro</span><span class="o">.</span><span class="n">set_rng_seed</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>As in Stan user's guide, we use the notation <code>categories</code> for latent states and <code>words</code> for observations. The following data information is taken from Stan's <a href="https://github.com/stan-dev/example-models/blob/master/misc/hmm/hmm.data.R">example-models repository</a>.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In [2]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">num_categories</span> <span class="o">=</span> <span class="mi">3</span>
-<span class="n">num_words</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="n">num_supervised_data</span> <span class="o">=</span> <span class="mi">100</span>
-<span class="n">num_data</span> <span class="o">=</span> <span class="mi">600</span>
-
-<span class="n">transition_prior</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">num_categories</span><span class="p">)</span><span class="o">.</span><span class="n">fill_</span><span class="p">(</span><span class="mf">1.</span><span class="p">)</span>
-<span class="n">emission_prior</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">num_words</span><span class="p">)</span><span class="o">.</span><span class="n">fill_</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
-
-<span class="n">transition_prob</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">Dirichlet</span><span class="p">(</span><span class="n">transition_prior</span><span class="p">)</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([</span><span class="n">num_categories</span><span class="p">]))</span>
-<span class="n">emission_prob</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">Dirichlet</span><span class="p">(</span><span class="n">emission_prior</span><span class="p">)</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([</span><span class="n">num_categories</span><span class="p">]))</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>We need to generate data randomly from the above transition probability and emission probability. In addition, we will generate an initial category from the equilibrium distribution of its Markov chain.
-</p>
-<p class="more"><a href="blog/sampling-hmm-pyro/">Read more…</a></p>
-</div>
-</div>
-</div>
-</div>
-    </div>
-    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="blog/projecteuler-second50/" class="u-url">Solutions to Project Euler's second 50 problems</a></h1>
-        <div class="metadata">
-            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
-                fehiepsi
-            </span></p>
-            <p class="dateline">
-            <a href="blog/projecteuler-second50/" rel="bookmark">
-            <time class="published dt-published" datetime="2017-10-12T03:08:00-09:00" itemprop="datePublished" title="2017-10-12">2017-10-12</time></a>
-            </p>
-                <p class="commentline">
         
-    <a href="blog/projecteuler-second50/#disqus_thread" data-disqus-identifier="cache/posts/projecteuler-second50.html">Comments</a>
+        <div id="disqus_thread"></div>
+        <script>
+        var disqus_shortname ="fehiepsi-github-io",
+            disqus_url="https://fehiepsi.github.io/blog/deep-gaussian-process/",
+        disqus_title="Inferences for Deep Gaussian Process models in Pyro",
+        disqus_identifier="cache/posts/deep-gaussian-process.html",
+        disqus_config = function () {
+            this.language = "en";
+        };
+        (function() {
+            var dsq = document.createElement('script'); dsq.async = true;
+            dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script><noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
+</noscript>
+    <a href="https://disqus.com" class="dsq-brlink" rel="nofollow">Comments powered by <span class="logo-disqus">Disqus</span></a>
 
 
-        </p>
-</div>
-    </header><div class="p-summary entry-summary">
-    <div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>These are codes to solve the <a href="https://projecteuler.net/archives;page=2">second 50 problems</a> in <a href="http://projecteuler.net/">Project Euler</a>. These <em>python</em> codes will give solutions in <strong>less than 1 second</strong>. This is achieved by using the excellent <strong>numba</strong> <a href="http://numba.pydata.org/">package</a>.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Problem-51">Problem 51<a class="anchor-link" href="blog/projecteuler-second50/#Problem-51">¶</a>
-</h4>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In [1]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">is_prime</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">3</span>
-    <span class="k">elif</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">3</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">False</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="o">**</span><span class="mf">0.5</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">n</span> <span class="o">%</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">n</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">False</span>
-    <span class="k">return</span> <span class="kc">True</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In [2]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%time</span>
-<span class="k">def</span> <span class="nf">problem51</span><span class="p">(</span><span class="n">max_digits</span><span class="o">=</span><span class="mi">6</span><span class="p">):</span>
-    <span class="n">position_list</span> <span class="o">=</span> <span class="p">[[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
-                     <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">)]</span>
-    <span class="k">for</span> <span class="n">origin</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="n">max_digits</span><span class="o">-</span><span class="mi">3</span><span class="p">)):</span>
-        <span class="k">for</span> <span class="n">position</span> <span class="ow">in</span> <span class="n">position_list</span><span class="p">:</span>
-            <span class="n">start_digit</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">1</span>
-            <span class="n">fail_count</span> <span class="o">=</span> <span class="n">start_digit</span>
-            <span class="n">answer</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">digit</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start_digit</span><span class="p">,</span> <span class="mi">10</span><span class="p">):</span>
-                <span class="n">origin_str</span> <span class="o">=</span> <span class="s2">"{:0</span><span class="si">{}</span><span class="s2">d}"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">origin</span><span class="p">,</span> <span class="n">max_digits</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span>
-                <span class="n">expanded_digits</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">digit</span><span class="p">)]</span> <span class="o">*</span> <span class="mi">6</span>
-                <span class="n">expanded_digits</span><span class="p">[</span><span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">origin_str</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="n">expanded_digits</span><span class="p">[</span><span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">origin_str</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-                <span class="n">expanded_digits</span><span class="p">[</span><span class="n">position</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span> <span class="o">=</span> <span class="n">origin_str</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-                <span class="n">generated_number</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">expanded_digits</span><span class="p">))</span>
-                <span class="k">if</span> <span class="n">is_prime</span><span class="p">(</span><span class="n">generated_number</span><span class="p">)</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
-                    <span class="n">fail_count</span> <span class="o">+=</span> <span class="mi">1</span>
-                    <span class="k">if</span> <span class="n">fail_count</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
-                        <span class="k">break</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">answer</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">generated_number</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">answer</span><span class="p">)</span> <span class="o">==</span> <span class="mi">8</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">answer</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">problem51</span><span class="p">())</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>121313
-CPU times: user 40 ms, sys: 0 ns, total: 40 ms
-Wall time: 40.9 ms
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Problem-52">Problem 52<a class="anchor-link" href="blog/projecteuler-second50/#Problem-52">¶</a>
-</h4>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In [3]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%time</span>
-<span class="k">def</span> <span class="nf">problem52</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="mi">10</span><span class="o">**</span><span class="mi">7</span><span class="p">):</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">limit</span><span class="p">):</span>
-        <span class="n">sorted_i</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
-        <span class="k">if</span> <span class="n">sorted_i</span> <span class="o">==</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">i</span><span class="p">)):</span>
-            <span class="k">if</span> <span class="n">sorted_i</span> <span class="o">==</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="mi">3</span><span class="o">*</span><span class="n">i</span><span class="p">)):</span>
-                <span class="k">if</span> <span class="n">sorted_i</span> <span class="o">==</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">i</span><span class="p">)):</span>
-                    <span class="k">if</span> <span class="n">sorted_i</span> <span class="o">==</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="mi">5</span><span class="o">*</span><span class="n">i</span><span class="p">)):</span>
-                        <span class="k">if</span> <span class="n">sorted_i</span> <span class="o">==</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="mi">6</span><span class="o">*</span><span class="n">i</span><span class="p">)):</span>
-                            <span class="k">return</span> <span class="n">i</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">problem52</span><span class="p">())</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>142857
-CPU times: user 208 ms, sys: 0 ns, total: 208 ms
-Wall time: 205 ms
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Problem-53">Problem 53<a class="anchor-link" href="blog/projecteuler-second50/#Problem-53">¶</a>
-</h4>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p class="more"><a href="blog/projecteuler-second50/">Read more…</a></p>
-</div>
-</div>
-</div>
-</div>
-    </div>
-    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="blog/grapheme-to-phoneme/" class="u-url">How to build a Grapheme-to-Phoneme (G2P) model using PyTorch</a></h1>
-        <div class="metadata">
-            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
-                fehiepsi
-            </span></p>
-            <p class="dateline">
-            <a href="blog/grapheme-to-phoneme/" rel="bookmark">
-            <time class="published dt-published" datetime="2017-06-15T20:25:00-09:00" itemprop="datePublished" title="2017-06-15">2017-06-15</time></a>
-            </p>
-                <p class="commentline">
-        
-    <a href="blog/grapheme-to-phoneme/#disqus_thread" data-disqus-identifier="cache/posts/grapheme-to-phoneme.html">Comments</a>
-
-
-        </p>
-</div>
-    </header><div class="p-summary entry-summary">
-    <div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="introduction">introduction<a class="anchor-link" href="blog/grapheme-to-phoneme/#introduction">¶</a>
-</h4>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Grapheme-to-Phoneme (G2P) model is one of the core components of a typical Text-to-Speech (TTS) system, e.g. <a href="https://deepmind.com/blog/wavenet-generative-model-raw-audio/">WaveNet</a> and <a href="http://research.baidu.com/deep-voice-production-quality-text-speech-system-constructed-entirely-deep-neural-networks/">Deep Voice</a>. In this notebook, we will try to replicate the Encoder-decoder LSTM model from the paper <a href="https://arxiv.org/abs/1506.00196">https://arxiv.org/abs/1506.00196</a>.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Throughout this tutorial, we will learn how to:</p>
-<ul>
-<li>Implement a sequence-to-sequence (seq2seq) model</li>
-<li>Implement global attention into seq2seq model</li>
-<li>Use beam-search decoder</li>
-<li>Use Levenshtein distance to compute phoneme-error-rate (PER)</li>
-<li>Use torchtext package</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="setup">setup<a class="anchor-link" href="blog/grapheme-to-phoneme/#setup">¶</a>
-</h4>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>First, we will import necessary modules. You can install PyTorch as suggested in its <a href="http://pytorch.org/">main page</a>. To install <a href="https://github.com/pytorch/text">torchtext</a>, simply call</p>
-<blockquote>
-<p>pip install git+<a href="https://github.com/pytorch/text.git">https://github.com/pytorch/text.git</a></p>
-</blockquote>
-<p>Due to <a href="https://github.com/pytorch/text/pull/28">this bug</a>, it is important to update your <code>torchtext</code> to the lastest version (using the above installing command is enough).</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In [1]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">argparse</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">time</span>
-
-<span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
-<span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
-<span class="kn">from</span> <span class="nn">torch.autograd</span> <span class="k">import</span> <span class="n">Variable</span>
-<span class="kn">import</span> <span class="nn">torch.optim</span> <span class="k">as</span> <span class="nn">optim</span>
-<span class="kn">from</span> <span class="nn">torch.nn.utils</span> <span class="k">import</span> <span class="n">clip_grad_norm</span>
-<span class="kn">import</span> <span class="nn">torchtext.data</span> <span class="k">as</span> <span class="nn">data</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><a href="https://docs.python.org/3/library/argparse.html">argparse</a> is a default python module which is used for command-line script parsing. To run this notebook as a python script, simply comment out all the markdown cell and change the following code cell to the real <code>argparse</code> <a href="https://docs.python.org/3/howto/argparse.html">code</a>.
-</p>
-<p class="more"><a href="blog/grapheme-to-phoneme/">Read more…</a></p>
-</div>
-</div>
-</div>
-</div>
-    </div>
-    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="blog/rudin-complex-analysis/" class="u-url">Some solutions to Rudin's complex analysis book</a></h1>
-        <div class="metadata">
-            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
-                fehiepsi
-            </span></p>
-            <p class="dateline">
-            <a href="blog/rudin-complex-analysis/" rel="bookmark">
-            <time class="published dt-published" datetime="2016-09-04T18:59:00-09:00" itemprop="datePublished" title="2016-09-04">2016-09-04</time></a>
-            </p>
-                <p class="commentline">
-        
-    <a href="blog/rudin-complex-analysis/#disqus_thread" data-disqus-identifier="cache/posts/rudin-complex-analysis.html">Comments</a>
-
-
-        </p>
-</div>
-    </header><div class="p-summary entry-summary">
-    <div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>The following notebook contains some solutions to the complex analysis part of the <a href="https://www.amazon.com/Real-Complex-Analysis-Rudin/dp/0070619875/">Big Rudin book</a> that I studied at POSTECH. This post is also a chance for me to test the different between MathJax and KaTeX in Nikola, to see which one has better render. It turns out that KaTeX is much faster than MathJax. As a note, to make KaTeX work with inline mode from Jupyter notebook, we have to change the default auto-render code in the theme (as suggested in this <a href="https://github.com/Khan/KaTeX/blob/master/contrib/auto-render/index.html">file</a>, the <code>renderMathInElement</code> part).</p>
-<ul>
-<li>Chapter 10: <a href="blog/rudin-complex-analysis/#Chapter-10---Elementary-Properties-of-Holomorphic-Functions">Elementary Properties of Holomorphic Functions</a>
-</li>
-<li>Chapter 11: <a href="blog/rudin-complex-analysis/#Chapter-11---Harmonic-Functions">Harmonic Functions</a>
-</li>
-<li>Chapter 12: <a href="blog/rudin-complex-analysis/#Chapter-12---The-Maximum-Modulus-Principle">The Maximum Modulus Principle</a>
-</li>
-<li>Chapter 13: <a href="blog/rudin-complex-analysis/#Chapter-13---Approximation-by-Rational-Functions">Approximation by Rational Functions</a>
-</li>
-<li>Chapter 14: <a href="blog/rudin-complex-analysis/#Chapter-14---Conformal-Mapping">Conformal Mapping</a>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Chapter-10---Elementary-Properties-of-Holomorphic-Functions">Chapter 10 - Elementary Properties of Holomorphic Functions<a class="anchor-link" href="blog/rudin-complex-analysis/#Chapter-10---Elementary-Properties-of-Holomorphic-Functions">¶</a>
-</h3>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>1.</strong> The following fact was tacitly used in this chapter: If $A$ and $B$ are disjoint subsets of the plane, if $A$ is compact, and if $B$ is closed, then there exists a $\delta &gt; 0$ such that $|\alpha - \beta| \geq \delta$ for all $\alpha \in A$ and $\beta \in B$. Prove this, with an arbitrary metric space in place of the plane.</p>
-<p><strong>Proof.</strong> Let $A$ be a compact set and $B$ be a closed set in a metric space such that $A\cap B = \varnothing$. Let $\delta = \inf_{\alpha,\beta}d(\alpha,\beta)$ where the infimum is taken with all $\alpha \in A$ and $\beta\in B$, and let $\{a_n\}$, $\{b_n\}$ be two sequences in $A$ and $B$ correspondingly such that $\lim_{n\to\infty}d(a_n,b_n) = \delta$. Suppose that $\delta = 0$. Because $A$ is compact, there exists $c\in A$ and a subsequence $\{a_{n_k}\}$ of $\{a_n\}$ such that $\lim_{k\to\infty}d(a_{n_k},c) = 0$. Hence $\lim_{k\to\infty}d(b_{n_k},c) = 0$ because $\lim_{k\to\infty}d(a_{n_k},b_{n_k}) = 0$. Hence $c \in \bar{B}=B$, which is a contradiction with the hypothesis that $A\cap B = \varnothing$. So $\delta &gt; 0$. We get the conclusion. $\Box$
-</p>
-<p class="more"><a href="blog/rudin-complex-analysis/">Read more…</a></p>
-</div>
-</div>
-</div>
-</div>
-    </div>
-    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="blog/projecteuler-first50/" class="u-url">Solutions to Project Euler's first 50 problems</a></h1>
-        <div class="metadata">
-            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
-                fehiepsi
-            </span></p>
-            <p class="dateline">
-            <a href="blog/projecteuler-first50/" rel="bookmark">
-            <time class="published dt-published" datetime="2016-07-06T20:10:00-09:00" itemprop="datePublished" title="2016-07-06">2016-07-06</time></a>
-            </p>
-                <p class="commentline">
-        
-    <a href="blog/projecteuler-first50/#disqus_thread" data-disqus-identifier="cache/posts/projecteuler-first50.html">Comments</a>
-
-
-        </p>
-</div>
-    </header><div class="p-summary entry-summary">
-    <div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>These are codes to solve the first 50 problems in <a href="http://projecteuler.net/">Project Euler</a>. The thing is that I try to make these <em>python</em> codes give solutions in less than 1 second. This is achieved by using the excellent <strong>numba</strong> <a href="http://numba.pydata.org/">package</a>. This post is written in an IPython notebook.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In [1]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># !mkdir pe</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In [2]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">problem1</span><span class="p">():</span>
-    <span class="n">n</span> <span class="o">=</span> <span class="mi">1000</span>
-    <span class="n">s</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">3</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">5</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">s</span> <span class="o">+=</span> <span class="n">i</span>
-    <span class="k">return</span> <span class="n">s</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">problem1</span><span class="p">())</span>
-<span class="o">%</span><span class="k">timeit</span> problem1()
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>233168
-1000 loops, best of 3: 245 µs per loop
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In [3]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">problem2</span><span class="p">():</span>
-    <span class="n">n</span> <span class="o">=</span> <span class="mi">4000000</span>
-    <span class="n">s</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span>
-    <span class="k">while</span> <span class="n">a</span> <span class="o">&lt;=</span> <span class="n">n</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">a</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">s</span> <span class="o">+=</span> <span class="n">a</span>
-        <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="o">+</span><span class="n">b</span>
-    <span class="k">return</span> <span class="n">s</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">problem2</span><span class="p">())</span>
-<span class="o">%</span><span class="k">timeit</span> problem2()
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>4613732
-100000 loops, best of 3: 8.44 µs per loop
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p class="more"><a href="blog/projecteuler-first50/">Read more…</a></p>
-</div>
-</div>
-</div>
-</div>
-    </div>
-    </article>
-</div>
-
-
-
-        
-       <script>var disqus_shortname="fehiepsi-github-io";(function(){var a=document.createElement("script");a.async=true;a.src="https://"+disqus_shortname+".disqus.com/count.js";(document.getElementsByTagName("head")[0]||document.getElementsByTagName("body")[0]).appendChild(a)}());</script><script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js" integrity="sha256-ExtbCSBuYA7kq1Pz362ibde9nnsHYPt6JxuxYeZbU+c=" crossorigin="anonymous"></script><script>
+        </section><script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js" integrity="sha256-ExtbCSBuYA7kq1Pz362ibde9nnsHYPt6JxuxYeZbU+c=" crossorigin="anonymous"></script><script>
                 renderMathInElement(document.body,
                     {
                         
@@ -1634,10 +1074,10 @@ delimiters: [
 
                     }
                 );
-            </script><!--End of body content--><footer id="footer"><div class="text-center">
+            </script></article><script>var disqus_shortname="fehiepsi-github-io";(function(){var a=document.createElement("script");a.async=true;a.src="https://"+disqus_shortname+".disqus.com/count.js";(document.getElementsByTagName("head")[0]||document.getElementsByTagName("body")[0]).appendChild(a)}());</script><!--End of body content--><footer id="footer"><div class="text-center">
 <p>
 <span class="fa-stack fa-2x">
-  <a href="rss.xml">
+  <a href="../../rss.xml">
     <i class="fa fa-circle fa-stack-2x"></i>
     <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
   </a>
@@ -1680,7 +1120,7 @@ delimiters: [
 </div>
 
 
-        <script src="assets/js/all-nocdn.js"></script><!-- fancy dates --><script>
+        <script src="../../assets/js/all-nocdn.js"></script><!-- fancy dates --><script>
     moment.locale("en");
     fancydates(2, "YYYY-MM-DD HH:mm");
     </script><!-- end fancy dates --><script>

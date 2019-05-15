@@ -3,17 +3,15 @@
 &lt;a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/"&gt;
 &lt;img alt="Creative Commons License BY-NC-SA"
 style="border-width:0; margin-bottom:12px;"
-src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png"&gt;&lt;/a&gt;</copyright><lastBuildDate>Sun, 06 Jan 2019 22:37:59 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>How to build a Grapheme-to-Phoneme (G2P) model using PyTorch</title><link>https://fehiepsi.github.io/blog/grapheme-to-phoneme/</link><dc:creator>fehiepsi</dc:creator><description>&lt;div&gt;&lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png"&gt;&lt;/a&gt;</copyright><lastBuildDate>Wed, 15 May 2019 16:50:38 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>How to build a Grapheme-to-Phoneme (G2P) model using PyTorch</title><link>https://fehiepsi.github.io/blog/grapheme-to-phoneme/</link><dc:creator>fehiepsi</dc:creator><description>&lt;div&gt;&lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;h4 id="introduction"&gt;introduction&lt;a class="anchor-link" href="https://fehiepsi.github.io/blog/grapheme-to-phoneme/#introduction"&gt;¶&lt;/a&gt;&lt;/h4&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;p&gt;Grapheme-to-Phoneme (G2P) model is one of the core components of a typical Text-to-Speech (TTS) system, e.g. &lt;a href="https://deepmind.com/blog/wavenet-generative-model-raw-audio/"&gt;WaveNet&lt;/a&gt; and &lt;a href="http://research.baidu.com/deep-voice-production-quality-text-speech-system-constructed-entirely-deep-neural-networks/"&gt;Deep Voice&lt;/a&gt;. In this notebook, we will try to replicate the Encoder-decoder LSTM model from the paper &lt;a href="https://arxiv.org/abs/1506.00196"&gt;https://arxiv.org/abs/1506.00196&lt;/a&gt;.&lt;/p&gt;
 
@@ -21,8 +19,7 @@ src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png"&gt;&lt;/a&gt;</copy
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;p&gt;Throughout this tutorial, we will learn how to:&lt;/p&gt;
 &lt;ul&gt;
@@ -37,16 +34,14 @@ src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png"&gt;&lt;/a&gt;</copy
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;h4 id="setup"&gt;setup&lt;a class="anchor-link" href="https://fehiepsi.github.io/blog/grapheme-to-phoneme/#setup"&gt;¶&lt;/a&gt;&lt;/h4&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;p&gt;First, we will import necessary modules. You can install PyTorch as suggested in its &lt;a href="http://pytorch.org/"&gt;main page&lt;/a&gt;. To install &lt;a href="https://github.com/pytorch/text"&gt;torchtext&lt;/a&gt;, simply call&lt;/p&gt;
 &lt;blockquote&gt;&lt;p&gt;pip install git+&lt;a href="https://github.com/pytorch/text.git"&gt;https://github.com/pytorch/text.git&lt;/a&gt;&lt;/p&gt;
@@ -74,14 +69,13 @@ src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png"&gt;&lt;/a&gt;</copy
 &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;torchtext.data&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;data&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
-&lt;/div&gt;
+    &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 
 &lt;/div&gt;
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;p&gt;&lt;a href="https://docs.python.org/3/library/argparse.html"&gt;argparse&lt;/a&gt; is a default python module which is used for command-line script parsing. To run this notebook as a python script, simply comment out all the markdown cell and change the following code cell to the real &lt;code&gt;argparse&lt;/code&gt; &lt;a href="https://docs.python.org/3/howto/argparse.html"&gt;code&lt;/a&gt;.
 &lt;/p&gt;&lt;p&gt;&lt;a href="https://fehiepsi.github.io/blog/grapheme-to-phoneme/"&gt;Read more…&lt;/a&gt; (28 min remaining to read)&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</description><category>deep learning</category><category>pytorch</category><category>seq2seq</category><category>torchtext</category><guid>https://fehiepsi.github.io/blog/grapheme-to-phoneme/</guid><pubDate>Fri, 16 Jun 2017 05:25:00 GMT</pubDate></item></channel></rss>

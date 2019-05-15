@@ -17,6 +17,7 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
 <meta name="author" content="fehiepsi">
 <link rel="prev" href="../projecteuler-second50/" title="Solutions to Project Euler's second 50 problems" type="text/html">
+<link rel="next" href="../deep-gaussian-process/" title="Inferences for Deep Gaussian Process models in Pyro" type="text/html">
 <meta property="og:site_name" content="fehiepsi's blog">
 <meta property="og:title" content="Sampling Hidden Markov Model with Pyro">
 <meta property="og:url" content="https://fehiepsi.github.io/blog/sampling-hmm-pyro/">
@@ -140,7 +141,7 @@ navbar-dark bg-dark
 <span class="n">pyro</span><span class="o">.</span><span class="n">set_rng_seed</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -172,7 +173,7 @@ navbar-dark bg-dark
 <span class="n">emission_prob</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">Dirichlet</span><span class="p">(</span><span class="n">emission_prior</span><span class="p">)</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([</span><span class="n">num_categories</span><span class="p">]))</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -217,7 +218,7 @@ navbar-dark bg-dark
 <span class="n">unsupervised_words</span> <span class="o">=</span> <span class="n">categories</span><span class="p">[</span><span class="n">num_supervised_data</span><span class="p">:]</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -254,7 +255,7 @@ navbar-dark bg-dark
     <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">"Transition probability posterior"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -297,7 +298,7 @@ navbar-dark bg-dark
         <span class="n">pyro</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="s2">"word_</span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="n">dist</span><span class="o">.</span><span class="n">Categorical</span><span class="p">(</span><span class="n">emission_prob</span><span class="p">[</span><span class="n">category</span><span class="p">]),</span> <span class="n">obs</span><span class="o">=</span><span class="n">words</span><span class="p">[</span><span class="n">t</span><span class="p">])</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -316,7 +317,7 @@ navbar-dark bg-dark
 <span class="n">plot_posterior</span><span class="p">(</span><span class="n">supervised_posterior</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -326,7 +327,7 @@ navbar-dark bg-dark
 
 <div class="output_area">
 
-<div class="prompt"></div>
+    <div class="prompt"></div>
 
 
 
@@ -334,10 +335,10 @@ navbar-dark bg-dark
 
  
  
-<div id="10394453-bb37-40e8-809c-5c448a8d9b7c"></div>
+<div id="74b5217e-59e9-4dc7-aa3d-8643f5524a93"></div>
 <div class="output_subarea output_widget_view ">
 <script type="text/javascript">
-var element = $('#10394453-bb37-40e8-809c-5c448a8d9b7c');
+var element = $('#74b5217e-59e9-4dc7-aa3d-8643f5524a93');
 </script><script type="application/vnd.jupyter.widget-view+json">
 {"model_id": "b5b91497ea644497bc2b75610d034824", "version_major": 2, "version_minor": 0}
 </script>
@@ -347,7 +348,7 @@ var element = $('#10394453-bb37-40e8-809c-5c448a8d9b7c');
 
 <div class="output_area">
 
-<div class="prompt"></div>
+    <div class="prompt"></div>
 
 
 <div class="output_subarea output_stream output_stdout output_text">
@@ -358,7 +359,7 @@ var element = $('#10394453-bb37-40e8-809c-5c448a8d9b7c');
 
 <div class="output_area">
 
-<div class="prompt"></div>
+    <div class="prompt"></div>
 
 
 
@@ -413,7 +414,7 @@ var element = $('#10394453-bb37-40e8-809c-5c448a8d9b7c');
     <span class="k">return</span> <span class="n">log_prob</span><span class="o">.</span><span class="n">logsumexp</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -438,7 +439,7 @@ var element = $('#10394453-bb37-40e8-809c-5c448a8d9b7c');
     <span class="n">pyro</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="s2">"forward_prob"</span><span class="p">,</span> <span class="n">dist</span><span class="o">.</span><span class="n">Bernoulli</span><span class="p">(</span><span class="n">prob</span><span class="p">),</span> <span class="n">obs</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mf">1.</span><span class="p">))</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -454,7 +455,7 @@ var element = $('#10394453-bb37-40e8-809c-5c448a8d9b7c');
 <span class="n">plot_posterior</span><span class="p">(</span><span class="n">unsupervised_posterior</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -464,7 +465,7 @@ var element = $('#10394453-bb37-40e8-809c-5c448a8d9b7c');
 
 <div class="output_area">
 
-<div class="prompt"></div>
+    <div class="prompt"></div>
 
 
 
@@ -472,10 +473,10 @@ var element = $('#10394453-bb37-40e8-809c-5c448a8d9b7c');
 
  
  
-<div id="61d9028e-fd24-4ae8-bcbb-d15c76ef9816"></div>
+<div id="75ea9ae6-d11a-4deb-99a4-53e7e398f032"></div>
 <div class="output_subarea output_widget_view ">
 <script type="text/javascript">
-var element = $('#61d9028e-fd24-4ae8-bcbb-d15c76ef9816');
+var element = $('#75ea9ae6-d11a-4deb-99a4-53e7e398f032');
 </script><script type="application/vnd.jupyter.widget-view+json">
 {"model_id": "fe8328fdb6fe4950b7aab49a1130d55e", "version_major": 2, "version_minor": 0}
 </script>
@@ -485,7 +486,7 @@ var element = $('#61d9028e-fd24-4ae8-bcbb-d15c76ef9816');
 
 <div class="output_area">
 
-<div class="prompt"></div>
+    <div class="prompt"></div>
 
 
 <div class="output_subarea output_stream output_stdout output_text">
@@ -496,7 +497,7 @@ var element = $('#61d9028e-fd24-4ae8-bcbb-d15c76ef9816');
 
 <div class="output_area">
 
-<div class="prompt"></div>
+    <div class="prompt"></div>
 
 
 
@@ -569,7 +570,7 @@ var element = $('#61d9028e-fd24-4ae8-bcbb-d15c76ef9816');
     <span class="n">pyro</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="s2">"forward_prob"</span><span class="p">,</span> <span class="n">dist</span><span class="o">.</span><span class="n">Bernoulli</span><span class="p">(</span><span class="n">prob</span><span class="p">),</span> <span class="n">obs</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mf">1.</span><span class="p">))</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -585,7 +586,7 @@ var element = $('#61d9028e-fd24-4ae8-bcbb-d15c76ef9816');
 <span class="n">plot_posterior</span><span class="p">(</span><span class="n">semisupervised_posterior</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -595,7 +596,7 @@ var element = $('#61d9028e-fd24-4ae8-bcbb-d15c76ef9816');
 
 <div class="output_area">
 
-<div class="prompt"></div>
+    <div class="prompt"></div>
 
 
 
@@ -603,10 +604,10 @@ var element = $('#61d9028e-fd24-4ae8-bcbb-d15c76ef9816');
 
  
  
-<div id="1f71c7b8-4cf9-4857-beea-fd80e5a954d1"></div>
+<div id="b509715a-0902-4305-b43e-868cd2640fde"></div>
 <div class="output_subarea output_widget_view ">
 <script type="text/javascript">
-var element = $('#1f71c7b8-4cf9-4857-beea-fd80e5a954d1');
+var element = $('#b509715a-0902-4305-b43e-868cd2640fde');
 </script><script type="application/vnd.jupyter.widget-view+json">
 {"model_id": "82526a415eb94477b48d2935896f11a7", "version_major": 2, "version_minor": 0}
 </script>
@@ -616,7 +617,7 @@ var element = $('#1f71c7b8-4cf9-4857-beea-fd80e5a954d1');
 
 <div class="output_area">
 
-<div class="prompt"></div>
+    <div class="prompt"></div>
 
 
 <div class="output_subarea output_stream output_stdout output_text">
@@ -627,7 +628,7 @@ var element = $('#1f71c7b8-4cf9-4857-beea-fd80e5a954d1');
 
 <div class="output_area">
 
-<div class="prompt"></div>
+    <div class="prompt"></div>
 
 
 
@@ -687,6 +688,9 @@ var element = $('#1f71c7b8-4cf9-4857-beea-fd80e5a954d1');
 <ul class="pager hidden-print">
 <li class="previous">
                 <a href="../projecteuler-second50/" rel="prev" title="Solutions to Project Euler's second 50 problems">Previous post</a>
+            </li>
+            <li class="next">
+                <a href="../deep-gaussian-process/" rel="next" title="Inferences for Deep Gaussian Process models in Pyro">Next post</a>
             </li>
         </ul></nav></aside><section class="comments hidden-print"><h2>Comments</h2>
         
