@@ -140,6 +140,7 @@ NAVIGATION_LINKS = {
         ("/categories/", "Tags"),
         ("/about/", "About"),
         ("/rethinking-pyro/", "rethinking-pyro"),
+        ("/rethinking-numpyro/", "rethinking-numpyro"),
         # ("/rss.xml", "RSS feed"),
     ),
 }
