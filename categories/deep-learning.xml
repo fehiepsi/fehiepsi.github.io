@@ -3,7 +3,7 @@
 &lt;a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/"&gt;
 &lt;img alt="Creative Commons License BY-NC-SA"
 style="border-width:0; margin-bottom:12px;"
-src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png"&gt;&lt;/a&gt;</copyright><lastBuildDate>Wed, 15 May 2019 23:10:56 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Inferences for Deep Gaussian Process models in Pyro</title><link>https://fehiepsi.github.io/blog/deep-gaussian-process/</link><dc:creator>fehiepsi</dc:creator><description>&lt;div&gt;&lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
+src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png"&gt;&lt;/a&gt;</copyright><lastBuildDate>Sun, 27 Oct 2019 07:01:21 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Inferences for Deep Gaussian Process models in Pyro</title><link>https://fehiepsi.github.io/blog/deep-gaussian-process/</link><dc:creator>fehiepsi</dc:creator><description>&lt;div&gt;&lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
 &lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;p&gt;In this tutorial, I want to illustrate how to use Pyro's &lt;a href="http://docs.pyro.ai/en/stable/contrib.gp.html"&gt;Gaussian Processes module&lt;/a&gt; to create and train some deep Gaussian Process models. For the background on how to use this module, readers can check out some tutorials at &lt;a href="http://pyro.ai/examples/"&gt;http://pyro.ai/examples/&lt;/a&gt;.&lt;/p&gt;
