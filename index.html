@@ -128,7 +128,6 @@ navbar-dark bg-dark
 <span class="kn">import</span> <span class="nn">pyro</span>
 <span class="kn">import</span> <span class="nn">pyro.contrib.gp</span> <span class="k">as</span> <span class="nn">gp</span>
 <span class="kn">import</span> <span class="nn">pyro.distributions</span> <span class="k">as</span> <span class="nn">dist</span>
-<span class="kn">from</span> <span class="nn">pyro.contrib</span> <span class="k">import</span> <span class="n">autoname</span>
 <span class="kn">from</span> <span class="nn">pyro.contrib.examples.util</span> <span class="k">import</span> <span class="n">get_data_loader</span>
 <span class="kn">from</span> <span class="nn">pyro.infer</span> <span class="k">import</span> <span class="n">MCMC</span><span class="p">,</span> <span class="n">NUTS</span><span class="p">,</span> <span class="n">Predictive</span><span class="p">,</span> <span class="n">SVI</span><span class="p">,</span> <span class="n">TraceMeanField_ELBO</span>
 
@@ -203,7 +202,7 @@ navbar-dark bg-dark
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We will make a 2-layer regression model. We use the decorator <code>name_count</code> to avoid the conflict of parameter names from two layers.
+<p>We will make a 2-layer regression model.
 </p>
 <p class="more"><a href="blog/deep-gaussian-process/">Read more…</a></p>
 </div>

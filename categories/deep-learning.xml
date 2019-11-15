@@ -3,7 +3,7 @@
 &lt;a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/"&gt;
 &lt;img alt="Creative Commons License BY-NC-SA"
 style="border-width:0; margin-bottom:12px;"
-src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png"&gt;&lt;/a&gt;</copyright><lastBuildDate>Tue, 12 Nov 2019 21:46:51 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Inferences for Deep Gaussian Process models in Pyro</title><link>https://fehiepsi.github.io/blog/deep-gaussian-process/</link><dc:creator>fehiepsi</dc:creator><description>&lt;div&gt;&lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
+src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png"&gt;&lt;/a&gt;</copyright><lastBuildDate>Fri, 15 Nov 2019 20:20:34 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Inferences for Deep Gaussian Process models in Pyro</title><link>https://fehiepsi.github.io/blog/deep-gaussian-process/</link><dc:creator>fehiepsi</dc:creator><description>&lt;div&gt;&lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
 &lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;p&gt;In this tutorial, I want to illustrate how to use Pyro's &lt;a href="http://docs.pyro.ai/en/stable/contrib.gp.html"&gt;Gaussian Processes module&lt;/a&gt; to create and train some deep Gaussian Process models. For the background on how to use this module, readers can check out some tutorials at &lt;a href="http://pyro.ai/examples/"&gt;http://pyro.ai/examples/&lt;/a&gt;.&lt;/p&gt;
@@ -33,7 +33,6 @@ src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png"&gt;&lt;/a&gt;</copy
 &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;pyro&lt;/span&gt;
 &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;pyro.contrib.gp&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;gp&lt;/span&gt;
 &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;pyro.distributions&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;dist&lt;/span&gt;
-&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pyro.contrib&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;autoname&lt;/span&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pyro.contrib.examples.util&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;get_data_loader&lt;/span&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pyro.infer&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;MCMC&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;NUTS&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Predictive&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;SVI&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;TraceMeanField_ELBO&lt;/span&gt;
 
@@ -101,7 +100,7 @@ src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png"&gt;&lt;/a&gt;</copy
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
 &lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
-&lt;p&gt;We will make a 2-layer regression model. We use the decorator &lt;code&gt;name_count&lt;/code&gt; to avoid the conflict of parameter names from two layers.
+&lt;p&gt;We will make a 2-layer regression model.
 &lt;/p&gt;&lt;p&gt;&lt;a href="https://fehiepsi.github.io/blog/deep-gaussian-process/"&gt;Read more…&lt;/a&gt; (11 min remaining to read)&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</description><category>deep learning</category><category>gaussian process</category><category>pyro</category><category>pytorch</category><guid>https://fehiepsi.github.io/blog/deep-gaussian-process/</guid><pubDate>Wed, 15 May 2019 07:43:00 GMT</pubDate></item><item><title>How to build a Grapheme-to-Phoneme (G2P) model using PyTorch</title><link>https://fehiepsi.github.io/blog/grapheme-to-phoneme/</link><dc:creator>fehiepsi</dc:creator><description>&lt;div&gt;&lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
 &lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
