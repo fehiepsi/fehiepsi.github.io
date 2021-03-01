@@ -7,6 +7,6 @@ My name is Du Phan. I got my PhD in Mathematics and Data Science from [POSTECH](
 
 My hobbies include playing flute, chess, and badminton.
 
-[view my resume](../files/resume.pdf)
+[view my resume](https://www.dropbox.com/s/no544nomhyitp5o/Resume-DuPhan.pdf?dl=0)
 
 <img src="/images/binhyen.jpg" alt="Du and Oanh" width="200">
