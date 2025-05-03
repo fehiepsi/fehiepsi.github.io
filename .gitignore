@@ -5,3 +5,5 @@ cache
 output
 .doit.db*
 
+
+/.quarto/
