@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss  xmlns:atom="http://www.w3.org/2005/Atom" 
+      xmlns:media="http://search.yahoo.com/mrss/" 
+      xmlns:content="http://purl.org/rss/1.0/modules/content/" 
+      xmlns:dc="http://purl.org/dc/elements/1.1/" 
+      version="2.0">
+<channel>
+<title>fehiepsi&#39;s blog</title>
+<link>https://fehiepsi.github.io/</link>
+<atom:link href="https://fehiepsi.github.io/index.xml" rel="self" type="application/rss+xml"/>
+<description>a math student, a data science and AI novice, a zen mind</description>
+<generator>quarto-1.7.29</generator>
+<lastBuildDate>Wed, 15 May 2019 04:00:00 GMT</lastBuildDate>
+<item>
+  <title>Inferences for Deep Gaussian Process models in Pyro</title>
+  <link>https://fehiepsi.github.io/blog/deep-gaussian-process.html</link>
+  <description><![CDATA[ In this tutorial, I want to illustrate how to use Pyro’s <a href="http://docs.pyro.ai/en/stable/contrib.gp.html">Gaussian Processes module</a> to create and train some deep Gaussian Process models. For the background on how to use this module, readers can check out some tutorials at http://pyro.ai/examples/. ]]></description>
+  <category>deep learning</category>
+  <category>gaussian process</category>
+  <category>pytorch</category>
+  <category>pyro</category>
+  <guid>https://fehiepsi.github.io/blog/deep-gaussian-process.html</guid>
+  <pubDate>Wed, 15 May 2019 04:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Sampling Hidden Markov Model with Pyro</title>
+  <link>https://fehiepsi.github.io/blog/sampling-hmm-pyro.html</link>
+  <description><![CDATA[ To understand the multimodal phenomenon of unsupervised <a href="https://en.wikipedia.org/wiki/Hidden_Markov_model">hidden Markov models</a> (HMM) when reading <a href="https://discourse.pymc.io/t/how-to-marginalized-markov-chain-with-categorical/2230">some discussions in PyMC discourse</a>, I decide to reimplement in <a href="http://pyro.ai/">Pyro</a> various <a href="https://github.com/stan-dev/example-models/tree/master/misc/hmm">models from Stan</a>. The main reference which we’ll use is <a href="https://mc-stan.org/docs/2_18/stan-users-guide/hmms-section.html">Stan User’s Guide</a>. ]]></description>
+  <category>bayesian</category>
+  <category>hidden markov model</category>
+  <category>pytorch</category>
+  <category>pyro</category>
+  <guid>https://fehiepsi.github.io/blog/sampling-hmm-pyro.html</guid>
+  <pubDate>Tue, 01 Jan 2019 05:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Solutions to Project Euler’s second 50 problems</title>
+  <link>https://fehiepsi.github.io/blog/projecteuler-second50.html</link>
+  <description><![CDATA[ These are codes to solve the <a href="https://projecteuler.net/archives;page=2">second 50 problems</a> in <a href="http://projecteuler.net/">Project Euler</a>. These <em>python</em> codes will give solutions in <strong>less than 1 second</strong>. This is achieved by using the excellent <strong>numba</strong> <a href="http://numba.pydata.org/">package</a>. ]]></description>
+  <category>algorithm</category>
+  <category>project euler</category>
+  <category>python</category>
+  <category>numba</category>
+  <guid>https://fehiepsi.github.io/blog/projecteuler-second50.html</guid>
+  <pubDate>Thu, 12 Oct 2017 04:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>How to build a Grapheme-to-Phoneme (G2P) model using PyTorch</title>
+  <link>https://fehiepsi.github.io/blog/grapheme-to-phoneme.html</link>
+  <description><![CDATA[ Grapheme-to-Phoneme (G2P) model is one of the core components of a typical Text-to-Speech (TTS) system, e.g.&nbsp;<a href="https://deepmind.com/blog/wavenet-generative-model-raw-audio/">WaveNet</a> and <a href="http://research.baidu.com/deep-voice-production-quality-text-speech-system-constructed-entirely-deep-neural-networks/">Deep Voice</a>. In this notebook, we will try to replicate the Encoder-decoder LSTM model from the paper https://arxiv.org/abs/1506.00196. ]]></description>
+  <category>deep learning</category>
+  <category>seq2seq</category>
+  <category>pytorch</category>
+  <category>torchtext</category>
+  <guid>https://fehiepsi.github.io/blog/grapheme-to-phoneme.html</guid>
+  <pubDate>Thu, 15 Jun 2017 04:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Some solutions to Rudin’s complex analysis book</title>
+  <link>https://fehiepsi.github.io/blog/rudin-complex-analysis.html</link>
+  <description><![CDATA[ The following notebook contains some solutions to the complex analysis part of the <a href="https://www.amazon.com/Real-Complex-Analysis-Rudin/dp/0070619875/">Big Rudin book</a> that I studied at POSTECH. This post is also a chance for me to test the different between MathJax and KaTeX in Nikola, to see which one has better render. It turns out that KaTeX is much faster than MathJax. As a note, to make KaTeX work with inline mode from Jupyter notebook, we have to change the default auto-render code in the theme (as suggested in this <a href="https://github.com/Khan/KaTeX/blob/master/contrib/auto-render/index.html">file</a>, the <code>renderMathInElement</code> part). ]]></description>
+  <category>math</category>
+  <category>complex analysis</category>
+  <category>jupyter</category>
+  <category>katex</category>
+  <guid>https://fehiepsi.github.io/blog/rudin-complex-analysis.html</guid>
+  <pubDate>Sun, 04 Sep 2016 04:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Solutions to Project Euler’s first 50 problems</title>
+  <link>https://fehiepsi.github.io/blog/projecteuler-first50.html</link>
+  <description><![CDATA[ These are codes to solve the first 50 problems in <a href="http://projecteuler.net/">Project Euler</a>. The thing is that I try to make these <em>python</em> codes give solutions in less than 1 second. This is achieved by using the excellent <strong>numba</strong> <a href="http://numba.pydata.org/">package</a>. This post is written in an IPython notebook. ]]></description>
+  <category>algorithm</category>
+  <category>project euler</category>
+  <category>python</category>
+  <category>numba</category>
+  <guid>https://fehiepsi.github.io/blog/projecteuler-first50.html</guid>
+  <pubDate>Wed, 06 Jul 2016 04:00:00 GMT</pubDate>
+</item>
+</channel>
+</rss>

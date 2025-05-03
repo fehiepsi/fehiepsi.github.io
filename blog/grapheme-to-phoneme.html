@@ -1,0 +1,1617 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.29">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2017-06-15">
+
+<title>How to build a Grapheme-to-Phoneme (G2P) model using PyTorch – fehiepsi’s blog</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../static/favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-0815c480559380816a4d1ea211a47e91.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-748b535e376f14d4692bf2b2e5fd6380.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-0815c480559380816a4d1ea211a47e91.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-cf3f2c26eef976f46b51aa29f3e196e4.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-a9957ab5e8b7c67643b7e2e6b5c1e54e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-cf3f2c26eef976f46b51aa29f3e196e4.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+<script type="text/javascript">
+
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-131299125-1', 'auto');
+
+ga('send', {
+  hitType: 'pageview',
+  'anonymizeIp': true,
+});
+</script>
+
+
+</head>
+
+<body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">fehiepsi’s blog</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../"> 
+<span class="menu-text">Posts</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../rethinking-pyro/"> 
+<span class="menu-text">rethinking-pyro</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../rethinking-numpyro/"> 
+<span class="menu-text">rethinking-numpyro</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/fehiepsi"> <i class="bi bi-twitter" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/fehiepsi"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/phandu/"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://fehiepsi.wordpress.com/"> <i class="bi bi-wordpress" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../blog/index.xml"> <i class="bi bi-rss" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">introduction</a></li>
+  <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup">setup</a></li>
+  <li><a href="#model" id="toc-model" class="nav-link" data-scroll-target="#model">model</a></li>
+  <li><a href="#utils" id="toc-utils" class="nav-link" data-scroll-target="#utils">utils</a></li>
+  <li><a href="#train" id="toc-train" class="nav-link" data-scroll-target="#train">train</a></li>
+  <li><a href="#prepare" id="toc-prepare" class="nav-link" data-scroll-target="#prepare">prepare</a></li>
+  <li><a href="#run" id="toc-run" class="nav-link" data-scroll-target="#run">run</a></li>
+  <li><a href="#test" id="toc-test" class="nav-link" data-scroll-target="#test">test</a></li>
+  <li><a href="#acknowledgement" id="toc-acknowledgement" class="nav-link" data-scroll-target="#acknowledgement">acknowledgement</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">How to build a Grapheme-to-Phoneme (G2P) model using PyTorch</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">deep learning</div>
+    <div class="quarto-category">seq2seq</div>
+    <div class="quarto-category">pytorch</div>
+    <div class="quarto-category">torchtext</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">June 15, 2017</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction" class="level3">
+<h3 class="anchored" data-anchor-id="introduction">introduction</h3>
+<p>Grapheme-to-Phoneme (G2P) model is one of the core components of a typical Text-to-Speech (TTS) system, e.g.&nbsp;<a href="https://deepmind.com/blog/wavenet-generative-model-raw-audio/">WaveNet</a> and <a href="http://research.baidu.com/deep-voice-production-quality-text-speech-system-constructed-entirely-deep-neural-networks/">Deep Voice</a>. In this notebook, we will try to replicate the Encoder-decoder LSTM model from the paper https://arxiv.org/abs/1506.00196.</p>
+<p>Throughout this tutorial, we will learn how to: + Implement a sequence-to-sequence (seq2seq) model + Implement global attention into seq2seq model + Use beam-search decoder + Use Levenshtein distance to compute phoneme-error-rate (PER) + Use torchtext package</p>
+</section>
+<section id="setup" class="level3">
+<h3 class="anchored" data-anchor-id="setup">setup</h3>
+<p>First, we will import necessary modules. You can install PyTorch as suggested in its <a href="http://pytorch.org/">main page</a>. To install <a href="https://github.com/pytorch/text">torchtext</a>, simply call &gt; pip install git+https://github.com/pytorch/text.git</p>
+<p>Due to <a href="https://github.com/pytorch/text/pull/28">this bug</a>, it is important to update your <code>torchtext</code> to the lastest version (using the above installing command is enough).</p>
+<div id="cell-6" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;ExecuteTime&quot;,&quot;value&quot;:{&quot;end_time&quot;:&quot;2017-06-03T17:15:34.910984Z&quot;,&quot;start_time&quot;:&quot;2017-06-04T02:15:29.105584+09:00&quot;}}" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> argparse</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn.functional <span class="im">as</span> F</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.autograd <span class="im">import</span> Variable</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.optim <span class="im">as</span> optim</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.nn.utils <span class="im">import</span> clip_grad_norm</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torchtext.data <span class="im">as</span> data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><a href="https://docs.python.org/3/library/argparse.html">argparse</a> is a default python module which is used for command-line script parsing. To run this notebook as a python script, simply comment out all the markdown cell and change the following code cell to the real <code>argparse</code> <a href="https://docs.python.org/3/howto/argparse.html">code</a>. <!-- TEASER_END --></p>
+<div id="cell-8" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;ExecuteTime&quot;,&quot;value&quot;:{&quot;end_time&quot;:&quot;2017-06-03T17:15:34.925939Z&quot;,&quot;start_time&quot;:&quot;2017-06-04T02:15:34.913624+09:00&quot;}}" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>parser <span class="op">=</span> {</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'data_path'</span>: <span class="st">'../data/cmudict/'</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'epochs'</span>: <span class="dv">50</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'batch_size'</span>: <span class="dv">100</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">'max_len'</span>: <span class="dv">20</span>,  <span class="co"># max length of grapheme/phoneme sequences</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'beam_size'</span>: <span class="dv">3</span>,  <span class="co"># size of beam for beam-search</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'d_embed'</span>: <span class="dv">500</span>,  <span class="co"># embedding dimension</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">'d_hidden'</span>: <span class="dv">500</span>,  <span class="co"># hidden dimension</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">'attention'</span>: <span class="va">True</span>,  <span class="co"># use attention or not</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">'log_every'</span>: <span class="dv">100</span>,  <span class="co"># number of iterations to log and validate training</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">'lr'</span>: <span class="fl">0.007</span>,  <span class="co"># initial learning rate</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">'lr_decay'</span>: <span class="fl">0.5</span>,  <span class="co"># decay lr when not observing improvement in val_loss</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">'lr_min'</span>: <span class="fl">1e-5</span>,  <span class="co"># stop when lr is too low</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">'n_bad_loss'</span>: <span class="dv">5</span>,  <span class="co"># number of bad val_loss before decaying</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">'clip'</span>: <span class="fl">2.3</span>,  <span class="co"># clip gradient, to avoid exploding gradient</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">'cuda'</span>: <span class="va">True</span>,  <span class="co"># using gpu or not</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">'seed'</span>: <span class="dv">5</span>,  <span class="co"># initial seed</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">'intermediate_path'</span>: <span class="st">'../intermediate/g2p/'</span>,  <span class="co"># path to save models</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>args <span class="op">=</span> argparse.Namespace(<span class="op">**</span>parser)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Next, we need to download the data. We will use the free <a href="https://github.com/cmusphinx/cmudict">CMUdict</a> dataset. The seed <code>5</code> is used to generate random numbers for the purpose of replicating the result. However, we still observe distinct scores for different runs of the notebook.</p>
+<div id="cell-10" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;ExecuteTime&quot;,&quot;value&quot;:{&quot;end_time&quot;:&quot;2017-06-03T17:15:35.098246Z&quot;,&quot;start_time&quot;:&quot;2017-06-04T02:15:34.928209+09:00&quot;}}" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>args.cuda <span class="op">=</span> args.cuda <span class="kw">and</span> torch.cuda.is_available()</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="kw">not</span> os.path.isdir(args.intermediate_path):</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    os.makedirs(args.intermediate_path)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="kw">not</span> os.path.isdir(args.data_path):</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    URL <span class="op">=</span> <span class="st">"https://github.com/cmusphinx/cmudict/archive/master.zip"</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">!</span>wget $URL <span class="op">-</span>O ..<span class="op">/</span>data<span class="op">/</span>cmudict.<span class="bu">zip</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">!</span>unzip ..<span class="op">/</span>data<span class="op">/</span>cmudict.<span class="bu">zip</span> <span class="op">-</span>d ..<span class="op">/</span>data<span class="op">/</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">!</span>mv ..<span class="op">/</span>data<span class="op">/</span>cmudict<span class="op">-</span>master $args.data_path</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>torch.manual_seed(args.seed)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> args.cuda:</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    torch.cuda.manual_seed(args.seed)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="model" class="level3">
+<h3 class="anchored" data-anchor-id="model">model</h3>
+<p>Now, it is time to define our model. The following figure (taken from the paper) is a two layer Encoder-Decoder LSTM model (which is a variant of Sequence-to-Sequence model). To understand how LSTM works, we can look at the excellent blog post http://colah.github.io/posts/2015-08-Understanding-LSTMs/. Each rectangle in the figure will be an <code>LSTMCell</code> in our code.</p>
+<p><img src="https://www.researchgate.net/profile/Kaisheng_Yao/publication/277603654/figure/fig1/AS:294343429640195@1447188350615/Figure-1-An-encoder-decoder-LSTM-with-two-layers-The-encoder-LSTM-to-the-left-of-the.png" class="img-fluid"></p>
+<p>Before looking into the code, we need to review some PyTorch modules and functions: + <a href="http://pytorch.org/docs/nn.html#embedding">nn.Embedding</a>: a lookup table to convert indices to vectors. Theoretically, it does one-hot encoding followed by a fully connected layer (with no bias). + <a href="http://pytorch.org/docs/nn.html#linear">nn.Linear</a>: nothing but a fully connected layer. + <a href="http://pytorch.org/docs/nn.html#lstmcell">nn.LSTMCell</a>: a long short-term memory cell, which is mentioned above. + <a href="http://pytorch.org/docs/tensors.html#torch.Tensor.size">size</a>: get the size of tensor. + <a href="http://pytorch.org/docs/torch.html#torch.unsqueeze">unsqueeze</a>: create a new dimension (with size 1) for a tensor. + <a href="http://pytorch.org/docs/torch.html#torch.squeeze">squeeze</a>: drop a (size 1) dimension of a tensor. + <a href="http://pytorch.org/docs/torch.html#torch.chunk">chunk</a>: split a tensor along a dimension into smaller-size tensors. There is also the function <a href="http://pytorch.org/docs/torch.html#torch.split">split</a> which help us obtain the same effect. + <a href="http://pytorch.org/docs/torch.html#torch.stack">stack</a>: concatenate a list of tensors along a new dimension. If we want to concatenate a long a “known” dimension, then we can use <a href="http://pytorch.org/docs/torch.html#torch.cat">cat</a> function. + <a href="http://pytorch.org/docs/torch.html#torch.bmm">bmm</a>: batch matrix multiplication. + <a href="http://pytorch.org/docs/torch.html#torch.index_select">index_select</a>: select values of a tensor by providing indices. + F.softmax, F.tanh: <a href="http://pytorch.org/docs/nn.html#non-linear-activations">non-linear activation functions</a>.</p>
+<p>PyTorch’s implementation of the encoder is quite straight forward. If you are not familiar with PyTorch, we recommend you to look at the <a href="http://pytorch.org/tutorials/">official tutorials</a>. It is noted that the dimension for input tensor <code>x_seq</code> is <code>seq_len x batch_size</code>. After embedding, we get a tensor of size <code>seq_len x batch_size x vector_dim</code>, not <code>batch_size x seq_len x vector_dim</code>. For us, this order of dimensions is useful for getting subsequence tensor, or an element of the sequence (for examples, to get the first element of the sequence <code>x_seq</code>, we just take <code>x_seq[0]</code>). Note that this is also the default order of input tensor for any <a href="http://pytorch.org/docs/nn.html#rnn">recurrent module</a> in PyTorch.</p>
+<div id="cell-16" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;ExecuteTime&quot;,&quot;value&quot;:{&quot;end_time&quot;:&quot;2017-06-03T17:15:35.140831Z&quot;,&quot;start_time&quot;:&quot;2017-06-04T02:15:35.100879+09:00&quot;}}" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Encoder(nn.Module):</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, vocab_size, d_embed, d_hidden):</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>(Encoder, <span class="va">self</span>).<span class="fu">__init__</span>()</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.embedding <span class="op">=</span> nn.Embedding(vocab_size, d_embed)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.lstm <span class="op">=</span> nn.LSTMCell(d_embed, d_hidden)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.d_hidden <span class="op">=</span> d_hidden</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, x_seq, cuda<span class="op">=</span><span class="va">False</span>):</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>        o <span class="op">=</span> []</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>        e_seq <span class="op">=</span> <span class="va">self</span>.embedding(x_seq)  <span class="co"># seq x batch x dim</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>        tt <span class="op">=</span> torch.cuda <span class="cf">if</span> cuda <span class="cf">else</span> torch  <span class="co"># use cuda tensor or not</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>        <span class="co"># create initial hidden state and initial cell state</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        h <span class="op">=</span> Variable(tt.FloatTensor(e_seq.size(<span class="dv">1</span>), <span class="va">self</span>.d_hidden).zero_())</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>        c <span class="op">=</span> Variable(tt.FloatTensor(e_seq.size(<span class="dv">1</span>), <span class="va">self</span>.d_hidden).zero_())</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> e <span class="kw">in</span> e_seq.chunk(e_seq.size(<span class="dv">0</span>), <span class="dv">0</span>):</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>            e <span class="op">=</span> e.squeeze(<span class="dv">0</span>)</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>            h, c <span class="op">=</span> <span class="va">self</span>.lstm(e, (h, c))</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>            o.append(h)</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> torch.stack(o, <span class="dv">0</span>), h, c</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Next, we want to implement the decoder with attention mechanism. The article http://distill.pub/2016/augmented-rnns/ explains very well the idea behind the notion “attention”. Here we use <strong>dot global attention</strong> from the paper https://arxiv.org/abs/1508.04025. (The following figure is taken from this <a href="http://www.cnblogs.com/wangxiaocvpr/p/5966388.html">blog</a>.)</p>
+<p><img src="http://images2015.cnblogs.com/blog/670089/201610/670089-20161012111506078-902266845.png" class="img-fluid"></p>
+<div id="cell-19" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;run_control&quot;,&quot;value&quot;:{&quot;marked&quot;:false}}" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Based on https://github.com/OpenNMT/OpenNMT-py</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Attention(nn.Module):</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Dot global attention from https://arxiv.org/abs/1508.04025"""</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, dim):</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>(Attention, <span class="va">self</span>).<span class="fu">__init__</span>()</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.linear <span class="op">=</span> nn.Linear(dim<span class="op">*</span><span class="dv">2</span>, dim, bias<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, x, context<span class="op">=</span><span class="va">None</span>):</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> context <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> x</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> x.size(<span class="dv">0</span>) <span class="op">==</span> context.size(<span class="dv">0</span>)  <span class="co"># x: batch x dim</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> x.size(<span class="dv">1</span>) <span class="op">==</span> context.size(<span class="dv">2</span>)  <span class="co"># context: batch x seq x dim</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>        attn <span class="op">=</span> F.softmax(context.bmm(x.unsqueeze(<span class="dv">2</span>)).squeeze(<span class="dv">2</span>))</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>        weighted_context <span class="op">=</span> attn.unsqueeze(<span class="dv">1</span>).bmm(context).squeeze(<span class="dv">1</span>)</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>        o <span class="op">=</span> <span class="va">self</span>.linear(torch.cat((x, weighted_context), <span class="dv">1</span>))</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> F.tanh(o)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Note that if we do not want to add attention to the decoder, then simply set the <code>args.attention</code> to <code>False</code>. In our experiment, adding attention gave us worse result.</p>
+<div id="cell-21" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;ExecuteTime&quot;,&quot;value&quot;:{&quot;end_time&quot;:&quot;2017-06-03T17:15:35.218196Z&quot;,&quot;start_time&quot;:&quot;2017-06-04T02:15:35.189172+09:00&quot;}}" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Decoder(nn.Module):</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, vocab_size, d_embed, d_hidden):</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>(Decoder, <span class="va">self</span>).<span class="fu">__init__</span>()</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.embedding <span class="op">=</span> nn.Embedding(vocab_size, d_embed)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.lstm <span class="op">=</span> nn.LSTMCell(d_embed, d_hidden)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.attn <span class="op">=</span> Attention(d_hidden)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.linear <span class="op">=</span> nn.Linear(d_hidden, vocab_size)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, x_seq, h, c, context<span class="op">=</span><span class="va">None</span>):</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>        o <span class="op">=</span> []</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>        e_seq <span class="op">=</span> <span class="va">self</span>.embedding(x_seq)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> e <span class="kw">in</span> e_seq.chunk(e_seq.size(<span class="dv">0</span>), <span class="dv">0</span>):</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>            e <span class="op">=</span> e.squeeze(<span class="dv">0</span>)</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>            h, c <span class="op">=</span> <span class="va">self</span>.lstm(e, (h, c))</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>            o.append(<span class="va">self</span>.attn(h, context))</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>        o <span class="op">=</span> torch.stack(o, <span class="dv">0</span>)</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>        o <span class="op">=</span> <span class="va">self</span>.linear(o.view(<span class="op">-</span><span class="dv">1</span>, h.size(<span class="dv">1</span>)))</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> F.log_softmax(o).view(x_seq.size(<span class="dv">0</span>), <span class="op">-</span><span class="dv">1</span>, o.size(<span class="dv">1</span>)), h, c</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The following <code>G2P</code> model is a combination of the above encoder and decoder into an end-to-end setting. We also use beam search to find the best converted phoneme sequence. To learn more about beam search, the following <a href="https://www.youtube.com/watch?v=UXW6Cs82UKo">clip</a> is helpful. In the implementation of beam search, we deal with one sequence at a time (try to find the phoneme sequence ending with token <code>eos</code>). So we have to make sure <code>batch_size == 1</code>.</p>
+<div id="cell-23" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;ExecuteTime&quot;,&quot;value&quot;:{&quot;end_time&quot;:&quot;2017-06-03T17:15:35.266316Z&quot;,&quot;start_time&quot;:&quot;2017-06-04T02:15:35.220374+09:00&quot;}}" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> G2P(nn.Module):</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, config):</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>(G2P, <span class="va">self</span>).<span class="fu">__init__</span>()</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.encoder <span class="op">=</span> Encoder(config.g_size, config.d_embed,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>                               config.d_hidden)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.decoder <span class="op">=</span> Decoder(config.p_size, config.d_embed,</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>                               config.d_hidden)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.config <span class="op">=</span> config</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, g_seq, p_seq<span class="op">=</span><span class="va">None</span>):</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>        o, h, c <span class="op">=</span> <span class="va">self</span>.encoder(g_seq, <span class="va">self</span>.config.cuda)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>        context <span class="op">=</span> o.t() <span class="cf">if</span> <span class="va">self</span>.config.attention <span class="cf">else</span> <span class="va">None</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> p_seq <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:  <span class="co"># not generate</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="va">self</span>.decoder(p_seq, h, c, context)</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>            <span class="cf">assert</span> g_seq.size(<span class="dv">1</span>) <span class="op">==</span> <span class="dv">1</span>  <span class="co"># make sure batch_size = 1</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="va">self</span>._generate(h, c, context)</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> _generate(<span class="va">self</span>, h, c, context):</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>        beam <span class="op">=</span> Beam(<span class="va">self</span>.config.beam_size, cuda<span class="op">=</span><span class="va">self</span>.config.cuda)</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Make a beam_size batch.</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>        h <span class="op">=</span> h.expand(beam.size, h.size(<span class="dv">1</span>))  </span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>        c <span class="op">=</span> c.expand(beam.size, c.size(<span class="dv">1</span>))</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>        context <span class="op">=</span> context.expand(beam.size, context.size(<span class="dv">1</span>), context.size(<span class="dv">2</span>))</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.config.max_len):  <span class="co"># max_len = 20</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>            x <span class="op">=</span> beam.get_current_state()</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>            o, h, c <span class="op">=</span> <span class="va">self</span>.decoder(Variable(x.unsqueeze(<span class="dv">0</span>)), h, c, context)</span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> beam.advance(o.data.squeeze(<span class="dv">0</span>)):</span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>                <span class="cf">break</span></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>            h.data.copy_(h.data.index_select(<span class="dv">0</span>, beam.get_current_origin()))</span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>            c.data.copy_(c.data.index_select(<span class="dv">0</span>, beam.get_current_origin()))</span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>        tt <span class="op">=</span> torch.cuda <span class="cf">if</span> <span class="va">self</span>.config.cuda <span class="cf">else</span> torch</span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> Variable(tt.LongTensor(beam.get_hyp(<span class="dv">0</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="utils" class="level3">
+<h3 class="anchored" data-anchor-id="utils">utils</h3>
+<p>The following class is the implementation of Beam search. Note that the special tokens <code>pad</code>, <code>bos</code>, <code>eos</code> have to match the corresponding tokens in phoneme dictionary.</p>
+<div id="cell-26" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;ExecuteTime&quot;,&quot;value&quot;:{&quot;end_time&quot;:&quot;2017-06-03T17:15:35.340418Z&quot;,&quot;start_time&quot;:&quot;2017-06-04T02:15:35.268694+09:00&quot;}}" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Based on https://github.com/MaximumEntropy/Seq2Seq-PyTorch/</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Beam(<span class="bu">object</span>):</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Ordered beam of candidate outputs."""</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, size, pad<span class="op">=</span><span class="dv">1</span>, bos<span class="op">=</span><span class="dv">2</span>, eos<span class="op">=</span><span class="dv">3</span>, cuda<span class="op">=</span><span class="va">False</span>):</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""Initialize params."""</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.size <span class="op">=</span> size</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.done <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.pad <span class="op">=</span> pad</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.bos <span class="op">=</span> bos</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.eos <span class="op">=</span> eos</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.tt <span class="op">=</span> torch.cuda <span class="cf">if</span> cuda <span class="cf">else</span> torch</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>        <span class="co"># The score for each translation on the beam.</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.scores <span class="op">=</span> <span class="va">self</span>.tt.FloatTensor(size).zero_()</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>        <span class="co"># The backpointers at each time-step.</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.prevKs <span class="op">=</span> []</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>        <span class="co"># The outputs at each time-step.</span></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.nextYs <span class="op">=</span> [<span class="va">self</span>.tt.LongTensor(size).fill_(<span class="va">self</span>.pad)]</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.nextYs[<span class="dv">0</span>][<span class="dv">0</span>] <span class="op">=</span> <span class="va">self</span>.bos</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get the outputs for the current timestep.</span></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> get_current_state(<span class="va">self</span>):</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""Get state of beam."""</span></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.nextYs[<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get the backpointers for the current timestep.</span></span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> get_current_origin(<span class="va">self</span>):</span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""Get the backpointer to the beam at this step."""</span></span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.prevKs[<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> advance(<span class="va">self</span>, workd_lk):</span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""Advance the beam."""</span></span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>        num_words <span class="op">=</span> workd_lk.size(<span class="dv">1</span>)</span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Sum the previous scores.</span></span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">len</span>(<span class="va">self</span>.prevKs) <span class="op">&gt;</span> <span class="dv">0</span>:</span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a>            beam_lk <span class="op">=</span> workd_lk <span class="op">+</span> <span class="va">self</span>.scores.unsqueeze(<span class="dv">1</span>).expand_as(workd_lk)</span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a>            beam_lk <span class="op">=</span> workd_lk[<span class="dv">0</span>]</span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a>        flat_beam_lk <span class="op">=</span> beam_lk.view(<span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a>        bestScores, bestScoresId <span class="op">=</span> flat_beam_lk.topk(<span class="va">self</span>.size, <span class="dv">0</span>,</span>
+<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a>                                                     <span class="va">True</span>, <span class="va">True</span>)</span>
+<span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.scores <span class="op">=</span> bestScores</span>
+<span id="cb8-49"><a href="#cb8-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-50"><a href="#cb8-50" aria-hidden="true" tabindex="-1"></a>        <span class="co"># bestScoresId is flattened beam x word array, so calculate which</span></span>
+<span id="cb8-51"><a href="#cb8-51" aria-hidden="true" tabindex="-1"></a>        <span class="co"># word and beam each score came from</span></span>
+<span id="cb8-52"><a href="#cb8-52" aria-hidden="true" tabindex="-1"></a>        prev_k <span class="op">=</span> bestScoresId <span class="op">/</span> num_words</span>
+<span id="cb8-53"><a href="#cb8-53" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.prevKs.append(prev_k)</span>
+<span id="cb8-54"><a href="#cb8-54" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.nextYs.append(bestScoresId <span class="op">-</span> prev_k <span class="op">*</span> num_words)</span>
+<span id="cb8-55"><a href="#cb8-55" aria-hidden="true" tabindex="-1"></a>        <span class="co"># End condition is when top-of-beam is EOS.</span></span>
+<span id="cb8-56"><a href="#cb8-56" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>.nextYs[<span class="op">-</span><span class="dv">1</span>][<span class="dv">0</span>] <span class="op">==</span> <span class="va">self</span>.eos:</span>
+<span id="cb8-57"><a href="#cb8-57" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.done <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb8-58"><a href="#cb8-58" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.done</span>
+<span id="cb8-59"><a href="#cb8-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-60"><a href="#cb8-60" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> get_hyp(<span class="va">self</span>, k):</span>
+<span id="cb8-61"><a href="#cb8-61" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""Get hypotheses."""</span></span>
+<span id="cb8-62"><a href="#cb8-62" aria-hidden="true" tabindex="-1"></a>        hyp <span class="op">=</span> []</span>
+<span id="cb8-63"><a href="#cb8-63" aria-hidden="true" tabindex="-1"></a>        <span class="co"># print(len(self.prevKs), len(self.nextYs), len(self.attn))</span></span>
+<span id="cb8-64"><a href="#cb8-64" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(<span class="va">self</span>.prevKs) <span class="op">-</span> <span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>):</span>
+<span id="cb8-65"><a href="#cb8-65" aria-hidden="true" tabindex="-1"></a>            hyp.append(<span class="va">self</span>.nextYs[j <span class="op">+</span> <span class="dv">1</span>][k])</span>
+<span id="cb8-66"><a href="#cb8-66" aria-hidden="true" tabindex="-1"></a>            k <span class="op">=</span> <span class="va">self</span>.prevKs[j][k]</span>
+<span id="cb8-67"><a href="#cb8-67" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> hyp[::<span class="op">-</span><span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><a href="https://en.wikipedia.org/wiki/Levenshtein_distance">Levenshtein distance</a> is used to compute <code>phoneme-error-rate</code> (PER) for phoneme sequences (similar to <a href="https://en.wikipedia.org/wiki/Word_error_rate">word-error-rate</a> for word sequences). In the paper, there is another metric named <code>word-error-rate</code>, which is obtained by calculating the number of wrong predictions. For example, the phoneme sequence “S W AY1 G ER0 D” is a wrong prediction for the word “sweigard” (real phoneme sequence is “S W EY1 G ER0 D”). Please not to be confused between these two metrics which have the same name.</p>
+<div id="cell-28" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;ExecuteTime&quot;,&quot;value&quot;:{&quot;end_time&quot;:&quot;2017-06-03T17:15:35.458658Z&quot;,&quot;start_time&quot;:&quot;2017-06-04T02:15:35.342700+09:00&quot;}}" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Based on https://github.com/SeanNaren/deepspeech.pytorch/blob/master/decoder.py.</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> Levenshtein  <span class="co"># https://github.com/ztane/python-Levenshtein/</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> phoneme_error_rate(p_seq1, p_seq2):</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    p_vocab <span class="op">=</span> <span class="bu">set</span>(p_seq1 <span class="op">+</span> p_seq2)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    p2c <span class="op">=</span> <span class="bu">dict</span>(<span class="bu">zip</span>(p_vocab, <span class="bu">range</span>(<span class="bu">len</span>(p_vocab))))</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    c_seq1 <span class="op">=</span> [<span class="bu">chr</span>(p2c[p]) <span class="cf">for</span> p <span class="kw">in</span> p_seq1]</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    c_seq2 <span class="op">=</span> [<span class="bu">chr</span>(p2c[p]) <span class="cf">for</span> p <span class="kw">in</span> p_seq2]</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> Levenshtein.distance(<span class="st">''</span>.join(c_seq1),</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>                                <span class="st">''</span>.join(c_seq2)) <span class="op">/</span> <span class="bu">len</span>(c_seq2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The following function helps to adjust learning rate for optimizer. Learning rate will be decayed if we do not see any improvement of the loss after <code>args.n_bad_loss</code> iterations.</p>
+<div id="cell-30" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;ExecuteTime&quot;,&quot;value&quot;:{&quot;end_time&quot;:&quot;2017-06-03T17:15:35.464801Z&quot;,&quot;start_time&quot;:&quot;2017-06-04T02:15:35.460971+09:00&quot;}}" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> adjust_learning_rate(optimizer, lr_decay):</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> param_group <span class="kw">in</span> optimizer.param_groups:</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>        param_group[<span class="st">'lr'</span>] <span class="op">*=</span> lr_decay</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="train" class="level3">
+<h3 class="anchored" data-anchor-id="train">train</h3>
+<p>The following functions will be used to train model, validate model (using early stopping). Then we apply the final model for test data to get WER and PER (using <code>test</code> function). Finally, the <code>show</code> function will display a few examples for us.</p>
+<div id="cell-33" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;ExecuteTime&quot;,&quot;value&quot;:{&quot;end_time&quot;:&quot;2017-06-03T17:15:35.519521Z&quot;,&quot;start_time&quot;:&quot;2017-06-04T02:15:35.467055+09:00&quot;}}" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> train(config, train_iter, model, criterion, optimizer, epoch):</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> iteration, n_total, train_loss, n_bad_loss</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> init, best_val_loss, stop</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"=&gt; EPOCH </span><span class="sc">{}</span><span class="st">"</span>.<span class="bu">format</span>(epoch))</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    train_iter.init_epoch()</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> batch <span class="kw">in</span> train_iter:</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>        iteration <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>        model.train()</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>        output, _, __ <span class="op">=</span> model(batch.grapheme, batch.phoneme[:<span class="op">-</span><span class="dv">1</span>].detach())</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>        target <span class="op">=</span> batch.phoneme[<span class="dv">1</span>:]</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>        loss <span class="op">=</span> criterion(output.view(output.size(<span class="dv">0</span>) <span class="op">*</span> output.size(<span class="dv">1</span>), <span class="op">-</span><span class="dv">1</span>),</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>                         target.view(target.size(<span class="dv">0</span>) <span class="op">*</span> target.size(<span class="dv">1</span>)))</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>        optimizer.zero_grad()</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>        loss.backward()</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>        torch.nn.utils.clip_grad_norm(model.parameters(), config.clip, <span class="st">'inf'</span>)</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>        optimizer.step()</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>        n_total <span class="op">+=</span> batch.batch_size</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>        train_loss <span class="op">+=</span> loss.data[<span class="dv">0</span>] <span class="op">*</span> batch.batch_size</span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> iteration <span class="op">%</span> config.log_every <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>            train_loss <span class="op">/=</span> n_total</span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>            val_loss <span class="op">=</span> validate(val_iter, model, criterion)</span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="st">"   % Time: </span><span class="sc">{:5.0f}</span><span class="st"> | Iteration: </span><span class="sc">{:5}</span><span class="st"> | Batch: </span><span class="sc">{:4}</span><span class="st">/</span><span class="sc">{}</span><span class="st">"</span></span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>                  <span class="st">" | Train loss: </span><span class="sc">{:.4f}</span><span class="st"> | Val loss: </span><span class="sc">{:.4f}</span><span class="st">"</span></span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>                  .<span class="bu">format</span>(time.time()<span class="op">-</span>init, iteration, train_iter.iterations,</span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>                          <span class="bu">len</span>(train_iter), train_loss, val_loss))</span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a>            <span class="co"># test for val_loss improvement</span></span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a>            n_total <span class="op">=</span> train_loss <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> val_loss <span class="op">&lt;</span> best_val_loss:</span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a>                best_val_loss <span class="op">=</span> val_loss</span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a>                n_bad_loss <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a>                torch.save(model.state_dict(), config.best_model)</span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a>            <span class="cf">else</span>:</span>
+<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a>                n_bad_loss <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> n_bad_loss <span class="op">==</span> config.n_bad_loss:</span>
+<span id="cb11-41"><a href="#cb11-41" aria-hidden="true" tabindex="-1"></a>                best_val_loss <span class="op">=</span> val_loss</span>
+<span id="cb11-42"><a href="#cb11-42" aria-hidden="true" tabindex="-1"></a>                n_bad_loss <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb11-43"><a href="#cb11-43" aria-hidden="true" tabindex="-1"></a>                adjust_learning_rate(optimizer, config.lr_decay)</span>
+<span id="cb11-44"><a href="#cb11-44" aria-hidden="true" tabindex="-1"></a>                new_lr <span class="op">=</span> optimizer.param_groups[<span class="dv">0</span>][<span class="st">'lr'</span>]</span>
+<span id="cb11-45"><a href="#cb11-45" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="st">"=&gt; Adjust learning rate to: </span><span class="sc">{}</span><span class="st">"</span>.<span class="bu">format</span>(new_lr))</span>
+<span id="cb11-46"><a href="#cb11-46" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> new_lr <span class="op">&lt;</span> config.lr_min:</span>
+<span id="cb11-47"><a href="#cb11-47" aria-hidden="true" tabindex="-1"></a>                    stop <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb11-48"><a href="#cb11-48" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">break</span>                </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-34" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;ExecuteTime&quot;,&quot;value&quot;:{&quot;end_time&quot;:&quot;2017-06-03T17:15:35.568206Z&quot;,&quot;start_time&quot;:&quot;2017-06-04T02:15:35.522076+09:00&quot;}}" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> validate(val_iter, model, criterion):</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    model.<span class="bu">eval</span>()</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    val_loss <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    val_iter.init_epoch()</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> batch <span class="kw">in</span> val_iter:</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>        output, _, __ <span class="op">=</span> model(batch.grapheme, batch.phoneme[:<span class="op">-</span><span class="dv">1</span>])</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>        target <span class="op">=</span> batch.phoneme[<span class="dv">1</span>:]</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>        loss <span class="op">=</span> criterion(output.squeeze(<span class="dv">1</span>), target.squeeze(<span class="dv">1</span>))</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>        val_loss <span class="op">+=</span> loss.data[<span class="dv">0</span>] <span class="op">*</span> batch.batch_size</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> val_loss <span class="op">/</span> <span class="bu">len</span>(val_iter.dataset)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-35" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;ExecuteTime&quot;,&quot;value&quot;:{&quot;end_time&quot;:&quot;2017-06-03T17:15:35.623044Z&quot;,&quot;start_time&quot;:&quot;2017-06-04T02:15:35.570525+09:00&quot;}}" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test(test_iter, model, criterion):</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    model.<span class="bu">eval</span>()</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    test_iter.init_epoch()</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    test_per <span class="op">=</span> test_wer <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> batch <span class="kw">in</span> test_iter:</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>        output <span class="op">=</span> model(batch.grapheme).data.tolist()</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>        target <span class="op">=</span> batch.phoneme[<span class="dv">1</span>:].squeeze(<span class="dv">1</span>).data.tolist()</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>        <span class="co"># calculate per, wer here</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>        per <span class="op">=</span> phoneme_error_rate(output, target) </span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>        wer <span class="op">=</span> <span class="bu">int</span>(output <span class="op">!=</span> target)</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>        test_per <span class="op">+=</span> per  <span class="co"># batch_size = 1</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>        test_wer <span class="op">+=</span> wer</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>    test_per <span class="op">=</span> test_per <span class="op">/</span> <span class="bu">len</span>(test_iter.dataset) <span class="op">*</span> <span class="dv">100</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>    test_wer <span class="op">=</span> test_wer <span class="op">/</span> <span class="bu">len</span>(test_iter.dataset) <span class="op">*</span> <span class="dv">100</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Phoneme error rate (PER): </span><span class="sc">{:.2f}</span><span class="ch">\n</span><span class="st">Word error rate (WER): </span><span class="sc">{:.2f}</span><span class="st">"</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>          .<span class="bu">format</span>(test_per, test_wer))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-36" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;ExecuteTime&quot;,&quot;value&quot;:{&quot;end_time&quot;:&quot;2017-06-03T17:15:35.656628Z&quot;,&quot;start_time&quot;:&quot;2017-06-04T02:15:35.625457+09:00&quot;}}" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> show(batch, model):</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> batch.batch_size <span class="op">==</span> <span class="dv">1</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    g_field <span class="op">=</span> batch.dataset.fields[<span class="st">'grapheme'</span>]</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    p_field <span class="op">=</span> batch.dataset.fields[<span class="st">'phoneme'</span>]</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    prediction <span class="op">=</span> model(batch.grapheme).data.tolist()[:<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    grapheme <span class="op">=</span> batch.grapheme.squeeze(<span class="dv">1</span>).data.tolist()[<span class="dv">1</span>:][::<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    phoneme <span class="op">=</span> batch.phoneme.squeeze(<span class="dv">1</span>).data.tolist()[<span class="dv">1</span>:<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"&gt; </span><span class="sc">{}</span><span class="ch">\n</span><span class="st">= </span><span class="sc">{}</span><span class="ch">\n</span><span class="st">&lt; </span><span class="sc">{}</span><span class="ch">\n</span><span class="st">"</span>.<span class="bu">format</span>(</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">''</span>.join([g_field.vocab.itos[g] <span class="cf">for</span> g <span class="kw">in</span> grapheme]),</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">' '</span>.join([p_field.vocab.itos[p] <span class="cf">for</span> p <span class="kw">in</span> phoneme]),</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>        <span class="st">' '</span>.join([p_field.vocab.itos[p] <span class="cf">for</span> p <span class="kw">in</span> prediction])))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="prepare" class="level3">
+<h3 class="anchored" data-anchor-id="prepare">prepare</h3>
+<p>Now, we move to the exciting part. We will create a class <code>CMUDict</code> based on <code>data.Dataset</code> from <code>torchtext</code>. It is recommended to read the <a href="https://github.com/pytorch/text/blob/master/torchtext/data.py">document</a> to understand how the <code>Dataset</code> works. The <code>splits</code> function helps us divide data into three datasets: 17/20 for training, 1/20 for validating, 2/20 for reporting final results.</p>
+<p>The class CMUDict contains all pairs of a grapheme sequence and the corresponding phoneme sequence. Each line of the raw <a href="https://raw.githubusercontent.com/cmusphinx/cmudict/master/cmudict.dict">cmudict.dict</a> file has the form “<em>aachener AA1 K AH0 N ER0</em>”. We first split it into sequences <em>aachener</em> and <em>AA1 K AH0 N ER0</em>. Each of them is a sequence of data belongs to a <em>Field</em> (for example, a sentence is a sequence of words and word is the Field of sentences). How to tokenize these sequences is implemented in the <code>tokenize</code> parameters of the definition of grapheme field and phoneme field. We also add init token and end-of-sequence token as in the original paper.</p>
+<div id="cell-40" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;ExecuteTime&quot;,&quot;value&quot;:{&quot;end_time&quot;:&quot;2017-06-03T17:15:35.692437Z&quot;,&quot;start_time&quot;:&quot;2017-06-04T02:15:35.658812+09:00&quot;}}" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>g_field <span class="op">=</span> data.Field(init_token<span class="op">=</span><span class="st">'&lt;s&gt;'</span>,</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>                     tokenize<span class="op">=</span>(<span class="kw">lambda</span> x: <span class="bu">list</span>(x.split(<span class="st">'('</span>)[<span class="dv">0</span>])[::<span class="op">-</span><span class="dv">1</span>]))</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>p_field <span class="op">=</span> data.Field(init_token<span class="op">=</span><span class="st">'&lt;os&gt;'</span>, eos_token<span class="op">=</span><span class="st">'&lt;/os&gt;'</span>,</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>                     tokenize<span class="op">=</span>(<span class="kw">lambda</span> x: x.split(<span class="st">'#'</span>)[<span class="dv">0</span>].split()))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-41" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;ExecuteTime&quot;,&quot;value&quot;:{&quot;end_time&quot;:&quot;2017-06-03T17:15:35.735225Z&quot;,&quot;start_time&quot;:&quot;2017-06-04T02:15:35.694681+09:00&quot;}}" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> CMUDict(data.Dataset):</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, data_lines, g_field, p_field):</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>        fields <span class="op">=</span> [(<span class="st">'grapheme'</span>, g_field), (<span class="st">'phoneme'</span>, p_field)]</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>        examples <span class="op">=</span> []  <span class="co"># maybe ignore '...-1' grapheme</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> line <span class="kw">in</span> data_lines:</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>            grapheme, phoneme <span class="op">=</span> line.split(maxsplit<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>            examples.append(data.Example.fromlist([grapheme, phoneme],</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>                                                  fields))</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.sort_key <span class="op">=</span> <span class="kw">lambda</span> x: <span class="bu">len</span>(x.grapheme)</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>(CMUDict, <span class="va">self</span>).<span class="fu">__init__</span>(examples, fields)</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">@classmethod</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> splits(cls, path, g_field, p_field, seed<span class="op">=</span><span class="va">None</span>):</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>        <span class="im">import</span> random</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> seed <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>            random.seed(seed)</span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">with</span> <span class="bu">open</span>(path) <span class="im">as</span> f:</span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>            lines <span class="op">=</span> f.readlines()</span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>        random.shuffle(lines)</span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>        train_lines, val_lines, test_lines <span class="op">=</span> [], [], []</span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i, line <span class="kw">in</span> <span class="bu">enumerate</span>(lines):</span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> i <span class="op">%</span> <span class="dv">20</span> <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>                val_lines.append(line)</span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>            <span class="cf">elif</span> i <span class="op">%</span> <span class="dv">20</span> <span class="op">&lt;</span> <span class="dv">3</span>:</span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a>                test_lines.append(line)</span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>            <span class="cf">else</span>:</span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>                train_lines.append(line)</span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a>        train_data <span class="op">=</span> cls(train_lines, g_field, p_field)</span>
+<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a>        val_data <span class="op">=</span> cls(val_lines, g_field, p_field)</span>
+<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a>        test_data <span class="op">=</span> cls(test_lines, g_field, p_field)</span>
+<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> (train_data, val_data, test_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-42" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;ExecuteTime&quot;,&quot;value&quot;:{&quot;end_time&quot;:&quot;2017-06-03T17:15:41.966957Z&quot;,&quot;start_time&quot;:&quot;2017-06-04T02:15:35.737865+09:00&quot;}}" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>filepath <span class="op">=</span> os.path.join(args.data_path, <span class="st">'cmudict.dict'</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>train_data, val_data, test_data <span class="op">=</span> CMUDict.splits(filepath, g_field, p_field,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>                                                 args.seed)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>To make the dictionaries for grapheme field and phoneme field, we use the function <code>build_vocab</code>. Read its <a href="https://github.com/pytorch/text/blob/master/torchtext/data.py#L171">definition</a> to get more information.</p>
+<div id="cell-44" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;ExecuteTime&quot;,&quot;value&quot;:{&quot;end_time&quot;:&quot;2017-06-03T17:15:43.815859Z&quot;,&quot;start_time&quot;:&quot;2017-06-04T02:15:41.969491+09:00&quot;}}" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>g_field.build_vocab(train_data, val_data, test_data)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>p_field.build_vocab(train_data, val_data, test_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now, we will make <code>Iterator</code> from our datasets. These iterators will help us get data in <strong>batch</strong>. The BucketIterator will make the sequences in each batch have similar length while still preserves the randomness.</p>
+<div id="cell-46" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;ExecuteTime&quot;,&quot;value&quot;:{&quot;end_time&quot;:&quot;2017-06-03T17:15:43.824459Z&quot;,&quot;start_time&quot;:&quot;2017-06-04T02:15:43.818507+09:00&quot;}}" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>device <span class="op">=</span> <span class="va">None</span> <span class="cf">if</span> args.cuda <span class="cf">else</span> <span class="op">-</span><span class="dv">1</span>  <span class="co"># None is current gpu</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>train_iter <span class="op">=</span> data.BucketIterator(train_data, batch_size<span class="op">=</span>args.batch_size,</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>                                 repeat<span class="op">=</span><span class="va">False</span>, device<span class="op">=</span>device)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>val_iter <span class="op">=</span> data.Iterator(val_data, batch_size<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>                         train<span class="op">=</span><span class="va">False</span>, sort<span class="op">=</span><span class="va">False</span>, device<span class="op">=</span>device)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>test_iter <span class="op">=</span> data.Iterator(test_data, batch_size<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>                          train<span class="op">=</span><span class="va">False</span>, shuffle<span class="op">=</span><span class="va">True</span>, device<span class="op">=</span>device)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now, it is time to create the model.</p>
+<div id="cell-48" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;ExecuteTime&quot;,&quot;value&quot;:{&quot;end_time&quot;:&quot;2017-06-03T17:15:48.695986Z&quot;,&quot;start_time&quot;:&quot;2017-06-04T02:15:43.826892+09:00&quot;}}" data-execution_count="20">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>config <span class="op">=</span> args</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>config.g_size <span class="op">=</span> <span class="bu">len</span>(g_field.vocab)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>config.p_size <span class="op">=</span> <span class="bu">len</span>(p_field.vocab)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>config.best_model <span class="op">=</span> os.path.join(config.intermediate_path,</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>                                 <span class="st">"best_model_adagrad_attn.pth"</span>)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> G2P(config)</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>criterion <span class="op">=</span> nn.NLLLoss()</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> config.cuda:</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    model.cuda()</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>    criterion.cuda()</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>optimizer <span class="op">=</span> optim.Adagrad(model.parameters(), lr<span class="op">=</span>config.lr)  <span class="co"># use Adagrad</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="run" class="level3">
+<h3 class="anchored" data-anchor-id="run">run</h3>
+<p>We start to train our model. It will be stopped if there is no observation on the improvement of validation loss. It take around 10 minutes for each epoch (trained on GTX 1060).</p>
+<div id="cell-51" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;ExecuteTime&quot;,&quot;value&quot;:{&quot;end_time&quot;:&quot;2017-06-03T20:09:06.996354Z&quot;,&quot;start_time&quot;:&quot;2017-06-04T02:15:48.698557+09:00&quot;}}" data-scrolled="false" data-execution_count="21">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="dv">1</span> <span class="op">==</span> <span class="dv">1</span>:  <span class="co"># change to True to train</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    iteration <span class="op">=</span> n_total <span class="op">=</span> train_loss <span class="op">=</span> n_bad_loss <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    stop <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    best_val_loss <span class="op">=</span> <span class="dv">10</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    init <span class="op">=</span> time.time()</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> epoch <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, config.epochs<span class="op">+</span><span class="dv">1</span>):</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>        train(config, train_iter, model, criterion, optimizer, epoch)</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> stop:</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=&gt; EPOCH 1
+   % Time:    56 | Iteration:   100 | Batch:  100/1148 | Train loss: 1.3804 | Val loss: 0.8835
+   % Time:   111 | Iteration:   200 | Batch:  200/1148 | Train loss: 0.5339 | Val loss: 0.5970
+   % Time:   166 | Iteration:   300 | Batch:  300/1148 | Train loss: 0.4361 | Val loss: 0.5435
+   % Time:   220 | Iteration:   400 | Batch:  400/1148 | Train loss: 0.3836 | Val loss: 0.4764
+   % Time:   275 | Iteration:   500 | Batch:  500/1148 | Train loss: 0.3578 | Val loss: 0.4410
+   % Time:   331 | Iteration:   600 | Batch:  600/1148 | Train loss: 0.3315 | Val loss: 0.4162
+   % Time:   387 | Iteration:   700 | Batch:  700/1148 | Train loss: 0.3230 | Val loss: 0.4009
+   % Time:   442 | Iteration:   800 | Batch:  800/1148 | Train loss: 0.3186 | Val loss: 0.4340
+   % Time:   498 | Iteration:   900 | Batch:  900/1148 | Train loss: 0.2955 | Val loss: 0.3801
+   % Time:   554 | Iteration:  1000 | Batch: 1000/1148 | Train loss: 0.2954 | Val loss: 0.3637
+   % Time:   609 | Iteration:  1100 | Batch: 1100/1148 | Train loss: 0.2801 | Val loss: 0.3642
+=&gt; EPOCH 2
+   % Time:   664 | Iteration:  1200 | Batch:   52/1148 | Train loss: 0.2815 | Val loss: 0.3511
+   % Time:   720 | Iteration:  1300 | Batch:  152/1148 | Train loss: 0.2525 | Val loss: 0.3467
+   % Time:   776 | Iteration:  1400 | Batch:  252/1148 | Train loss: 0.2519 | Val loss: 0.3396
+   % Time:   831 | Iteration:  1500 | Batch:  352/1148 | Train loss: 0.2548 | Val loss: 0.3322
+   % Time:   887 | Iteration:  1600 | Batch:  452/1148 | Train loss: 0.2522 | Val loss: 0.3294
+   % Time:   944 | Iteration:  1700 | Batch:  552/1148 | Train loss: 0.2457 | Val loss: 0.3278
+   % Time:  1000 | Iteration:  1800 | Batch:  652/1148 | Train loss: 0.2460 | Val loss: 0.3224
+   % Time:  1055 | Iteration:  1900 | Batch:  752/1148 | Train loss: 0.2465 | Val loss: 0.3175
+   % Time:  1112 | Iteration:  2000 | Batch:  852/1148 | Train loss: 0.2321 | Val loss: 0.3157
+   % Time:  1167 | Iteration:  2100 | Batch:  952/1148 | Train loss: 0.2480 | Val loss: 0.3141
+   % Time:  1222 | Iteration:  2200 | Batch: 1052/1148 | Train loss: 0.2309 | Val loss: 0.3120
+=&gt; EPOCH 3
+   % Time:  1278 | Iteration:  2300 | Batch:    4/1148 | Train loss: 0.2322 | Val loss: 0.3077
+   % Time:  1334 | Iteration:  2400 | Batch:  104/1148 | Train loss: 0.2225 | Val loss: 0.3069
+   % Time:  1390 | Iteration:  2500 | Batch:  204/1148 | Train loss: 0.2131 | Val loss: 0.3050
+   % Time:  1445 | Iteration:  2600 | Batch:  304/1148 | Train loss: 0.2201 | Val loss: 0.3006
+   % Time:  1502 | Iteration:  2700 | Batch:  404/1148 | Train loss: 0.2241 | Val loss: 0.3019
+   % Time:  1557 | Iteration:  2800 | Batch:  504/1148 | Train loss: 0.2138 | Val loss: 0.2980
+   % Time:  1613 | Iteration:  2900 | Batch:  604/1148 | Train loss: 0.2181 | Val loss: 0.2967
+   % Time:  1670 | Iteration:  3000 | Batch:  704/1148 | Train loss: 0.2160 | Val loss: 0.2951
+   % Time:  1726 | Iteration:  3100 | Batch:  804/1148 | Train loss: 0.2170 | Val loss: 0.2919
+   % Time:  1782 | Iteration:  3200 | Batch:  904/1148 | Train loss: 0.2156 | Val loss: 0.2915
+   % Time:  1837 | Iteration:  3300 | Batch: 1004/1148 | Train loss: 0.2158 | Val loss: 0.2899
+   % Time:  1893 | Iteration:  3400 | Batch: 1104/1148 | Train loss: 0.2117 | Val loss: 0.2880
+=&gt; EPOCH 4
+   % Time:  1948 | Iteration:  3500 | Batch:   56/1148 | Train loss: 0.2026 | Val loss: 0.2869
+   % Time:  2003 | Iteration:  3600 | Batch:  156/1148 | Train loss: 0.2011 | Val loss: 0.2839
+   % Time:  2060 | Iteration:  3700 | Batch:  256/1148 | Train loss: 0.1960 | Val loss: 0.2856
+   % Time:  2117 | Iteration:  3800 | Batch:  356/1148 | Train loss: 0.2036 | Val loss: 0.2848
+   % Time:  2173 | Iteration:  3900 | Batch:  456/1148 | Train loss: 0.1982 | Val loss: 0.2823
+   % Time:  2228 | Iteration:  4000 | Batch:  556/1148 | Train loss: 0.1970 | Val loss: 0.2820
+   % Time:  2283 | Iteration:  4100 | Batch:  656/1148 | Train loss: 0.2014 | Val loss: 0.2796
+   % Time:  2338 | Iteration:  4200 | Batch:  756/1148 | Train loss: 0.2015 | Val loss: 0.2801
+   % Time:  2393 | Iteration:  4300 | Batch:  856/1148 | Train loss: 0.1924 | Val loss: 0.2782
+   % Time:  2450 | Iteration:  4400 | Batch:  956/1148 | Train loss: 0.1991 | Val loss: 0.2777
+   % Time:  2506 | Iteration:  4500 | Batch: 1056/1148 | Train loss: 0.1971 | Val loss: 0.2774
+=&gt; EPOCH 5
+   % Time:  2563 | Iteration:  4600 | Batch:    8/1148 | Train loss: 0.1975 | Val loss: 0.2764
+   % Time:  2619 | Iteration:  4700 | Batch:  108/1148 | Train loss: 0.1846 | Val loss: 0.2752
+   % Time:  2675 | Iteration:  4800 | Batch:  208/1148 | Train loss: 0.1878 | Val loss: 0.2741
+   % Time:  2731 | Iteration:  4900 | Batch:  308/1148 | Train loss: 0.1843 | Val loss: 0.2742
+   % Time:  2788 | Iteration:  5000 | Batch:  408/1148 | Train loss: 0.1832 | Val loss: 0.2733
+   % Time:  2843 | Iteration:  5100 | Batch:  508/1148 | Train loss: 0.1898 | Val loss: 0.2740
+   % Time:  2898 | Iteration:  5200 | Batch:  608/1148 | Train loss: 0.1856 | Val loss: 0.2713
+   % Time:  2955 | Iteration:  5300 | Batch:  708/1148 | Train loss: 0.1872 | Val loss: 0.2704
+   % Time:  3011 | Iteration:  5400 | Batch:  808/1148 | Train loss: 0.1889 | Val loss: 0.2715
+   % Time:  3068 | Iteration:  5500 | Batch:  908/1148 | Train loss: 0.1861 | Val loss: 0.2703
+   % Time:  3123 | Iteration:  5600 | Batch: 1008/1148 | Train loss: 0.1837 | Val loss: 0.2700
+   % Time:  3178 | Iteration:  5700 | Batch: 1108/1148 | Train loss: 0.1873 | Val loss: 0.2696
+=&gt; EPOCH 6
+   % Time:  3233 | Iteration:  5800 | Batch:   60/1148 | Train loss: 0.1859 | Val loss: 0.2662
+   % Time:  3290 | Iteration:  5900 | Batch:  160/1148 | Train loss: 0.1745 | Val loss: 0.2677
+   % Time:  3346 | Iteration:  6000 | Batch:  260/1148 | Train loss: 0.1755 | Val loss: 0.2658
+   % Time:  3403 | Iteration:  6100 | Batch:  360/1148 | Train loss: 0.1725 | Val loss: 0.2678
+   % Time:  3458 | Iteration:  6200 | Batch:  460/1148 | Train loss: 0.1791 | Val loss: 0.2659
+   % Time:  3514 | Iteration:  6300 | Batch:  560/1148 | Train loss: 0.1762 | Val loss: 0.2655
+   % Time:  3570 | Iteration:  6400 | Batch:  660/1148 | Train loss: 0.1745 | Val loss: 0.2657
+   % Time:  3626 | Iteration:  6500 | Batch:  760/1148 | Train loss: 0.1739 | Val loss: 0.2637
+   % Time:  3682 | Iteration:  6600 | Batch:  860/1148 | Train loss: 0.1755 | Val loss: 0.2646
+   % Time:  3738 | Iteration:  6700 | Batch:  960/1148 | Train loss: 0.1766 | Val loss: 0.2641
+   % Time:  3794 | Iteration:  6800 | Batch: 1060/1148 | Train loss: 0.1730 | Val loss: 0.2637
+=&gt; EPOCH 7
+   % Time:  3851 | Iteration:  6900 | Batch:   12/1148 | Train loss: 0.1757 | Val loss: 0.2621
+   % Time:  3906 | Iteration:  7000 | Batch:  112/1148 | Train loss: 0.1631 | Val loss: 0.2614
+   % Time:  3961 | Iteration:  7100 | Batch:  212/1148 | Train loss: 0.1665 | Val loss: 0.2641
+   % Time:  4017 | Iteration:  7200 | Batch:  312/1148 | Train loss: 0.1683 | Val loss: 0.2616
+   % Time:  4073 | Iteration:  7300 | Batch:  412/1148 | Train loss: 0.1698 | Val loss: 0.2618
+   % Time:  4128 | Iteration:  7400 | Batch:  512/1148 | Train loss: 0.1679 | Val loss: 0.2605
+   % Time:  4185 | Iteration:  7500 | Batch:  612/1148 | Train loss: 0.1689 | Val loss: 0.2594
+   % Time:  4240 | Iteration:  7600 | Batch:  712/1148 | Train loss: 0.1673 | Val loss: 0.2597
+   % Time:  4296 | Iteration:  7700 | Batch:  812/1148 | Train loss: 0.1706 | Val loss: 0.2591
+   % Time:  4352 | Iteration:  7800 | Batch:  912/1148 | Train loss: 0.1658 | Val loss: 0.2585
+   % Time:  4409 | Iteration:  7900 | Batch: 1012/1148 | Train loss: 0.1705 | Val loss: 0.2577
+   % Time:  4465 | Iteration:  8000 | Batch: 1112/1148 | Train loss: 0.1669 | Val loss: 0.2585
+=&gt; EPOCH 8
+   % Time:  4521 | Iteration:  8100 | Batch:   64/1148 | Train loss: 0.1577 | Val loss: 0.2581
+   % Time:  4576 | Iteration:  8200 | Batch:  164/1148 | Train loss: 0.1636 | Val loss: 0.2555
+   % Time:  4633 | Iteration:  8300 | Batch:  264/1148 | Train loss: 0.1569 | Val loss: 0.2568
+   % Time:  4689 | Iteration:  8400 | Batch:  364/1148 | Train loss: 0.1599 | Val loss: 0.2560
+   % Time:  4745 | Iteration:  8500 | Batch:  464/1148 | Train loss: 0.1593 | Val loss: 0.2570
+   % Time:  4802 | Iteration:  8600 | Batch:  564/1148 | Train loss: 0.1607 | Val loss: 0.2555
+   % Time:  4858 | Iteration:  8700 | Batch:  664/1148 | Train loss: 0.1546 | Val loss: 0.2553
+   % Time:  4915 | Iteration:  8800 | Batch:  764/1148 | Train loss: 0.1636 | Val loss: 0.2565
+   % Time:  4971 | Iteration:  8900 | Batch:  864/1148 | Train loss: 0.1616 | Val loss: 0.2537
+   % Time:  5027 | Iteration:  9000 | Batch:  964/1148 | Train loss: 0.1614 | Val loss: 0.2550
+   % Time:  5083 | Iteration:  9100 | Batch: 1064/1148 | Train loss: 0.1591 | Val loss: 0.2559
+=&gt; EPOCH 9
+   % Time:  5140 | Iteration:  9200 | Batch:   16/1148 | Train loss: 0.1624 | Val loss: 0.2565
+   % Time:  5197 | Iteration:  9300 | Batch:  116/1148 | Train loss: 0.1513 | Val loss: 0.2552
+   % Time:  5253 | Iteration:  9400 | Batch:  216/1148 | Train loss: 0.1559 | Val loss: 0.2545
+=&gt; Adjust learning rate to: 0.0035
+   % Time:  5309 | Iteration:  9500 | Batch:  316/1148 | Train loss: 0.1471 | Val loss: 0.2519
+   % Time:  5366 | Iteration:  9600 | Batch:  416/1148 | Train loss: 0.1512 | Val loss: 0.2510
+   % Time:  5421 | Iteration:  9700 | Batch:  516/1148 | Train loss: 0.1508 | Val loss: 0.2504
+   % Time:  5477 | Iteration:  9800 | Batch:  616/1148 | Train loss: 0.1493 | Val loss: 0.2512
+   % Time:  5532 | Iteration:  9900 | Batch:  716/1148 | Train loss: 0.1542 | Val loss: 0.2500
+   % Time:  5588 | Iteration: 10000 | Batch:  816/1148 | Train loss: 0.1480 | Val loss: 0.2498
+   % Time:  5644 | Iteration: 10100 | Batch:  916/1148 | Train loss: 0.1494 | Val loss: 0.2494
+   % Time:  5700 | Iteration: 10200 | Batch: 1016/1148 | Train loss: 0.1483 | Val loss: 0.2490
+   % Time:  5755 | Iteration: 10300 | Batch: 1116/1148 | Train loss: 0.1499 | Val loss: 0.2484
+=&gt; EPOCH 10
+   % Time:  5811 | Iteration: 10400 | Batch:   68/1148 | Train loss: 0.1406 | Val loss: 0.2492
+   % Time:  5866 | Iteration: 10500 | Batch:  168/1148 | Train loss: 0.1467 | Val loss: 0.2494
+   % Time:  5922 | Iteration: 10600 | Batch:  268/1148 | Train loss: 0.1433 | Val loss: 0.2495
+   % Time:  5978 | Iteration: 10700 | Batch:  368/1148 | Train loss: 0.1454 | Val loss: 0.2490
+   % Time:  6033 | Iteration: 10800 | Batch:  468/1148 | Train loss: 0.1428 | Val loss: 0.2494
+=&gt; Adjust learning rate to: 0.00175
+   % Time:  6089 | Iteration: 10900 | Batch:  568/1148 | Train loss: 0.1447 | Val loss: 0.2482
+   % Time:  6144 | Iteration: 11000 | Batch:  668/1148 | Train loss: 0.1493 | Val loss: 0.2479
+   % Time:  6200 | Iteration: 11100 | Batch:  768/1148 | Train loss: 0.1445 | Val loss: 0.2479
+   % Time:  6257 | Iteration: 11200 | Batch:  868/1148 | Train loss: 0.1415 | Val loss: 0.2476
+   % Time:  6312 | Iteration: 11300 | Batch:  968/1148 | Train loss: 0.1436 | Val loss: 0.2469
+   % Time:  6368 | Iteration: 11400 | Batch: 1068/1148 | Train loss: 0.1423 | Val loss: 0.2473
+=&gt; EPOCH 11
+   % Time:  6423 | Iteration: 11500 | Batch:   20/1148 | Train loss: 0.1487 | Val loss: 0.2474
+   % Time:  6478 | Iteration: 11600 | Batch:  120/1148 | Train loss: 0.1435 | Val loss: 0.2478
+   % Time:  6535 | Iteration: 11700 | Batch:  220/1148 | Train loss: 0.1402 | Val loss: 0.2475
+   % Time:  6591 | Iteration: 11800 | Batch:  320/1148 | Train loss: 0.1378 | Val loss: 0.2476
+=&gt; Adjust learning rate to: 0.000875
+   % Time:  6647 | Iteration: 11900 | Batch:  420/1148 | Train loss: 0.1451 | Val loss: 0.2474
+   % Time:  6702 | Iteration: 12000 | Batch:  520/1148 | Train loss: 0.1400 | Val loss: 0.2475
+   % Time:  6759 | Iteration: 12100 | Batch:  620/1148 | Train loss: 0.1377 | Val loss: 0.2473
+   % Time:  6814 | Iteration: 12200 | Batch:  720/1148 | Train loss: 0.1383 | Val loss: 0.2474
+   % Time:  6871 | Iteration: 12300 | Batch:  820/1148 | Train loss: 0.1442 | Val loss: 0.2471
+   % Time:  6927 | Iteration: 12400 | Batch:  920/1148 | Train loss: 0.1383 | Val loss: 0.2471
+   % Time:  6983 | Iteration: 12500 | Batch: 1020/1148 | Train loss: 0.1407 | Val loss: 0.2472
+   % Time:  7040 | Iteration: 12600 | Batch: 1120/1148 | Train loss: 0.1398 | Val loss: 0.2469
+=&gt; EPOCH 12
+   % Time:  7095 | Iteration: 12700 | Batch:   72/1148 | Train loss: 0.1427 | Val loss: 0.2470
+   % Time:  7151 | Iteration: 12800 | Batch:  172/1148 | Train loss: 0.1362 | Val loss: 0.2473
+   % Time:  7208 | Iteration: 12900 | Batch:  272/1148 | Train loss: 0.1395 | Val loss: 0.2473
+   % Time:  7264 | Iteration: 13000 | Batch:  372/1148 | Train loss: 0.1396 | Val loss: 0.2474
+   % Time:  7320 | Iteration: 13100 | Batch:  472/1148 | Train loss: 0.1377 | Val loss: 0.2472
+=&gt; Adjust learning rate to: 0.0004375
+   % Time:  7376 | Iteration: 13200 | Batch:  572/1148 | Train loss: 0.1377 | Val loss: 0.2472
+   % Time:  7432 | Iteration: 13300 | Batch:  672/1148 | Train loss: 0.1415 | Val loss: 0.2470
+   % Time:  7488 | Iteration: 13400 | Batch:  772/1148 | Train loss: 0.1387 | Val loss: 0.2469
+   % Time:  7544 | Iteration: 13500 | Batch:  872/1148 | Train loss: 0.1402 | Val loss: 0.2470
+   % Time:  7600 | Iteration: 13600 | Batch:  972/1148 | Train loss: 0.1397 | Val loss: 0.2469
+   % Time:  7655 | Iteration: 13700 | Batch: 1072/1148 | Train loss: 0.1370 | Val loss: 0.2469
+=&gt; EPOCH 13
+   % Time:  7712 | Iteration: 13800 | Batch:   24/1148 | Train loss: 0.1405 | Val loss: 0.2469
+   % Time:  7769 | Iteration: 13900 | Batch:  124/1148 | Train loss: 0.1368 | Val loss: 0.2470
+   % Time:  7824 | Iteration: 14000 | Batch:  224/1148 | Train loss: 0.1343 | Val loss: 0.2470
+   % Time:  7879 | Iteration: 14100 | Batch:  324/1148 | Train loss: 0.1376 | Val loss: 0.2471
+   % Time:  7934 | Iteration: 14200 | Batch:  424/1148 | Train loss: 0.1400 | Val loss: 0.2472
+=&gt; Adjust learning rate to: 0.00021875
+   % Time:  7990 | Iteration: 14300 | Batch:  524/1148 | Train loss: 0.1347 | Val loss: 0.2471
+   % Time:  8047 | Iteration: 14400 | Batch:  624/1148 | Train loss: 0.1405 | Val loss: 0.2471
+   % Time:  8103 | Iteration: 14500 | Batch:  724/1148 | Train loss: 0.1392 | Val loss: 0.2471
+   % Time:  8159 | Iteration: 14600 | Batch:  824/1148 | Train loss: 0.1359 | Val loss: 0.2470
+   % Time:  8214 | Iteration: 14700 | Batch:  924/1148 | Train loss: 0.1396 | Val loss: 0.2470
+   % Time:  8270 | Iteration: 14800 | Batch: 1024/1148 | Train loss: 0.1365 | Val loss: 0.2471
+   % Time:  8327 | Iteration: 14900 | Batch: 1124/1148 | Train loss: 0.1355 | Val loss: 0.2470
+=&gt; EPOCH 14
+   % Time:  8383 | Iteration: 15000 | Batch:   76/1148 | Train loss: 0.1354 | Val loss: 0.2470
+   % Time:  8439 | Iteration: 15100 | Batch:  176/1148 | Train loss: 0.1397 | Val loss: 0.2470
+   % Time:  8495 | Iteration: 15200 | Batch:  276/1148 | Train loss: 0.1350 | Val loss: 0.2471
+   % Time:  8551 | Iteration: 15300 | Batch:  376/1148 | Train loss: 0.1393 | Val loss: 0.2471
+   % Time:  8607 | Iteration: 15400 | Batch:  476/1148 | Train loss: 0.1378 | Val loss: 0.2470
+=&gt; Adjust learning rate to: 0.000109375
+   % Time:  8663 | Iteration: 15500 | Batch:  576/1148 | Train loss: 0.1364 | Val loss: 0.2470
+   % Time:  8720 | Iteration: 15600 | Batch:  676/1148 | Train loss: 0.1372 | Val loss: 0.2470
+   % Time:  8776 | Iteration: 15700 | Batch:  776/1148 | Train loss: 0.1346 | Val loss: 0.2470
+   % Time:  8832 | Iteration: 15800 | Batch:  876/1148 | Train loss: 0.1371 | Val loss: 0.2470
+   % Time:  8888 | Iteration: 15900 | Batch:  976/1148 | Train loss: 0.1360 | Val loss: 0.2470
+   % Time:  8944 | Iteration: 16000 | Batch: 1076/1148 | Train loss: 0.1378 | Val loss: 0.2470
+=&gt; EPOCH 15
+   % Time:  9001 | Iteration: 16100 | Batch:   28/1148 | Train loss: 0.1364 | Val loss: 0.2470
+=&gt; Adjust learning rate to: 5.46875e-05
+   % Time:  9057 | Iteration: 16200 | Batch:  128/1148 | Train loss: 0.1377 | Val loss: 0.2471
+   % Time:  9113 | Iteration: 16300 | Batch:  228/1148 | Train loss: 0.1374 | Val loss: 0.2471
+   % Time:  9170 | Iteration: 16400 | Batch:  328/1148 | Train loss: 0.1355 | Val loss: 0.2471
+   % Time:  9225 | Iteration: 16500 | Batch:  428/1148 | Train loss: 0.1350 | Val loss: 0.2471
+   % Time:  9281 | Iteration: 16600 | Batch:  528/1148 | Train loss: 0.1362 | Val loss: 0.2471
+=&gt; Adjust learning rate to: 2.734375e-05
+   % Time:  9337 | Iteration: 16700 | Batch:  628/1148 | Train loss: 0.1357 | Val loss: 0.2471
+   % Time:  9394 | Iteration: 16800 | Batch:  728/1148 | Train loss: 0.1392 | Val loss: 0.2471
+   % Time:  9450 | Iteration: 16900 | Batch:  828/1148 | Train loss: 0.1398 | Val loss: 0.2470
+   % Time:  9505 | Iteration: 17000 | Batch:  928/1148 | Train loss: 0.1384 | Val loss: 0.2470
+   % Time:  9561 | Iteration: 17100 | Batch: 1028/1148 | Train loss: 0.1374 | Val loss: 0.2470
+   % Time:  9618 | Iteration: 17200 | Batch: 1128/1148 | Train loss: 0.1394 | Val loss: 0.2470
+=&gt; EPOCH 16
+   % Time:  9674 | Iteration: 17300 | Batch:   80/1148 | Train loss: 0.1362 | Val loss: 0.2470
+   % Time:  9730 | Iteration: 17400 | Batch:  180/1148 | Train loss: 0.1383 | Val loss: 0.2470
+   % Time:  9786 | Iteration: 17500 | Batch:  280/1148 | Train loss: 0.1372 | Val loss: 0.2470
+   % Time:  9841 | Iteration: 17600 | Batch:  380/1148 | Train loss: 0.1346 | Val loss: 0.2470
+=&gt; Adjust learning rate to: 1.3671875e-05
+   % Time:  9897 | Iteration: 17700 | Batch:  480/1148 | Train loss: 0.1363 | Val loss: 0.2470
+   % Time:  9952 | Iteration: 17800 | Batch:  580/1148 | Train loss: 0.1385 | Val loss: 0.2470
+   % Time: 10008 | Iteration: 17900 | Batch:  680/1148 | Train loss: 0.1374 | Val loss: 0.2470
+   % Time: 10063 | Iteration: 18000 | Batch:  780/1148 | Train loss: 0.1365 | Val loss: 0.2470
+   % Time: 10118 | Iteration: 18100 | Batch:  880/1148 | Train loss: 0.1374 | Val loss: 0.2470
+   % Time: 10173 | Iteration: 18200 | Batch:  980/1148 | Train loss: 0.1366 | Val loss: 0.2470
+   % Time: 10230 | Iteration: 18300 | Batch: 1080/1148 | Train loss: 0.1376 | Val loss: 0.2470
+=&gt; EPOCH 17
+   % Time: 10287 | Iteration: 18400 | Batch:   32/1148 | Train loss: 0.1369 | Val loss: 0.2470
+   % Time: 10343 | Iteration: 18500 | Batch:  132/1148 | Train loss: 0.1371 | Val loss: 0.2470
+   % Time: 10398 | Iteration: 18600 | Batch:  232/1148 | Train loss: 0.1358 | Val loss: 0.2470
+=&gt; Adjust learning rate to: 6.8359375e-06</code></pre>
+</div>
+</div>
+</section>
+<section id="test" class="level3">
+<h3 class="anchored" data-anchor-id="test">test</h3>
+<p>We also want to report WER and PER. In this notebook, we use attention. Setting <code>args.attention</code> to <code>False</code> to disable it, which will improve the results.</p>
+<div id="cell-54" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;ExecuteTime&quot;,&quot;value&quot;:{&quot;end_time&quot;:&quot;2017-06-03T20:11:49.021007Z&quot;,&quot;start_time&quot;:&quot;2017-06-04T05:09:06.998724+09:00&quot;}}" data-execution_count="22">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>model.load_state_dict(torch.load(config.best_model))</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>test(test_iter, model, criterion)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Phoneme error rate (PER): 9.81
+Word error rate (WER): 40.66</code></pre>
+</div>
+</div>
+<p>Now we display 10 examples. The first line is the word, the second line is its ‘true’ phoneme, and the third line is our prediction.</p>
+<div id="cell-56" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;ExecuteTime&quot;,&quot;value&quot;:{&quot;end_time&quot;:&quot;2017-06-03T20:11:49.198482Z&quot;,&quot;start_time&quot;:&quot;2017-06-04T05:11:49.023287+09:00&quot;}}" data-execution_count="23">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>test_iter.init_epoch()</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, batch <span class="kw">in</span> <span class="bu">enumerate</span>(test_iter):</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    show(batch, model)</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> i <span class="op">==</span> <span class="dv">10</span>:</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&gt; pacheco
+= P AH0 CH EH1 K OW0
+&lt; P AH0 CH EH1 K OW0
+
+&gt; affable
+= AE1 F AH0 B AH0 L
+&lt; AE1 F AH0 B AH0 L
+
+&gt; mauriello
+= M AO2 R IY0 EH1 L OW0
+&lt; M AO0 R IY0 EH1 L OW0
+
+&gt; schadler
+= SH EY1 D AH0 L ER0
+&lt; SH AE1 D L ER0
+
+&gt; chandon
+= CH AE1 N D IH0 N
+&lt; CH AE1 N D AH0 N
+
+&gt; sines
+= S AY1 N Z
+&lt; S AY1 N Z
+
+&gt; nostrums
+= N AA1 S T R AH0 M Z
+&lt; N AA1 S T R AH0 M Z
+
+&gt; guandong's
+= G W AA1 N D OW2 NG Z
+&lt; G W AA1 N D AO1 NG Z
+
+&gt; pry
+= P R AY1
+&lt; P R AY1
+
+&gt; biddie
+= B IH1 D IY0
+&lt; B IH1 D IY0
+
+&gt; manes
+= M EY1 N Z
+&lt; M EY1 N Z
+</code></pre>
+</div>
+</div>
+<p>As you can see, the result is quite good. Happy learning!</p>
+</section>
+<section id="acknowledgement" class="level3">
+<h3 class="anchored" data-anchor-id="acknowledgement">acknowledgement</h3>
+<p><em>This tutorial is done under my study with <a href="https://github.com/hminle">Hoang Le</a> and <a href="https://github.com/hoangnguyen3892">Hoang Nguyen</a>. Thank you very much for your help!</em></p>
+
+
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/fehiepsi\.github\.io\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<script src="https://giscus.app/client.js" data-repo="fehiepsi/fehiepsi.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkxMjM0MTE3NQ==" data-category="Announcements" data-category-id="DIC_kwDOALxPt84CpvPE" data-mapping="pathname" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="bottom" data-theme="light" data-lang="en" crossorigin="anonymous" data-loading="lazy" async="">
+</script>
+<script type="application/javascript">
+  const giscusIframeObserver = new MutationObserver(function (mutations) {
+    mutations.forEach(function (mutation) {
+      mutation.addedNodes.forEach(function (addedNode) {
+        if (addedNode.matches && addedNode.matches('div.giscus')) {
+          const giscusIframe = addedNode.querySelector('iframe.giscus-frame');
+          if(giscusIframe) {
+            giscusIframe.addEventListener("load", function() {
+              window.setTimeout(() => {
+                toggleGiscusIfUsed(hasAlternateSentinel(), authorPrefersDark);
+              }, 100);
+            });
+            giscusIframeObserver.disconnect();
+          }
+        }
+      });
+    });
+  });
+  giscusIframeObserver.observe(document.body, { childList: true, subtree: true });
+</script>
+<input type="hidden" id="giscus-base-theme" value="light">
+<input type="hidden" id="giscus-alt-theme" value="dark_dimmed">
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>Contents © 2025 <a href="mailto:fehiepsi@gmail.com">Du Phan</a> &nbsp;–&nbsp; Powered by <a href="https://quarto.org">Quarto</a> &nbsp;–&nbsp; <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/"> <img alt="Creative Commons License BY-NC-SA" style="border-width:0; margin-bottom:-4px; height:20px;" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png"> </a></p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

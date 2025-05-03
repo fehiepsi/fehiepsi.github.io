@@ -1,4 +1,1 @@
-Sitemap: https://fehiepsi.github.io/sitemapindex.xml
-
-User-Agent: *
-Host: fehiepsi.github.io
+Sitemap: https://fehiepsi.github.io/sitemap.xml

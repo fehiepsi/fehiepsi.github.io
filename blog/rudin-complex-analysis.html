@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.29">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2016-09-04">
+
+<title>Some solutions to Rudin’s complex analysis book – fehiepsi's blog</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../static/favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-0815c480559380816a4d1ea211a47e91.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-748b535e376f14d4692bf2b2e5fd6380.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-0815c480559380816a4d1ea211a47e91.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-cf3f2c26eef976f46b51aa29f3e196e4.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-a9957ab5e8b7c67643b7e2e6b5c1e54e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-cf3f2c26eef976f46b51aa29f3e196e4.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+<script type="text/javascript">
+
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-131299125-1', 'auto');
+
+ga('send', {
+  hitType: 'pageview',
+  'anonymizeIp': true,
+});
+</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">fehiepsi’s blog</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../"> 
+<span class="menu-text">Posts</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../rethinking-pyro/"> 
+<span class="menu-text">rethinking-pyro</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../rethinking-numpyro/"> 
+<span class="menu-text">rethinking-numpyro</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/fehiepsi"> <i class="bi bi-twitter" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/fehiepsi"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/phandu/"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://fehiepsi.wordpress.com/"> <i class="bi bi-wordpress" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../blog/index.xml"> <i class="bi bi-rss" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#chapter-10---elementary-properties-of-holomorphic-functions" id="toc-chapter-10---elementary-properties-of-holomorphic-functions" class="nav-link active" data-scroll-target="#chapter-10---elementary-properties-of-holomorphic-functions">Chapter 10 - Elementary Properties of Holomorphic Functions</a></li>
+  <li><a href="#chapter-11---harmonic-functions" id="toc-chapter-11---harmonic-functions" class="nav-link" data-scroll-target="#chapter-11---harmonic-functions">Chapter 11 - Harmonic Functions</a></li>
+  <li><a href="#chapter-12---the-maximum-modulus-principle" id="toc-chapter-12---the-maximum-modulus-principle" class="nav-link" data-scroll-target="#chapter-12---the-maximum-modulus-principle">Chapter 12 - The Maximum Modulus Principle</a></li>
+  <li><a href="#chapter-13---approximation-by-rational-functions" id="toc-chapter-13---approximation-by-rational-functions" class="nav-link" data-scroll-target="#chapter-13---approximation-by-rational-functions">Chapter 13 - Approximation by Rational Functions</a></li>
+  <li><a href="#chapter-14---conformal-mapping" id="toc-chapter-14---conformal-mapping" class="nav-link" data-scroll-target="#chapter-14---conformal-mapping">Chapter 14 - Conformal Mapping</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Some solutions to Rudin’s complex analysis book</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">math</div>
+    <div class="quarto-category">complex analysis</div>
+    <div class="quarto-category">jupyter</div>
+    <div class="quarto-category">katex</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">September 4, 2016</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>The following notebook contains some solutions to the complex analysis part of the <a href="https://www.amazon.com/Real-Complex-Analysis-Rudin/dp/0070619875/">Big Rudin book</a> that I studied at POSTECH. This post is also a chance for me to test the different between MathJax and KaTeX in Nikola, to see which one has better render. It turns out that KaTeX is much faster than MathJax. As a note, to make KaTeX work with inline mode from Jupyter notebook, we have to change the default auto-render code in the theme (as suggested in this <a href="https://github.com/Khan/KaTeX/blob/master/contrib/auto-render/index.html">file</a>, the <code>renderMathInElement</code> part).</p>
+<ul>
+<li>Chapter 10: <a href="#Chapter-10---Elementary-Properties-of-Holomorphic-Functions">Elementary Properties of Holomorphic Functions</a></li>
+<li>Chapter 11: <a href="#Chapter-11---Harmonic-Functions">Harmonic Functions</a></li>
+<li>Chapter 12: <a href="#Chapter-12---The-Maximum-Modulus-Principle">The Maximum Modulus Principle</a></li>
+<li>Chapter 13: <a href="#Chapter-13---Approximation-by-Rational-Functions">Approximation by Rational Functions</a></li>
+<li>Chapter 14: <a href="#Chapter-14---Conformal-Mapping">Conformal Mapping</a></li>
+</ul>
+<section id="chapter-10---elementary-properties-of-holomorphic-functions" class="level2">
+<h2 class="anchored" data-anchor-id="chapter-10---elementary-properties-of-holomorphic-functions">Chapter 10 - Elementary Properties of Holomorphic Functions</h2>
+<p><strong>1.</strong> The following fact was tacitly used in this chapter: If <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are disjoint subsets of the plane, if <span class="math inline">\(A\)</span> is compact, and if <span class="math inline">\(B\)</span> is closed, then there exists a <span class="math inline">\(\delta &gt; 0\)</span> such that <span class="math inline">\(|\alpha - \beta| \geq \delta\)</span> for all <span class="math inline">\(\alpha \in A\)</span> and <span class="math inline">\(\beta \in B\)</span>. Prove this, with an arbitrary metric space in place of the plane.</p>
+<p><strong>Proof.</strong> Let <span class="math inline">\(A\)</span> be a compact set and <span class="math inline">\(B\)</span> be a closed set in a metric space such that <span class="math inline">\(A\cap B = \varnothing\)</span>. Let <span class="math inline">\(\delta = \inf_{\alpha,\beta}d(\alpha,\beta)\)</span> where the infimum is taken with all <span class="math inline">\(\alpha \in A\)</span> and <span class="math inline">\(\beta\in B\)</span>, and let <span class="math inline">\(\{a_n\}\)</span>, <span class="math inline">\(\{b_n\}\)</span> be two sequences in <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> correspondingly such that <span class="math inline">\(\lim_{n\to\infty}d(a_n,b_n) = \delta\)</span>. Suppose that <span class="math inline">\(\delta = 0\)</span>. Because <span class="math inline">\(A\)</span> is compact, there exists <span class="math inline">\(c\in A\)</span> and a subsequence <span class="math inline">\(\{a_{n_k}\}\)</span> of <span class="math inline">\(\{a_n\}\)</span> such that <span class="math inline">\(\lim_{k\to\infty}d(a_{n_k},c) = 0\)</span>. Hence <span class="math inline">\(\lim_{k\to\infty}d(b_{n_k},c) = 0\)</span> because <span class="math inline">\(\lim_{k\to\infty}d(a_{n_k},b_{n_k}) = 0\)</span>. Hence <span class="math inline">\(c \in \bar{B}=B\)</span>, which is a contradiction with the hypothesis that <span class="math inline">\(A\cap B = \varnothing\)</span>. So <span class="math inline">\(\delta &gt; 0\)</span>. We get the conclusion. <span class="math inline">\(\Box\)</span> <!-- TEASER_END --></p>
+<p><strong>2.</strong> Suppose that <span class="math inline">\(f\)</span> is an entire function, and that in every power series <span class="math display">\[
+f(z) = \sum_{n=0}^{\infty} c_n(z-a)^n
+\]</span> at least one coefficient is <span class="math inline">\(0\)</span>. Prove that <span class="math inline">\(f\)</span> is a polynomial.</p>
+<p><em>Hint.</em> <span class="math inline">\(n!c_n = f^{(n)}(a)\)</span>.</p>
+<p><strong>Proof.</strong> Let <span class="math inline">\(a\in \mathbb{C}\)</span>. Consider the power series of <span class="math inline">\(f\)</span> at <span class="math inline">\(a\)</span>, we have <span class="math display">\[
+f(z) = \sum\limits_{n=0}^{\infty}c_n(z-a)^n.
+\]</span></p>
+<p>By assumption, <span class="math inline">\(c_n = 0\)</span> for some <span class="math inline">\(n\leq 0\)</span>. By <span class="math inline">\(n!c_n = f^{(n)}(a)\)</span>, we get <span class="math inline">\(f^{(n)}(a) = 0\)</span> for some <span class="math inline">\(n\leq 0\)</span>. Put <span class="math inline">\(K = \{z:f^{(n)}(z) = 0\text{ for some }n\leq 0\}\)</span>, we have <span class="math inline">\(a \in K\)</span>. This is true for every <span class="math inline">\(a\in \mathbb{C}\)</span>. So <span class="math inline">\(K = \mathbb{C}\)</span>. Moreover, we have <span class="math display">\[
+K = \bigcup\limits_{n=0}^{\infty}\{z:f^{(n)}(z) = 0\}.
+\]</span></p>
+<p>If, for each <span class="math inline">\(n\)</span>, we do not have <span class="math inline">\(f^{(n)}(z) = 0\)</span> for every <span class="math inline">\(z\in \mathbb{C}\)</span>, then <span class="math inline">\(\{z:f^{(n)}(z) = 0\}\)</span> is a countable set for all <span class="math inline">\(n\)</span>. Hence <span class="math inline">\(K\)</span> is a countable set, which is a contradiction to <span class="math inline">\(K = \mathbb{C}\)</span>. So <span class="math inline">\(f^{(N)} = 0\)</span> for some <span class="math inline">\(N\geq 0\)</span>. Consider the power series of <span class="math inline">\(f\)</span> at <span class="math inline">\(0\)</span>, we have <span class="math display">\[
+f(z) = \sum\limits_{n=0}^{\infty}b_n z^n.
+\]</span></p>
+<p>By <span class="math inline">\(f^{(n)}(0)=0\)</span> for all <span class="math inline">\(n\geq N\)</span>, we have <span class="math inline">\(b_n = f^{(n)}(0)/n! = 0\)</span> for all <span class="math inline">\(n\geq N\)</span>. We get the conclusion. <span class="math inline">\(\Box\)</span></p>
+<p><strong>3.</strong> Suppose <span class="math inline">\(f\)</span> and <span class="math inline">\(g\)</span> are entire functions, and <span class="math inline">\(|f(z)| \leq |g(z)|\)</span> for every <span class="math inline">\(z\)</span>. What conclusion can you draw?</p>
+<p><strong>Proof.</strong> <span class="math inline">\(f = Cg\)</span>, where <span class="math inline">\(|C| \leq 1\)</span>.</p>
+<p>If <span class="math inline">\(g\)</span> is not vanishing in <span class="math inline">\(\mathbb{C}\)</span>, then <span class="math inline">\(Z(g)\)</span> has no limit point. Put <span class="math inline">\(h = f/g\)</span>, then <span class="math inline">\(h \in \mathbb{C}\backslash Z(g)\)</span> and <span class="math inline">\(h\)</span> is a meromorphic function in <span class="math inline">\(\mathbb{C}\)</span>. Let <span class="math inline">\(a\in Z(g)\)</span>. By assumption, <span class="math inline">\(|h|\leq 1\)</span> in a deleted disc <span class="math inline">\(D'(a,r)\)</span> for some <span class="math inline">\(r &gt;0\)</span> such that <span class="math inline">\(g\neq 0\)</span> in <span class="math inline">\(D'(a,r)\)</span>. So <span class="math inline">\(h\)</span> has a removable singularity at <span class="math inline">\(a\)</span>. This is true for all <span class="math inline">\(a\in Z(g)\)</span>, hence <span class="math inline">\(h\in H(\mathbb{C})\)</span> and <span class="math inline">\(|h|\leq 1\)</span> in <span class="math inline">\(\mathbb{C}\)</span>. By Liouville’s theorem, <span class="math inline">\(h\)</span> is a constant <span class="math inline">\(C\)</span> in <span class="math inline">\(\mathbb{C}\)</span>. So we get <span class="math inline">\(f = Cg\)</span> and it is clear that <span class="math inline">\(|C| \leq 1\)</span>. For the case <span class="math inline">\(g =0\)</span> in <span class="math inline">\(\mathbb{C}\)</span>, we get <span class="math inline">\(f = 0\)</span> in <span class="math inline">\(\mathbb{C}\)</span>, hence <span class="math inline">\(f= Cg\)</span> with <span class="math inline">\(C = 0\)</span>. Reversely, if <span class="math inline">\(f=Cg\)</span> and <span class="math inline">\(|C|\leq 1\)</span>, then <span class="math inline">\(|f|\leq |C||g| \leq |g|\)</span>. <span class="math inline">\(\Box\)</span></p>
+<p><strong>7.</strong> If <span class="math inline">\(f\in H(\Omega)\)</span>, the Cauchy formula for the derivatives of <span class="math inline">\(f\)</span>, <span class="math display">\[
+f^{(n)}(z) = \frac{n!}{2\pi i}\int_{\Gamma}\frac{f(\zeta)}{(\zeta - z)^{n+1}}\,d\zeta\qquad (n=1,2,3,\ldots)
+\]</span> is valid under certain conditions on <span class="math inline">\(z\)</span> and <span class="math inline">\(\Gamma\)</span>. State these, and prove the formula.</p>
+<p><strong>Proof.</strong> <span class="math inline">\(\Gamma\)</span> is a cycle in <span class="math inline">\(\Omega\)</span>, <span class="math inline">\(\mathrm{Ind}_{\Gamma}(a)=0\)</span> for all <span class="math inline">\(a\notin \Omega\)</span>, <span class="math inline">\(z\in \Omega\backslash \Gamma\)</span>, and <span class="math inline">\(\mathrm{Ind}_{\Gamma}(z) = 1\)</span>.</p>
+<p>By Cauchy’s formula, with the above conditions, we have <span class="math display">\[
+f(w) = \frac{1}{2\pi i}\int_{\Gamma}\frac{f(\zeta)}{\zeta-w}\,d\zeta\qquad (w\in\Omega\backslash \Gamma).
+\]</span></p>
+<p>Let <span class="math inline">\(r &gt; 0\)</span> such that <span class="math inline">\(D(z;r)\subset \Omega\backslash\Gamma\)</span>. For <span class="math inline">\(w \in D'(z;r/2)\)</span>, we have <span class="math display">\[
+\frac{f(w)-f(z)}{w-z} = \frac{1}{2\pi i(w-z)}\int_{\Gamma}f(\zeta)\left(\frac{1}{\zeta-w} - \frac{1}{\zeta - z}\right)\,d\zeta.
+\]</span></p>
+<p>Let <span class="math inline">\(w\to z\)</span>, we get <span class="math display">\[
+\lim_{w\to z}\frac{1}{w-z}\left(\frac{1}{\zeta-w} - \frac{1}{\zeta - z}\right) = \left(\frac{1}{\zeta - z}\right)' = \frac{1}{(\zeta - z)^2}.
+\]</span></p>
+<p>Moreover, for all <span class="math inline">\(w \in D'(z;r/2)\)</span>, we have <span class="math display">\[
+\left|\frac{f(\zeta)}{w-z}\left(\frac{1}{\zeta-w} - \frac{1}{\zeta - z}\right)\right| = \left|\frac{f(\zeta)}{(\zeta-w)(\zeta-z)}\right|\leq \frac{4}{r^2} \|f \|_{\Gamma}\qquad(\zeta \in \Gamma).
+\]</span></p>
+<p>An easy argument by applying the dominated convergence theorem shows that <span class="math display">\[
+f'(z) = \lim_{w\to z}\frac{f(w)-f(z)}{w-z} =\frac{1}{2\pi i}\int_{\Gamma}\frac{f(\zeta)}{(\zeta-z)^2}\,d\zeta.
+\]</span></p>
+<p>We have proved the required formula for the case <span class="math inline">\(n=1\)</span>. Note that <span class="math display">\[
+\lim_{w\to z}\frac{1}{w-z}\left(\frac{1}{(\zeta-w)^n} - \frac{1}{(\zeta - z)^n}\right) = \left(\frac{1}{(\zeta - z)^n}\right)' = \frac{1}{(\zeta - z)^{n+1}}
+\]</span> and for all <span class="math inline">\(w \in D'(z;r/2)\)</span>, we have <span class="math display">\[
+\begin{aligned}
+\left|\frac{f(\zeta)}{w-z}\left(\frac{1}{(\zeta-w)^n} - \frac{1}{(\zeta - z)^n}\right)\right| &amp;= \left|\frac{f(\zeta)\sum_{i=0}^{n-1}(\zeta-w)^i(\zeta-z)^{n-i-1}}{(\zeta-w)^n(\zeta -z)^n}\right| \\
+&amp;=\left|f(\zeta)\sum\limits_{i=0}^{n-1}\frac{1}{(\zeta-w)^{n-i}(\zeta-z)^{i}}\right|\\
+&amp;\leq \frac{2^n n}{r^n}\|f\|_{\Gamma}\qquad (\zeta\in \Gamma).
+\end{aligned}
+\]</span></p>
+<p>By an induction procedure, the above notes, and a similar argument as the case <span class="math inline">\(n=1\)</span>, we can prove the required formula for arbitrary <span class="math inline">\(n \geq 1\)</span>. <span class="math inline">\(\Box\)</span></p>
+<p><strong>19.</strong> Suppose <span class="math inline">\(f\in H(U)\)</span>, <span class="math inline">\(g\in H(U)\)</span>, and neither <span class="math inline">\(f\)</span> nor <span class="math inline">\(g\)</span> has a zero in <span class="math inline">\(U\)</span>. If <span class="math display">\[
+\frac{f'}{f}\left(\frac{1}{n}\right) = \frac{g'}{g}\left(\frac{1}{n}\right)\qquad (n=2,3,\ldots),
+\]</span> find another simple relation between <span class="math inline">\(f\)</span> and <span class="math inline">\(g\)</span>.</p>
+<p><strong>Proof.</strong> <span class="math inline">\(f=Cg\)</span>, where <span class="math inline">\(C\neq 0\)</span>.</p>
+<p>Put <span class="math inline">\(h = f/g\)</span>. It is clear that <span class="math inline">\(h\in H(U)\)</span>. Moreover, by <span class="math display">\[
+h'(z) = \frac{f'(z)g(z) - f(z)g'(z)}{g^2(z)},
+\]</span> we get <span class="math inline">\(h'(\frac{1}{n})=0\)</span> for <span class="math inline">\(n=2,3,\ldots\)</span> Because <span class="math inline">\(\frac{1}{n}\to 0\)</span> as <span class="math inline">\(n\to \infty\)</span>, we get <span class="math inline">\(h'(z) = 0\)</span> for every <span class="math inline">\(z\in U\)</span>. So <span class="math inline">\(h(z) = h(0) + \int_{[0,z]}h'(w)\,dw = h(0)\)</span> for all <span class="math inline">\(z \in \mathbb{C}\)</span>. Put <span class="math inline">\(C = h(0)=f(0)/g(0)\neq 0\)</span>, we get <span class="math inline">\(f = Cg\)</span>. Reversely, if <span class="math inline">\(f = Cg\)</span> and <span class="math inline">\(C\neq 0\)</span>, we get <span class="math inline">\(f'(z)/f(z) = g'(z)/g(z)\)</span> for all <span class="math inline">\(z\in U\)</span>, in particularly, for <span class="math inline">\(\frac{1}{n}\)</span>, <span class="math inline">\(n=2,3,\ldots\)</span> <span class="math inline">\(\Box\)</span></p>
+<p><strong>21.</strong> Suppose <span class="math inline">\(f\in H(\Omega)\)</span>, <span class="math inline">\(\Omega\)</span> contains the closed unit disc, and <span class="math inline">\(|f(z)| &lt; 1\)</span> if <span class="math inline">\(|z|=1\)</span>. How many fixed points must <span class="math inline">\(f\)</span> have in the disc? That is, how many solutions does the equation <span class="math inline">\(f(z)=z\)</span> have there?</p>
+<p><strong>Proof.</strong> 1 solution.</p>
+<p>Let <span class="math inline">\(g\)</span> and <span class="math inline">\(h\)</span> be two functions in <span class="math inline">\(\Omega\)</span> defined by <span class="math inline">\(g(z) = f(z) - z\)</span> and <span class="math inline">\(h(z) = -z\)</span> for every <span class="math inline">\(z\in \Omega\)</span>. By assumption, $ |g(z) - h(z)| &lt; |h(z)| $ for all <span class="math inline">\(z\)</span> in the circle <span class="math inline">\(\{z:|z|=1\}\)</span>. By Rouché’s theorem, we get the number of solutions of <span class="math inline">\(g\)</span> in <span class="math inline">\(D(0;1)\)</span> equals to the number of solutions of <span class="math inline">\(h\)</span> in <span class="math inline">\(D(0;1)\)</span>, which contains just one solution <span class="math inline">\(z=0\)</span>. We get the conclusion. <span class="math inline">\(\Box\)</span></p>
+</section>
+<section id="chapter-11---harmonic-functions" class="level2">
+<h2 class="anchored" data-anchor-id="chapter-11---harmonic-functions">Chapter 11 - Harmonic Functions</h2>
+<p><strong>1.</strong> Suppose <span class="math inline">\(u\)</span> and <span class="math inline">\(v\)</span> are real harmonic functions in a plane region <span class="math inline">\(\Omega\)</span>. Under what conditions is <span class="math inline">\(uv\)</span> harmonic? (Note that the answer depends strongly on the fact that the question is one about real functions.) Show that <span class="math inline">\(u^2\)</span> cannot be harmonic in <span class="math inline">\(\Omega\)</span>, unless <span class="math inline">\(u\)</span> is constant. For which <span class="math inline">\(f\in H(\Omega)\)</span> is <span class="math inline">\(|f|^2\)</span> harmonic?</p>
+<p><strong>Proof.</strong> <span class="math inline">\(u\)</span> is constant or <span class="math inline">\(v\)</span> is constant or there is some real constant <span class="math inline">\(C\neq 0\)</span> such that <span class="math inline">\(u_x = Cv_y\)</span>, <span class="math inline">\(u_y = -Cv_x\)</span> (in other words, <span class="math inline">\(u+iCv\)</span> is holomorphic). <span class="math inline">\(f\)</span> is constant.</p>
+<p>Note that every harmonic function has continuous partial derivatives of all orders. Suppose <span class="math inline">\(uv\)</span> is harmonic, which means <span class="math inline">\((uv)_{xx}+(uv)_{yy}=0\)</span> in <span class="math inline">\(\Omega\)</span>, hence <span class="math inline">\(u_xv_x + u_yv_y = 0\)</span> in <span class="math inline">\(\Omega\)</span> (because <span class="math inline">\(u_{xx}+u_{yy}=0\)</span> and <span class="math inline">\(v_{xx}+v_{yy}=0\)</span>). Suppose more that both <span class="math inline">\(u\)</span> and <span class="math inline">\(v\)</span> are not constant. Put <span class="math inline">\(g = u_x - iu_y\)</span> and <span class="math inline">\(h = v_y + iv_x\)</span>. It is plain that <span class="math inline">\(g\)</span> and <span class="math inline">\(h\)</span> are holomorphic in <span class="math inline">\(\Omega\)</span> by checking their Cauchy-Riemann equations. If <span class="math inline">\(Z(h) = \Omega\)</span>, then <span class="math inline">\(v_x=v_y=0\)</span> in <span class="math inline">\(\Omega\)</span>. Let <span class="math inline">\(D\)</span> be any disc in <span class="math inline">\(\Omega\)</span> such that <span class="math inline">\(\bar{D}\subset \Omega\)</span>. Then <span class="math inline">\(v\)</span> is a real part of a holomorphic function <span class="math inline">\(V\)</span> in <span class="math inline">\(D\)</span>. By <span class="math inline">\(V' = v_x - iv_y\)</span>, we have <span class="math inline">\(V'=0\)</span> in <span class="math inline">\(D\)</span>, hence <span class="math inline">\(V\)</span> is constant in <span class="math inline">\(D\)</span> (for any <span class="math inline">\(z,w\)</span> in <span class="math inline">\(D\)</span>, we have <span class="math inline">\(V(z)-V(w) = \int_{[z,w]}V'(\zeta)\,d\zeta=0\)</span>), hence <span class="math inline">\(v = \mathrm{const}\)</span> in <span class="math inline">\(D\)</span>. This argument shows that for any <span class="math inline">\(z\in \Omega\)</span>, <span class="math inline">\(v\)</span> is constant in some neighborhood of <span class="math inline">\(z\)</span>. Pick <span class="math inline">\(z_0 \in \Omega\)</span>. Now, it is easy to see that the set <span class="math inline">\(\{z\in \Omega: v(z) = v(z_0)\}\)</span> is both closed and open in <span class="math inline">\(\Omega\)</span>, hence is exactly <span class="math inline">\(\Omega\)</span> by the connectedness of <span class="math inline">\(\Omega\)</span>. This means that <span class="math inline">\(v\)</span> is constant in <span class="math inline">\(\Omega\)</span>, a contradiction with our assumption. So <span class="math inline">\(Z(h)\)</span> must have no limit point in <span class="math inline">\(\Omega\)</span>. Put <span class="math inline">\(k = g/h\)</span>, we have <span class="math inline">\(k\)</span> is a meromorphic function in <span class="math inline">\(\Omega\)</span>. But <span class="math display">\[
+k = \frac{g}{h}=\frac{u_x - iu_y}{v_y+iv_x} = \frac{u_xv_y - u_yv_x}{v_x^2 + v_y^2}\in \mathbb{R}. \qquad (*)
+\]</span></p>
+<p>There does not exist any nonempty open subset of <span class="math inline">\(\mathbb{R}\)</span>. So <span class="math inline">\(k\)</span> is constant in each disc in which <span class="math inline">\(g\)</span> has no zero (by the open mapping theorem). Now, fix <span class="math inline">\(a\in Z(h)\)</span>. Let <span class="math inline">\(r&gt;0\)</span> such that <span class="math inline">\(D(0;r)\subset \Omega\)</span> and <span class="math inline">\(h(z)\neq 0\)</span> for every <span class="math inline">\(z\)</span> in <span class="math inline">\(D'(0;r)\)</span>. Then we have <span class="math inline">\(k\)</span> is constant in each of four discs <span class="math inline">\(D(a+r/2;r/2)\)</span>, <span class="math inline">\(D(a+ir/2;r/2)\)</span>, <span class="math inline">\(D(a-r/2;r/2)\)</span>, <span class="math inline">\(D(a-ir/2;r/2)\)</span>. Because the first disc intersects with the second, the second intersects with the third, and the third intersects with the fourth, we conclude that <span class="math inline">\(k\)</span> is constant in the union of these four discs, hence is constant in <span class="math inline">\(D(a;r/2)\)</span> because <span class="math inline">\(D(a;r/2)\)</span> is a subset of this union. So <span class="math inline">\(a\)</span> is a removable singularity and <span class="math inline">\(k\)</span> is constant in the neighborhood <span class="math inline">\(D(a;r/2)\)</span> of <span class="math inline">\(a\)</span>. By the connectedness of <span class="math inline">\(\Omega\)</span>, we get <span class="math inline">\(k\)</span> is constant in <span class="math inline">\(\Omega\)</span>. Denote this constant by <span class="math inline">\(C\)</span>. By <span class="math inline">\((*)\)</span>, <span class="math inline">\(C\in \mathbb{R}\)</span>, <span class="math inline">\(C\neq 0\)</span> (if not, <span class="math inline">\(u_x=u_y=0\)</span> in <span class="math inline">\(\Omega\)</span>, hence <span class="math inline">\(u\)</span> is constant), and <span class="math inline">\(u_x = Cv_y\)</span>, <span class="math inline">\(u_y = -Cv_x\)</span>. We get the answer for the first question. Now, if <span class="math inline">\(u^2\)</span> is harmornic in <span class="math inline">\(\Omega\)</span>, then, as above, we have <span class="math inline">\(u\)</span> is constant or <span class="math inline">\(u_x = Cu_y\)</span>, <span class="math inline">\(u_y = -Cu_x\)</span> for some real constant <span class="math inline">\(C\neq 0\)</span>. The second case leads to <span class="math inline">\(u_x = u_y = 0\)</span> in <span class="math inline">\(\Omega\)</span>, which also implies <span class="math inline">\(u\)</span> is constant. We affirm the second statement. (A simpler way to get this affirmation is that we take the Laplacian of <span class="math inline">\(u^2\)</span> and get <span class="math inline">\(u_x = u_y =0\)</span>.) For the last question, put <span class="math inline">\(f = u + iv\)</span>. Because <span class="math inline">\(f\in H(\Omega)\)</span>, we have <span class="math inline">\(u\)</span> and <span class="math inline">\(v\)</span> are harmonic in <span class="math inline">\(\Omega\)</span>. Now, <span class="math inline">\(|f|^2\)</span> is harmonic iff <span class="math inline">\(u^2 + v^2\)</span> is harmonic. Take the Laplacian of <span class="math inline">\(u^2+v^2\)</span>, we get <span class="math inline">\(u_x = v_x = u_y = v_y =0\)</span>. So <span class="math inline">\(u\)</span> and <span class="math inline">\(v\)</span> are constant, hence <span class="math inline">\(f\)</span> is constant. <span class="math inline">\(\Box\)</span></p>
+<p><strong>2.</strong> Suppose <span class="math inline">\(f\)</span> is a complex function in a region <span class="math inline">\(\Omega\)</span>, and both <span class="math inline">\(f\)</span> and <span class="math inline">\(f^2\)</span> are harmonic in <span class="math inline">\(\Omega\)</span>. Prove that either <span class="math inline">\(f\)</span> or <span class="math inline">\(\bar{f}\)</span> is holomorphic in <span class="math inline">\(\Omega\)</span>.</p>
+<p><strong>Proof.</strong> Put <span class="math inline">\(f = u + iv\)</span>. Because <span class="math inline">\(f\)</span> is harmonic, <span class="math inline">\(u\)</span> and <span class="math inline">\(v\)</span> are harmonic. Suppose <span class="math inline">\(f^2\)</span> is harmonic in <span class="math inline">\(\Omega\)</span>, which implies <span class="math inline">\(u^2 - v^2\)</span> and <span class="math inline">\(uv\)</span> are harmonic. By Exercise 1, <span class="math inline">\(uv\)</span> harmonic leads to <span class="math inline">\(u\)</span> is constant or <span class="math inline">\(v\)</span> is constant or there exists a nonzero real constant <span class="math inline">\(C\)</span> such that <span class="math inline">\(u_x = Cv_y\)</span> and <span class="math inline">\(u_y = -Cv_x\)</span>. If <span class="math inline">\(u\)</span> is constant, then <span class="math inline">\(v^2\)</span> is harmonic (because <span class="math inline">\(u^2-v^2\)</span> is harmonic), hence <span class="math inline">\(v\)</span> is constant by Excercise 1. Similarly for the case <span class="math inline">\(v\)</span> is constant, we conclude than <span class="math inline">\(f\)</span> is constant if <span class="math inline">\(u\)</span> or <span class="math inline">\(v\)</span> is constant, hence both <span class="math inline">\(f\)</span> and <span class="math inline">\(\bar{f}\)</span> is holomorphic. Suppose <span class="math inline">\(f\)</span> is not constant. Take the Laplacian of <span class="math inline">\(u^2-v^2\)</span>, we get <span class="math inline">\((u_x)^2+(u_y)^2 = (v_x)^2 + (v_y)^2\)</span>. Replace <span class="math inline">\(u_x = Cv_y\)</span> and <span class="math inline">\(u_y = -Cv_x\)</span> to this equation, we get <span class="math inline">\(C^2 = 1\)</span> unless <span class="math inline">\(v_x = v_y = 0\)</span> in <span class="math inline">\(\Omega\)</span>. The case <span class="math inline">\(C = 1\)</span> leads to the Cauchy-Riemann equations of <span class="math inline">\(f\)</span>, hence <span class="math inline">\(f\)</span> is holomorphic. The case <span class="math inline">\(C=-1\)</span> leads to the Cauchy-Riemann equations of <span class="math inline">\(\bar{f}\)</span>, hence <span class="math inline">\(\bar{f}\)</span> is holomorphic. We get the conclusion. (There is another way which does not take the advantage of the first question in Excercise 1. Take the Laplacian of <span class="math inline">\(u^2-v^2\)</span> and <span class="math inline">\(uv\)</span>, we get <span class="math inline">\((u_x)^2+(u_y)^2 = (v_x)^2 + (v_y)^2\)</span> and <span class="math inline">\(u_xv_x + u_yv_y=0\)</span>, which implies <span class="math inline">\((u_x+iv_x)^2 + (u_y+iv_y)^2 = 0\)</span>. Hence <span class="math display">\[
+(u_x+v_y+iv_x - i u_y)(u_x -v_y+iv_x+iu_y) = 0.
+\]</span></p>
+<p>Use <span class="math inline">\(ab=0 \Leftrightarrow a\bar{b}=0\)</span>, we get <span class="math display">\[
+(u_x+v_y+iv_x - i u_y)(u_x -v_y-iv_x-iu_y) = 0.
+\]</span></p>
+<p>Put <span class="math inline">\(g = u_x+v_y+iv_x - i u_y\)</span> and <span class="math inline">\(h = u_x -v_y-ivx-iu_y\)</span>, we get <span class="math inline">\(gh=0\)</span>. It is easy to check that <span class="math inline">\(g\)</span> and <span class="math inline">\(h\)</span> are holomorphic (by checking the Cauchy-Riemann equations, we get <span class="math inline">\(u_x-iu_y\)</span> and <span class="math inline">\(v_y+iv_x\)</span> are holomorphic). We claim that <span class="math inline">\(g=0\)</span> in <span class="math inline">\(\Omega\)</span> or <span class="math inline">\(h=0\)</span> in <span class="math inline">\(\Omega\)</span>. Suppose the contrary, because <span class="math inline">\(Z(g)\)</span> and <span class="math inline">\(Z(h)\)</span> are countable sets, <span class="math inline">\(Z(gh)\)</span> must be a countable set, which is a contradiction with <span class="math inline">\(Z(gh)=\Omega\)</span>. The case <span class="math inline">\(g=0\)</span> leads to <span class="math inline">\(f\)</span> is holomorphic. The case <span class="math inline">\(h=0\)</span> leads to <span class="math inline">\(\bar{f}\)</span> is holomorphic. <span class="math inline">\(\Box\)</span></p>
+<p><strong>3.</strong> If <span class="math inline">\(u\)</span> is a harmonic function in a region <span class="math inline">\(\Omega\)</span>, what can you say about the set of points at which the gradient of <span class="math inline">\(u\)</span> is <span class="math inline">\(0\)</span>? (This is the set on which <span class="math inline">\(u_x = u_y = 0\)</span>.)</p>
+<p><strong>Proof.</strong> <span class="math inline">\(K = \{z:u_x(z) = u_y(z) = 0\}\)</span> has no limit point in <span class="math inline">\(\Omega\)</span> (hence has at most countable elements) or <span class="math inline">\(K = \Omega\)</span>.</p>
+<p>Put <span class="math inline">\(f= u_x - i u_y\)</span>. If <span class="math inline">\(u\)</span> is harmonic then <span class="math inline">\(f\)</span> is a holomorphic function by checking its Cauchy-Riemann equations. Moreover, because <span class="math inline">\(K = Z(f)\)</span>, we get the conclusion. (The case <span class="math inline">\(K = \Omega\)</span> leads to <span class="math inline">\(u_x = u_y = 0\)</span> in <span class="math inline">\(\Omega\)</span>. Hence <span class="math inline">\(u\)</span> is constant.) <span class="math inline">\(\Box\)</span></p>
+</section>
+<section id="chapter-12---the-maximum-modulus-principle" class="level2">
+<h2 class="anchored" data-anchor-id="chapter-12---the-maximum-modulus-principle">Chapter 12 - The Maximum Modulus Principle</h2>
+<p><strong>1.</strong> Suppose <span class="math inline">\(\Delta\)</span> is a closed equilaterial triangle in the plane, with vertices <span class="math inline">\(a\)</span>, <span class="math inline">\(b\)</span>, <span class="math inline">\(c\)</span>. Find <span class="math inline">\(\max(|z-a||z-b||z-c|)\)</span> as <span class="math inline">\(z\)</span> range over <span class="math inline">\(\Delta\)</span>.</p>
+<p><strong>Proof.</strong> <span class="math inline">\(\max = \sqrt{3}|b-a|^3/8\)</span>.</p>
+<p>By the maximum modulus theorem, we have <span class="math display">\[
+\max\limits_{z\in\Delta}(|(z-a)(z-b)(z-c)|) = \max\limits_{z\in\partial\Delta}(|(z-a)(z-b)(z-c)|).
+\]</span></p>
+<p>Now, it is elementary to find the maximum of the right hand side, which is attained when <span class="math inline">\(z\)</span> is one of the middle points of the edges <span class="math inline">\(ab\)</span>, <span class="math inline">\(bc\)</span>, and <span class="math inline">\(ca\)</span>. Indeed, without loss of generality, suppose the maximum is attained at <span class="math inline">\(z\)</span> on <span class="math inline">\(ab\)</span>. Put <span class="math inline">\(x = |z-a|\)</span> and <span class="math inline">\(l = |b-a|\)</span>. So the maximum is <span class="math display">\[
+x(l-x)\sqrt{(x-l/2)^2 + (\sqrt{3}l/2)^2} = x(l-x)\sqrt{l^2-x(l-x)}.
+\]</span></p>
+<p>When <span class="math inline">\(x\)</span> ranges over <span class="math inline">\([0,l]\)</span>, <span class="math inline">\(x(l-x)\)</span> ranges over <span class="math inline">\([0,l^2/4]\)</span>. Put <span class="math inline">\(t = x(l-x)\)</span>, we get the maximum is <span class="math inline">\(t\sqrt{l^2-t}\)</span>, or <span class="math inline">\(\sqrt{l^2t^2-t^3}\)</span>. The derivative of <span class="math inline">\(l^2t^2-t^3\)</span> according to <span class="math inline">\(t\)</span> is <span class="math inline">\((2l^2-3t)t\)</span>, which is greater than or equal to <span class="math inline">\(0\)</span> when <span class="math inline">\(t\)</span> ranges over <span class="math inline">\([0,l^2/4]\)</span>. So <span class="math inline">\(t\sqrt{l^2-t}\)</span> is increasing when <span class="math inline">\(t\)</span> runs from <span class="math inline">\(0\)</span> to <span class="math inline">\(l^2/4\)</span>, and the maximum is attained when <span class="math inline">\(t = l^2/4\)</span>, which is the case <span class="math inline">\(x = l/2\)</span>. <span class="math inline">\(\Box\)</span></p>
+<p><strong>3.</strong> Suppose <span class="math inline">\(f\in H(\Omega)\)</span>. Under what conditions can <span class="math inline">\(|f|\)</span> have a local minimum in <span class="math inline">\(\Omega\)</span>.</p>
+<p><strong>Proof.</strong> <span class="math inline">\(f\)</span> is constant or <span class="math inline">\(f\)</span> has at least one zero in <span class="math inline">\(\Omega\)</span>.</p>
+<p>On the contrary, suppose <span class="math inline">\(f\)</span> is not constant and <span class="math inline">\(f\)</span> has no zero in <span class="math inline">\(\Omega\)</span>. So <span class="math inline">\(f^{-1}\in H(\Omega)\)</span> and <span class="math inline">\(|f|\)</span> has a local minimum at <span class="math inline">\(a\)</span> iff <span class="math inline">\(|f^{-1}|\)</span> has a local maximum at <span class="math inline">\(a\)</span>. By applying the maximum modulus theorem, if <span class="math inline">\(|f^{-1}|\)</span> has a local maximum then <span class="math inline">\(f^{-1}\)</span> must be constant, hence <span class="math inline">\(f\)</span> is constant. So <span class="math inline">\(f\)</span> has no local minimum on <span class="math inline">\(\Omega\)</span>. (For more details, we consider the case <span class="math inline">\(f\)</span> is not constant. Clearly <span class="math inline">\(|f|\)</span> has local minima at zeroes of <span class="math inline">\(f\)</span>. Reversely, let <span class="math inline">\(a\)</span> be a point at which <span class="math inline">\(f\)</span> has a local minimum. If <span class="math inline">\(a \neq 0\)</span>, then <span class="math inline">\(f\neq 0\)</span> in an open neighborhood of <span class="math inline">\(a\)</span>. As above, <span class="math inline">\(f\)</span> must be constant in this neighborhood, hence be constant in <span class="math inline">\(\Omega\)</span>. So, in this case, we can see that the set of all local minima of <span class="math inline">\(f\)</span> is <span class="math inline">\(Z(f)\)</span>, the set of all zeroes of <span class="math inline">\(f\)</span>.) <span class="math inline">\(\Box\)</span></p>
+<p><strong>4.</strong> <span class="math inline">\((a)\)</span> Suppose <span class="math inline">\(\Omega\)</span> is a region, <span class="math inline">\(D\)</span> is a disc, <span class="math inline">\(\bar{D}\subset \Omega\)</span>, <span class="math inline">\(f\in H(\Omega)\)</span>, <span class="math inline">\(f\)</span> is not constant, and <span class="math inline">\(|f|\)</span> is constant on the boundary of <span class="math inline">\(D\)</span>. Prove that <span class="math inline">\(f\)</span> has at least one zero in <span class="math inline">\(D\)</span>.</p>
+<p><span class="math inline">\((b)\)</span> Find all entire functions <span class="math inline">\(f\)</span> such that <span class="math inline">\(|f(z)| = 1\)</span> whenever <span class="math inline">\(|z|=1\)</span>.</p>
+<p><strong>Proof.</strong> <span class="math inline">\((a)\)</span> Suppose that <span class="math inline">\(f\)</span> has no zero in <span class="math inline">\(D\)</span>. If <span class="math inline">\(|f|=0\)</span> on <span class="math inline">\(\partial D\)</span>, then by the maximum modulus theorem, <span class="math inline">\(|f|=0\)</span> in <span class="math inline">\(D\)</span>, hence <span class="math inline">\(f\)</span> is constant. So <span class="math inline">\(f\neq 0\)</span> on <span class="math inline">\(\partial D\)</span>, hence <span class="math inline">\(f \neq 0\)</span> on <span class="math inline">\(\bar{D}\)</span>. Put <span class="math inline">\(c&gt;0\)</span> be the constant value of <span class="math inline">\(|f|\)</span> on <span class="math inline">\(\partial D\)</span>. By the maximum modulus theorem, we have <span class="math inline">\(|f|\leq c\)</span> in <span class="math inline">\(D\)</span>. Consider the function <span class="math inline">\(f^{-1}\)</span> on <span class="math inline">\(\bar{D}\)</span>. It is clear that <span class="math inline">\(f^{-1}\in C(\bar{D})\)</span> and <span class="math inline">\(f^{-1}\in H(D)\)</span>. By the maximum modulus theorem, we have <span class="math inline">\(|f^{-1}| \leq 1/c\)</span> in <span class="math inline">\(D\)</span>, hence <span class="math inline">\(|f| \geq c\)</span> in <span class="math inline">\(D\)</span>. So <span class="math inline">\(|f| = c\)</span> in <span class="math inline">\(D\)</span>, hence <span class="math inline">\(f(D) \subset \partial D(0;c)\)</span>. By the open mapping theorem, <span class="math inline">\(f\)</span> must be constant in <span class="math inline">\(D\)</span>, hence be constant in <span class="math inline">\(\Omega\)</span>. This contradiction shows that <span class="math inline">\(f\)</span> must have at least one zero in <span class="math inline">\(D\)</span>. (In this proof, we just need <span class="math inline">\(f\)</span> is holomorphic in <span class="math inline">\(D\)</span> and continuous on <span class="math inline">\(\bar{D}\)</span>.)</p>
+<p><span class="math inline">\((b)\)</span> <span class="math inline">\(f\)</span> is of the form <span class="math inline">\(cz^m\)</span>, where <span class="math inline">\(|c| = 1\)</span> and <span class="math inline">\(m \geq 0\)</span>.</p>
+<p>Suppose that <span class="math inline">\(f\)</span> is not constant. By <span class="math inline">\((a)\)</span>, <span class="math inline">\(f\)</span> has at least one zero in <span class="math inline">\(D(0;1)\)</span>. The set of all zeroes of <span class="math inline">\(f\)</span> has no limit point in <span class="math inline">\(\mathbb{C}\)</span>. Because <span class="math inline">\(\bar{D}(0;1)\)</span> is compact, the number of zeroes of <span class="math inline">\(f\)</span> in <span class="math inline">\(D(0;1)\)</span> is finite. Let <span class="math inline">\(a_1,a_2,\ldots,a_n\in D(0;1)\)</span> be such zeroes and <span class="math inline">\(m_1,m_2,\ldots,m_n\)</span> be the orders of zeroes of <span class="math inline">\(f\)</span> at these points. Put <span class="math display">\[\begin{aligned}
+g(z) &amp;= f(z)\prod\limits_{i=1}^n \left(\frac{1-\bar{a}_iz}{z-a_i}\right)^{m_i}\\
+&amp;=\frac{f(z)}{(z-\bar{a}_1)^{m_1}(z-\bar{a}_2)^{m_2}\ldots(z-\bar{a}_n)^{m_n}}\prod\limits_{i=1}^n (1-\bar{a}_iz)
+\end{aligned}
+\]</span></p>
+<p>for all <span class="math inline">\(z\in \mathbb{C}\)</span>. It is clear that <span class="math inline">\(g\in H(\mathbb{C})\)</span> and <span class="math inline">\(g\)</span> has no zero in <span class="math inline">\(D(0;1)\)</span>. Moreover, for <span class="math inline">\(|z| = 1\)</span>, we have <span class="math display">\[
+\left|\frac{1-\bar{a}_iz}{z-a_i}\right| = \left|z.\frac{1/z-\bar{a}_i}{z-a_i} \right| = \left|z.\frac{\bar{z}-\bar{a}_i}{z-a_i} \right| = \left|z.\frac{\overline{z - a_i}}{z-a_i} \right| = 1\qquad (i=\overline{1,n}).
+\]</span></p>
+<p>Hence <span class="math inline">\(|g(z)|=|f(z)|=1\)</span> for every <span class="math inline">\(z\in \partial D(0;1)\)</span>. By <span class="math inline">\((a)\)</span>, <span class="math inline">\(g\)</span> must be a constant, which will be denoted by <span class="math inline">\(c\)</span>. Clearly <span class="math inline">\(|c|=1\)</span>. If there is exists <span class="math inline">\(i\)</span> such that <span class="math inline">\(a_i\neq 0\)</span>, then <span class="math inline">\(g(1/\bar{a}_i) = 0\)</span>, which is a contradiction to <span class="math inline">\(|c|=1\)</span>. So <span class="math inline">\(n=1\)</span> and <span class="math inline">\(a_1 = 0\)</span>. This means that <span class="math inline">\(f(z) = cz^{m_1}\)</span>, where <span class="math inline">\(|c|=1\)</span> and <span class="math inline">\(m_1 &gt; 0\)</span>. Together with the case <span class="math inline">\(f\)</span> is a constant, we see that <span class="math inline">\(f\)</span> must be in the form <span class="math inline">\(cz^{m}\)</span>, where <span class="math inline">\(|c|=1\)</span> and <span class="math inline">\(m\geq 0\)</span>. In the end, it is clear that these functions satisfy our requirement. <span class="math inline">\(\Box\)</span></p>
+<p><strong>5.</strong> Suppose <span class="math inline">\(\Omega\)</span> is a bounded region, <span class="math inline">\(\{f_n\}\)</span> is a sequence of continuous functions on <span class="math inline">\(\bar{\Omega}\)</span> which are holomorphic in <span class="math inline">\(\Omega\)</span>, and <span class="math inline">\(\{f_n\}\)</span> converges uniformly on the boundary of <span class="math inline">\(\Omega\)</span>. Prove that <span class="math inline">\(\{f_n\}\)</span> converges uniformly on <span class="math inline">\(\bar{\Omega}\)</span>.</p>
+<p><strong>Proof.</strong> Fix <span class="math inline">\(\epsilon &gt; 0\)</span>. There is <span class="math inline">\(N\)</span> large enough such that for every <span class="math inline">\(m,n &gt; N\)</span>, we have <span class="math inline">\(|f_n(z) - f_m(z)| &lt; \epsilon\)</span> for every <span class="math inline">\(z\in \partial \Omega\)</span>. By the maximum modulus theorem, for every <span class="math inline">\(m,n&gt;N\)</span>, we have <span class="math display">\[
+|f_n(z) - f_m(z)| &lt; \epsilon \qquad (*)
+\]</span></p>
+<p>for every <span class="math inline">\(z\in \bar{\Omega}\)</span>. So for each <span class="math inline">\(z\in \partial\Omega\)</span>, <span class="math inline">\(\{f_n(z)\}\)</span> is a Cauchy sequence, hence converges. For each <span class="math inline">\(z\)</span>, put <span class="math inline">\(f(z)\)</span> be this limit. Let <span class="math inline">\(m\)</span> converges to <span class="math inline">\(\infty\)</span> in <span class="math inline">\((*)\)</span>, we get the conclusion that <span class="math inline">\(\{f_n\}\)</span> converges to <span class="math inline">\(f\)</span> uniformly on <span class="math inline">\(\bar{\Omega}\)</span>. <span class="math inline">\(\Box\)</span></p>
+<p><strong>6.</strong> Suppose <span class="math inline">\(f\in H(\Omega)\)</span>, <span class="math inline">\(\Gamma\)</span> is a cycle in <span class="math inline">\(\Omega\)</span> such that <span class="math inline">\(\mathrm{Ind}_{\Gamma}(\alpha) = 0\)</span> for all <span class="math inline">\(\alpha \notin \Omega\)</span>, <span class="math inline">\(|f(\zeta)|\leq 1\)</span> for every <span class="math inline">\(\zeta \in\Gamma^*\)</span>, and <span class="math inline">\(\mathrm{Ind}_{\Gamma}(z) \neq 0\)</span>. Prove that <span class="math inline">\(|f(z)|\leq 1\)</span>.</p>
+<p><strong>Proof.</strong> Let <span class="math inline">\(U\)</span> be an open connected component of <span class="math inline">\(\mathbb{C}\backslash \Gamma\)</span> such that the index of any point in <span class="math inline">\(U\)</span> with respect to <span class="math inline">\(\Gamma\)</span> is not zero. So <span class="math inline">\(U\)</span> is bounded and, by assumption, <span class="math inline">\(U \subset \Omega\)</span>. Let <span class="math inline">\(z \in \partial U\)</span>. Because <span class="math inline">\(z \notin U\)</span> and also <span class="math inline">\(z\)</span> can not be in any other component of <span class="math inline">\(\mathbb{C}\backslash \Gamma\)</span>, we have <span class="math inline">\(z\in \Gamma\)</span>. So <span class="math inline">\(\partial U\subset \Gamma\)</span> and <span class="math inline">\(\bar{U} \subset \Omega\)</span>. By assumption, we get <span class="math inline">\(\|f\|_{\partial U} \leq 1\)</span>. Moreover, because <span class="math inline">\(U\)</span> is bounded, we have <span class="math inline">\(\bar{U}\)</span> is compact. By the maximum modulus theorem, we get <span class="math inline">\(|f(z)| \leq 1\)</span> for every <span class="math inline">\(z\in U\)</span>. So <span class="math inline">\(|f(z)|\leq 1\)</span> for every <span class="math inline">\(z\)</span> such that <span class="math inline">\(\mathrm{Ind}(z) \neq 0\)</span>. <span class="math inline">\(\Box\)</span></p>
+<p><strong>7.</strong> In the proof of Theorem 12.8 it was tacitly assumed that <span class="math inline">\(M(a)&gt;0\)</span> and <span class="math inline">\(M(b) &gt; 0\)</span>. Show that the theorem is true if <span class="math inline">\(M(a) = 0\)</span>, and that then <span class="math inline">\(f(z) = 0\)</span> for all <span class="math inline">\(z\in \Omega\)</span>.</p>
+<p><strong>Proof.</strong> When <span class="math inline">\(M(a) = 0\)</span>, consider the segment <span class="math inline">\(L = \{a+ yi: y\in (0,1)\}\)</span>, it is plain that <span class="math inline">\(f\)</span> is vanishing on <span class="math inline">\(L\)</span>. Put <span class="math inline">\(\Theta = \Omega \cup L \cup \{x+yi: 2a - b &lt; x &lt; b\}\)</span>. By the Schwarz reflection principle, we get a function <span class="math inline">\(F \in H(\Theta)\)</span> such that <span class="math inline">\(F=f\)</span> on <span class="math inline">\(\Omega\cup L\)</span>. Because <span class="math inline">\(\Theta\)</span> is a region and <span class="math inline">\(F\)</span> is vanishing on <span class="math inline">\(L\)</span>, <span class="math inline">\(F\)</span> must be vanishing on <span class="math inline">\(\Theta\)</span>, hence <span class="math inline">\(f\)</span> is vanishing on <span class="math inline">\(\Omega\)</span>. In other words, we have <span class="math inline">\(M(x) = 0\)</span> for all <span class="math inline">\(x \in (a,b)\)</span>. (To verify that we can apply the Schwarz reflection principle here, consider the map <span class="math inline">\(z \to i(z-a)\)</span>.) <span class="math inline">\(\Box\)</span></p>
+<p><strong>15.</strong> Suppose <span class="math inline">\(f\in H(U)\)</span>. Prove that there is a sequence <span class="math inline">\(\{z_n\}\)</span> in <span class="math inline">\(U\)</span> such that <span class="math inline">\(|z_n|\to 1\)</span> and <span class="math inline">\(\{f(z_n)\}\)</span> is bounded.</p>
+<p><strong>Proof.</strong> The problem is plain for the case <span class="math inline">\(f\)</span> is constant. For the case <span class="math inline">\(f\)</span> has no zero in <span class="math inline">\(U\)</span>. For each <span class="math inline">\(r\in (0,1)\)</span>, apply the maximum modulus theorem for the function <span class="math inline">\(f^{-1}\)</span> with the domain <span class="math inline">\(\bar{D}(0;r)\)</span>, we get <span class="math inline">\(|f(0)|\geq \min_{z\in\partial D(0;r)}|f(z)|\)</span>, hence we get a point <span class="math inline">\(a_r\)</span> such that <span class="math inline">\(|a_r| = r\)</span> and <span class="math inline">\(|f(a_r)|\leq |f(0)|\)</span>. So the sequence <span class="math inline">\(\{a_{1-1/n}\}\)</span> satisfies our requirement. Now suppose that <span class="math inline">\(f\)</span> is not constant and <span class="math inline">\(f\)</span> has at least one zero in <span class="math inline">\(U\)</span>. Put <span class="math inline">\(Z(f)\)</span> be the set of zeroes of <span class="math inline">\(f\)</span> in <span class="math inline">\(U\)</span>. It is clear that <span class="math inline">\(Z(f)\)</span> has no limit point in <span class="math inline">\(U\)</span>. If <span class="math inline">\(Z(f)\)</span> is an infinite set then it must have a limit point in <span class="math inline">\(\bar{U}\)</span>, which is actually on <span class="math inline">\(\partial U\)</span>. So we obtain a sequence <span class="math inline">\(\{z_n\}\subset U\)</span> converging to this limit point (hence <span class="math inline">\(|z_n|\to 1\)</span>) and <span class="math inline">\(|f(z_n)|=0\)</span> for every <span class="math inline">\(n\)</span>. We get the conclusion for this case. The remaining case is that <span class="math inline">\(Z(f)\)</span> is a finite set. Put <span class="math inline">\(Z(f) = \{a_1,a_2,\ldots,a_n\}\)</span> and let <span class="math inline">\(m_1,m_2,\ldots,m_n\)</span> be the orders of zeroes of <span class="math inline">\(f\)</span> at <span class="math inline">\(a_1,a_2,\ldots,a_n\)</span> correspondingly. Put <span class="math display">\[
+g(z) = \frac{f(z)}{(z-a_1)^{m_1}(z-a_2)^{m_2}\ldots(z-a_n)^{m_n}}\qquad (z\in U).
+\]</span></p>
+<p>It is clear that <span class="math inline">\(g\in H(U)\)</span> and <span class="math inline">\(g\)</span> has no zero in <span class="math inline">\(U\)</span>. As above, we get a sequence <span class="math inline">\(\{z_n\}\)</span> in <span class="math inline">\(U\)</span> such that <span class="math inline">\(|z_n|\to 1\)</span> and <span class="math inline">\(|g(z_n)| &lt; M\)</span> for some <span class="math inline">\(M &gt; 0\)</span>. For <span class="math inline">\(|z| &gt; \max\{|a_1|,|a_2|,\ldots,|a_n|\}\)</span>, we have <span class="math display">\[\begin{aligned}
+|f(z)| &amp;= |g(z)||z_n-a_1|^{m_1}|z_n-a_2|^{m_2}\ldots|z-a_n|^{m_n}\\
+&amp;\leq |g(z)|(1-|a_1|)^{m_1}(1-|a_2|)^{m_2}\ldots(1-|a_n|)^{m_n}.
+\end{aligned}
+\]</span></p>
+<p>So for <span class="math inline">\(n\)</span> large enough, we have <span class="math inline">\(|z_n| &gt; \max\{|a_1|,|a_2|,\ldots,|a_n|\}\)</span> and <span class="math display">\[
+|f(z_n)| &lt; M(1-|a_1|)^{m_1}(1-|a_2|)^{m_2}\ldots(1-|a_n|)^{m_n}.
+\]</span></p>
+<p>The sequence <span class="math inline">\(\{z_n\}\)</span> is the one we want to find. <span class="math inline">\(\Box\)</span></p>
+<p><strong>16.</strong> Suppose <span class="math inline">\(\Omega\)</span> is a bounded region, <span class="math inline">\(f\in H(\Omega)\)</span>, and <span class="math display">\[
+\limsup\limits_{n\to\infty} |f(z_n)| \leq M
+\]</span></p>
+<p>for every sequence <span class="math inline">\(\{z_n\}\)</span> in <span class="math inline">\(\Omega\)</span> which converges to a boundary point of <span class="math inline">\(\Omega\)</span>. Prove that <span class="math inline">\(|f(z)|\leq M\)</span> for all <span class="math inline">\(z\in \Omega\)</span>.</p>
+<p><strong>Proof.</strong> It is enough to prove that <span class="math inline">\(|f(z)| \leq M + \epsilon\)</span> for every <span class="math inline">\(z\in \Omega\)</span> and every <span class="math inline">\(\epsilon &gt; 0\)</span>. Instead, fix <span class="math inline">\(\epsilon &gt;0\)</span>, we will prove that the set <span class="math inline">\(A = \{z\in \Omega: |f(z)| &gt; M+\epsilon\}\)</span> is empty. On the contrary, suppose that <span class="math inline">\(A\)</span> is not empty. It is plain that <span class="math inline">\(A\)</span> is open. Let <span class="math inline">\(U\)</span> be a nonempty connected open component of <span class="math inline">\(A\)</span> and let <span class="math inline">\(z\in \partial U\subset \bar{\Omega}\)</span>. There is a sequence <span class="math inline">\(\{z_n\}\subset U\)</span> such that <span class="math inline">\(z_n \to z\)</span> and <span class="math inline">\(|f(z_n)|&gt; M+\epsilon\)</span> for all <span class="math inline">\(n\)</span>. Then we have <span class="math inline">\(\limsup_{n\to\infty} |f(z_n)| \geq M + \epsilon\)</span>, which is a contradiction to our hypothesis if <span class="math inline">\(z\in \partial \Omega\)</span>. So <span class="math inline">\(z\in \Omega\)</span> for all <span class="math inline">\(z\in\partial U\)</span>. In other words, <span class="math inline">\(\bar{U}\subset \Omega\)</span>. Because <span class="math inline">\(\Omega\)</span> is bounded, we have <span class="math inline">\(\bar{U}\)</span> is a compact set. Moreover, for <span class="math inline">\(z\in \partial U\)</span>, we have <span class="math inline">\(|f(z)| \geq M + \epsilon\)</span>, hence <span class="math inline">\(|f(z)| = M +\epsilon\)</span> (if not then <span class="math inline">\(z\in A\)</span>, hence <span class="math inline">\(z\in A\backslash U\)</span>, which is an open set, hence <span class="math inline">\(z\notin \bar{U}\)</span>). Apply the maximum modulus theorem for <span class="math inline">\(f\)</span> with the domain <span class="math inline">\(\bar{U}\)</span>, we get <span class="math inline">\(|f(z)|\leq M + \epsilon\)</span> for every <span class="math inline">\(z\in U\)</span>, which is a contradiction with our definition of <span class="math inline">\(U\)</span>. So <span class="math inline">\(A\)</span> must be empty. <span class="math inline">\(\Box\)</span></p>
+</section>
+<section id="chapter-13---approximation-by-rational-functions" class="level2">
+<h2 class="anchored" data-anchor-id="chapter-13---approximation-by-rational-functions">Chapter 13 - Approximation by Rational Functions</h2>
+<p><strong>1.</strong> Prove that every meromorphic function on <span class="math inline">\(S^2\)</span> is rational.</p>
+<p><strong>Proof.</strong> Note that <span class="math inline">\(f\)</span> must have an isolated singularity at <span class="math inline">\(\infty\)</span>, which means that <span class="math inline">\(f\)</span> is holomorphic in <span class="math inline">\(D'(\infty;r)=\{z\in \mathbb{C}:|z|&gt; r\}\)</span>. This implies that the set of all poles of <span class="math inline">\(f\)</span> in <span class="math inline">\(\mathbb{C}\)</span> is finite (because this set has no limit point and it is a subset of the compact set <span class="math inline">\(\overline{D}(0;r)\)</span>). If we subtract from <span class="math inline">\(f\)</span> the sum of all principle parts at these poles, we get an entire function <span class="math inline">\(g\)</span> with an isolated singularity at <span class="math inline">\(\infty\)</span>. Of course, this singularity of <span class="math inline">\(g\)</span> at <span class="math inline">\(\infty\)</span> can not be an essential singularity because of our hypothesis that <span class="math inline">\(f\)</span> is meromorphic on <span class="math inline">\(S^2\)</span>. If this singularity is a removable singularity then <span class="math inline">\(g\)</span> is bounded in a neighborhood of <span class="math inline">\(\infty\)</span>, hence is bounded in <span class="math inline">\(\mathbb{C}\)</span>, hence is constant by Liouville’s theorem. If this singularity is a pole, the principal part of <span class="math inline">\(g\)</span> at <span class="math inline">\(\infty\)</span> is a polynomial. Subtract this polynomial from <span class="math inline">\(g\)</span>, we again get an entire function with a removable singularity at <span class="math inline">\(\infty\)</span>. Both cases lead to the same conclusion that <span class="math inline">\(f\)</span> is a rational function. <span class="math inline">\(\Box\)</span></p>
+<p><strong>2.</strong> Let <span class="math inline">\(\Omega = \{z:|z|&lt;1 \text{ and }|2z-1|&gt;1\}\)</span>, and suppose <span class="math inline">\(f\in H(\Omega)\)</span>.</p>
+<p><span class="math inline">\((a)\)</span> Must there exist such a sequence of polynomials <span class="math inline">\(P_n\)</span> such that <span class="math inline">\(P_n \to f\)</span> uniformly on compact subsets of <span class="math inline">\(\Omega\)</span>?</p>
+<p><span class="math inline">\((b)\)</span> Must there exist such a sequence which converges to <span class="math inline">\(f\)</span> uniformly in <span class="math inline">\(\Omega\)</span>?</p>
+<p><span class="math inline">\((c)\)</span> Is the answer to <span class="math inline">\((b)\)</span> changed if we require more of <span class="math inline">\(f\)</span>, namely, that <span class="math inline">\(f\)</span> be holomorphic in some open set which contains the closure of <span class="math inline">\(\Omega\)</span>?</p>
+<p><strong>Proof.</strong> <span class="math inline">\((a)\)</span> Yes. Because <span class="math inline">\(S^2\backslash \Omega\)</span> is connected (then apply Runge’s theorem).</p>
+<p><span class="math inline">\((b)\)</span> No.&nbsp;See <span class="math inline">\((c)\)</span> or for simple, consider the function <span class="math inline">\(f(z) = z^{-1}\)</span> with a similar argument.</p>
+<p><span class="math inline">\((c)\)</span> No.&nbsp;Consider the function <span class="math inline">\(f(z) = (z-\frac{1}{10})^{-1}\)</span>. Suppose that there exists a sequence of polynomials <span class="math inline">\(P_n\)</span> such that <span class="math inline">\(P_n\)</span> converges to <span class="math inline">\(f\)</span> uniformly in <span class="math inline">\(\Omega\)</span>. This implies there there exists a polynomial <span class="math inline">\(P\)</span> such that <span class="math display">\[
+|P(z) - (z-1/10)^{-1}| &lt; 1
+\]</span> for every <span class="math inline">\(z\in \Omega\)</span>. Fix <span class="math inline">\(z \in \partial D(0;1)\)</span>. Let <span class="math inline">\(\{z_n\}\)</span> be a sequence in <span class="math inline">\(\Omega\)</span> converges to <span class="math inline">\(z\)</span>. We have <span class="math display">\[\begin{aligned}
+|P(z)| = \lim\limits_{n\to\infty}|P(z_n)| &amp;\leq 1 + \lim\limits_{n\to\infty}\frac{1}{\left| z_n-1/10\right| } = 1 + \frac{1}{\left| z-1/10\right| }\\
+&amp;\leq 1 + \frac{1}{1 - 1/10} &lt; 3.
+\end{aligned}
+\]</span></p>
+<p>By the maximum modulus theorem, <span class="math inline">\(|P(z)| &lt; 3\)</span> for every <span class="math inline">\(z \in D(0;1)\)</span>. However, for <span class="math inline">\(z = \frac{-1}{10}\)</span>, we have <span class="math display">\[
+|P(-1/10)| &gt; \frac{1}{\left|-1/10 - 1/10\right|} - 1 = 4.
+\]</span></p>
+<p>This contradiction shows that there is not any sequence of polynomials which converges to <span class="math inline">\((z-\frac{1}{10})^{-1}\)</span> uniformly in <span class="math inline">\(\Omega\)</span>. <span class="math inline">\(\Box\)</span></p>
+<p><strong>3.</strong> Is there a sequence of polynomials <span class="math inline">\(P_n\)</span> such that <span class="math inline">\(P_n(0)=1\)</span> for <span class="math inline">\(n=1,2,3,\ldots\)</span>, but <span class="math inline">\(P_n(z)\to 0\)</span> for every <span class="math inline">\(z\neq 0\)</span>, as <span class="math inline">\(n\to \infty\)</span>?</p>
+<p><strong>Proof.</strong> Yes. For each <span class="math inline">\(n\)</span>, let <span class="math inline">\(K_n\)</span> be the compact set <span class="math inline">\(D_{n} \cup L_{n} \cup \{0\}\)</span>, where <span class="math inline">\(D_{n} = \{z\in \bar{D}(0;n):|\mathrm{Im} z|\geq \frac{1}{n}\}\)</span>, <span class="math inline">\(L_n = \{x+yi: y = 0, \frac{1}{n}\leq |x|\leq n\}\)</span>. Let <span class="math inline">\(U_n\)</span> be an neighborhood of <span class="math inline">\(D_n \cup L_n\)</span> and <span class="math inline">\(V_n\)</span> be an neighborhood of <span class="math inline">\(0\)</span> such that <span class="math inline">\(U_n\)</span> and <span class="math inline">\(V_n\)</span> are disjoint. Let <span class="math inline">\(f_n \in H(U_n \cup V_n)\)</span> be a function whose values are <span class="math inline">\(0\)</span> in <span class="math inline">\(U_n\)</span> and <span class="math inline">\(1\)</span> in <span class="math inline">\(V_n\)</span>. Because <span class="math inline">\(S^2\backslash K_n\)</span> is connected, apply Runge’s theorem, we get a polynomial <span class="math inline">\(P_n\)</span> such that <span class="math inline">\(|P_n(z) - f_n(z)| &lt; \frac{1}{n}\)</span> for every <span class="math inline">\(z\in K_n\)</span>, hence <span class="math inline">\(|P_n(z)| &lt; \frac{1}{n}\)</span> for every <span class="math inline">\(z\in D_n \cup L_n\)</span> and <span class="math inline">\(|P_n(0)-1| &lt; \frac{1}{n}\)</span>. Now, because <span class="math inline">\(\{D_n\cup L_n\}\)</span> is an increasing sequence of sets whose union is <span class="math inline">\(\mathbb{C}\backslash \{0\}\)</span>, we can see that the sequence of polynomials <span class="math inline">\(P_n\)</span> satisfies <span class="math inline">\(P_n(0) \to 1\)</span> as <span class="math inline">\(n \to \infty\)</span> and for <span class="math inline">\(z \neq 0\)</span>, <span class="math inline">\(P_n(z) \to 0\)</span> as <span class="math inline">\(n \to \infty\)</span>. Replace <span class="math inline">\(P_n\)</span> by <span class="math inline">\(P_n - P_n(0) + 1\)</span>, we get a sequence of polynomials satisfying our requirement. <span class="math inline">\(\Box\)</span></p>
+<p><strong>4.</strong> Is there a sequence of polynomials <span class="math inline">\(P_n\)</span> such that <span class="math display">\[
+\lim\limits_{n\to\infty}P_n(z) =
+\begin{cases}
+1 &amp; \text{if }\mathrm{Im}z &gt; 0,\\
+0 &amp;\text{if } z \text{ is real},\\
+-1 &amp; \text{if }\mathrm{Im}z &lt; 0?
+\end{cases}
+\]</span></p>
+<p><strong>Proof.</strong> Yes. For each <span class="math inline">\(n\)</span>, let <span class="math inline">\(K_n\)</span> be the compact set $D_n E_n L_n $, where <span class="math inline">\(D_n = \{z \in\bar{D}(0;n):\mathrm{Im}z\geq \frac{1}{n}\}\)</span>, <span class="math inline">\(E_n = \{z \in\bar{D}(0;n):\mathrm{Im}z\leq -\frac{1}{n}\}\)</span>, and <span class="math inline">\(L_n = \{ x + yi:y = 0, |x| \leq n\}\)</span>. Let <span class="math inline">\(U_n\)</span> be an neighborhood of <span class="math inline">\(D_n\)</span>, <span class="math inline">\(V_n\)</span> be an neighborhood of <span class="math inline">\(E_n\)</span>, and <span class="math inline">\(W_n\)</span> be an neighborhood of <span class="math inline">\(L_n\)</span> such that <span class="math inline">\(U_n\)</span>, <span class="math inline">\(V_n\)</span>, and <span class="math inline">\(W_n\)</span> are pairwise disjoint. Now let <span class="math inline">\(f_n\in H(U_n\cup V_n \cup W_n)\)</span> be a function whose values are <span class="math inline">\(1\)</span> in <span class="math inline">\(U_n\)</span>, <span class="math inline">\(-1\)</span> in <span class="math inline">\(V_n\)</span>, and <span class="math inline">\(0\)</span> in <span class="math inline">\(L_n\)</span>. Because <span class="math inline">\(S^2\backslash K_n\)</span> is connected, apply Runge’s theorem, we get a polynomial <span class="math inline">\(P_n\)</span> such that <span class="math inline">\(|P_n(z)-f_n(z)| &lt; \frac{1}{n}\)</span> for every <span class="math inline">\(z\in K_n\)</span>, hence <span class="math inline">\(|P_n(z)-1| &lt; \frac{1}{n}\)</span> for every <span class="math inline">\(z\in D_n\)</span>, <span class="math inline">\(|P_n(z)+1| &lt; \frac{1}{n}\)</span> for every <span class="math inline">\(z\in E_n\)</span>, and <span class="math inline">\(|P_n(z)| &lt; \frac{1}{n}\)</span> for every <span class="math inline">\(z\in L_n\)</span>. Because <span class="math inline">\(\{D_n\}\)</span>, <span class="math inline">\(\{E_n\}\)</span>, and <span class="math inline">\(\{L_n\}\)</span> are three increasing sequences of sets whose unions are open upper half plane, open lower half plane, and real line correspondingly, we can see that the sequence of polynomials <span class="math inline">\(P_n\)</span> satisfies our requiment. <span class="math inline">\(\Box\)</span></p>
+<p><strong>7.</strong> Show that in Theorem 13.9 we need not assume that <span class="math inline">\(A\)</span> intersects each component of <span class="math inline">\(S^2\backslash \Omega\)</span>. It is enough to assume that the closure of <span class="math inline">\(A\)</span> intersects each component of <span class="math inline">\(S^2\backslash \Omega\)</span>.</p>
+<p><strong>Proof.</strong> We have <span class="math inline">\(\Omega\)</span> is the union of a sequence <span class="math inline">\(\{K_n\}\)</span> of compact sets such that <span class="math inline">\(K_n\)</span> lies in the interior of <span class="math inline">\(K_{n+1}\)</span> for every <span class="math inline">\(n\)</span>, every compact subsets of <span class="math inline">\(\Omega\)</span> lies in some <span class="math inline">\(K_n\)</span>, and for every <span class="math inline">\(n\)</span>, every component of <span class="math inline">\(S^2\backslash K_n\)</span> contains a component of <span class="math inline">\(S^2 \backslash \Omega\)</span> (Theorem 13.3). Fix <span class="math inline">\(n\)</span>. Follow the proof of Theorem 13.9, it is enough to show that each component of <span class="math inline">\(S^2 \backslash K_n\)</span> contains a point of <span class="math inline">\(A\)</span>. Indeed, let <span class="math inline">\(U\)</span> be a component of <span class="math inline">\(S^2\backslash K_n\)</span>. It is clear that <span class="math inline">\(U\)</span> is open. Moreover, <span class="math inline">\(\bar{A}\)</span> intersects each component of <span class="math inline">\(S^2\backslash \Omega\)</span>, hence intersects <span class="math inline">\(U\)</span>. So <span class="math inline">\(U \cap A \neq \varnothing\)</span>. <span class="math inline">\(\Box\)</span></p>
+<p><strong>8.</strong> Prove the Mittag-Lefler theorem for the case in which <span class="math inline">\(\Omega\)</span> is the whole plane, by a direct argument which makes no appeal to Runge’s theorem.</p>
+<p><strong>Proof.</strong> For each <span class="math inline">\(n\)</span>, denote <span class="math inline">\(\bar{D}(0;n)\)</span> by <span class="math inline">\(K_n\)</span> for simple. Put <span class="math inline">\(A_1 = A \cap K_1\)</span>, and for each <span class="math inline">\(n \geq 2\)</span>, put <span class="math inline">\(A_n = A\cap(K_n\backslash K_{n-1})\)</span>. It is easy to see that each <span class="math inline">\(A_n\)</span> is finite. Now, for each <span class="math inline">\(n\)</span>, put <span class="math display">\[
+Q_n(z) = \sum\limits_{\alpha \in A_n}P_{\alpha}(z).
+\]</span></p>
+<p>For each <span class="math inline">\(n\)</span>, we have <span class="math inline">\(Q_n\)</span> is a rational function and the poles of <span class="math inline">\(Q_n\)</span> lie in <span class="math inline">\(A_n\)</span>. Fix <span class="math inline">\(n \geq 2\)</span>. We have <span class="math inline">\(Q_n\)</span> is holomorphic in an open set containing <span class="math inline">\(K_{n-1}\)</span>. Consider the power series representation of <span class="math inline">\(Q_n\)</span> at <span class="math inline">\(0\)</span> and recall that <span class="math inline">\(K_{n-1}\)</span> is <span class="math inline">\(\bar{D}(0;n-1)\)</span>, we get the power series converges to <span class="math inline">\(Q_n\)</span> uniformly in <span class="math inline">\(K_{n-1}\)</span>. This implies that we have a polynomial <span class="math inline">\(R_n\)</span> such that <span class="math display">\[
+|R_n(z) - Q_n(z)| &lt; 2^{-n}\qquad (z\in K_{n-1}).
+\]</span></p>
+<p>Follow the proof of the Mittag-Leffler theorem, we can see that the function <span class="math display">\[
+f(z) = Q_1(z) + \sum_{n=2}^{\infty}(Q_n(z) - R_n(z))\qquad (z\in \mathbb{C})
+\]</span> has the desired properties. <span class="math inline">\(\Box\)</span></p>
+<p><strong>9.</strong> Suppose <span class="math inline">\(\Omega\)</span> is a simply connected region, <span class="math inline">\(f\in H(\Omega)\)</span>, <span class="math inline">\(f\)</span> has no zero in <span class="math inline">\(\Omega\)</span>, and <span class="math inline">\(n\)</span> is a positive integer. Prove that there exists a <span class="math inline">\(g\in H(\Omega)\)</span> such that <span class="math inline">\(g^n = f\)</span>.</p>
+<p><strong>Proof.</strong> Let <span class="math inline">\(h\)</span> be a holomorphic logarithm of <span class="math inline">\(f\)</span> in <span class="math inline">\(\Omega\)</span> (the existence comes from the hypotheses that <span class="math inline">\(\Omega\)</span> is a simply connected region, <span class="math inline">\(f\in H(\Omega)\)</span>, and <span class="math inline">\(f\)</span> has no zero in <span class="math inline">\(\Omega\)</span>). Now, the function <span class="math inline">\(g = \exp(h/n)\)</span> is in <span class="math inline">\(H(\Omega)\)</span> and <span class="math inline">\(g^n = \exp(h) = f\)</span>. <span class="math inline">\(\Box\)</span></p>
+<p><strong>10.</strong> Suppose <span class="math inline">\(\Omega\)</span> is a region, <span class="math inline">\(f\in H(\Omega)\)</span>, and <span class="math inline">\(f\neq 0\)</span>. Prove that <span class="math inline">\(f\)</span> has a holomorphic logarithm in <span class="math inline">\(\Omega\)</span> if and only if <span class="math inline">\(f\)</span> has holomorphic <span class="math inline">\(n\)</span>-th roots in <span class="math inline">\(\Omega\)</span> for every positive integer <span class="math inline">\(n\)</span>.</p>
+<p><strong>Proof.</strong> The <span class="math inline">\((\Rightarrow)\)</span> side is clear, an <span class="math inline">\(n\)</span>-th root of <span class="math inline">\(f\)</span> is <span class="math inline">\(\exp(g/n)\)</span> where <span class="math inline">\(g\)</span> be a holomorphic logarithm in <span class="math inline">\(\Omega\)</span> of <span class="math inline">\(f\)</span>. For the <span class="math inline">\((\Leftarrow)\)</span> side, at first, we will show that <span class="math inline">\(f\)</span> has no zero in <span class="math inline">\(\Omega\)</span>. Indeed, suppose <span class="math inline">\(f(a) = 0\)</span> for some <span class="math inline">\(a\in \Omega\)</span>. Because <span class="math inline">\(f\neq 0\)</span>, we have <span class="math inline">\(f(z) = (z-a)^m g(z)\)</span>, where <span class="math inline">\(m&gt;0\)</span> is the order of zero of <span class="math inline">\(f\)</span> at <span class="math inline">\(a\)</span>, <span class="math inline">\(g\in H(\Omega)\)</span>, and <span class="math inline">\(g(a) \neq 0\)</span>. Consider an holomorphic <span class="math inline">\((m+1)\)</span>-th root <span class="math inline">\(\varphi\)</span> of <span class="math inline">\(f\)</span>. Because <span class="math inline">\(\varphi(a) = 0\)</span> and <span class="math inline">\(\varphi \neq 0\)</span>, we have <span class="math inline">\(\varphi(z) = (z-a)h(z)\)</span>, where <span class="math inline">\(h\in H(\Omega)\)</span>. Therefore <span class="math inline">\(g(z) = (z-a)h(z)^{m+1}\)</span> and this gives us <span class="math inline">\(g(a) = 0\)</span> (a contradiction). To show that <span class="math inline">\(f\)</span> has a holomorphic logarithm in <span class="math inline">\(\Omega\)</span>, it is enough to show that <span class="math display">\[
+\int_{\gamma}\frac{f'(z)}{f(z)}\,dz = 0\qquad (*)
+\]</span> for every closed path <span class="math inline">\(\gamma\)</span> in <span class="math inline">\(\Omega\)</span>. Indeed, suppose <span class="math inline">\((*)\)</span> is true for every closed path in <span class="math inline">\(\Omega\)</span>. Fix <span class="math inline">\(z_0\in \Omega\)</span> and let <span class="math inline">\(l_0\)</span> be a logarithm of <span class="math inline">\(f(z_0)\)</span> (this logarithm exists because <span class="math inline">\(f(z_0)\neq 0\)</span>). Let <span class="math inline">\(L\)</span> be a function in <span class="math inline">\(\Omega\)</span> defined by <span class="math display">\[
+L(z) = l_0 + \int_{\Gamma(z)}\frac{f'(\zeta)}{f(\zeta)}\,d\zeta\qquad (z\in \Omega),
+\]</span> where <span class="math inline">\(\Gamma(z)\)</span> is any path in <span class="math inline">\(\Omega\)</span> from <span class="math inline">\(z_0\)</span> to <span class="math inline">\(z\)</span>. Because of <span class="math inline">\((*)\)</span>, this function is well-defined. Fix <span class="math inline">\(a\in \Omega\)</span>. For any <span class="math inline">\(D(a;r)\subset \Omega\)</span> and any <span class="math inline">\(z\in D'(a;r)\)</span>, we have <span class="math display">\[
+\frac{L(z)-L(a)}{z-a}-\frac{f'(a)}{f(a)} = \frac{1}{z-a}\int_{[a,z]}\left(\frac{f'(\zeta)}{f(\zeta)}-\frac{f'(a)}{f(a)}\right)\,dz.
+\]</span></p>
+<p>Because <span class="math inline">\(f'/f\)</span> is continuous at <span class="math inline">\(a\)</span>, it is easy to see that <span class="math inline">\(L'(a) = f'(a)/f(a)\)</span>. So <span class="math inline">\(L\in H(\Omega)\)</span> and the formula <span class="math inline">\(L'=f'/f\)</span> gives us <span class="math inline">\((\exp(L)/f)'=0\)</span>. Hence <span class="math inline">\(\exp(L)/f = \mathrm{const} = \exp(L(z_0))/f(z_0)= 1\)</span>. So <span class="math inline">\(L\)</span> is a holomorphic logarithm of <span class="math inline">\(f\)</span> in <span class="math inline">\(\Omega\)</span>. In the end, to show that <span class="math inline">\((*)\)</span> is true, we notice that <span class="math inline">\(\frac{1}{2\pi i}\)</span> times the left hand side of <span class="math inline">\((*)\)</span> is the index of <span class="math inline">\(f\circ \gamma\)</span> at <span class="math inline">\(0\)</span>, which is an integer number. Moreover, if <span class="math inline">\(g\)</span> is an holomorphic <span class="math inline">\(n\)</span>-th root of <span class="math inline">\(f\)</span> in <span class="math inline">\(\Omega\)</span>, then <span class="math display">\[
+\frac{1}{2\pi i}\int_{\gamma}\frac{f'(z)}{f(z)}\,dz = \frac{n}{2\pi i}\int_{\gamma}\frac{g'(z)}{g(z)}\,dz.
+\]</span></p>
+<p>The right hand side is an integer which is divisible by <span class="math inline">\(n\)</span>. We get the conclusion by noticing that <span class="math inline">\(0\)</span> is the unique integer number which is divisible by all positive integer. <span class="math inline">\(\Box\)</span></p>
+<p><strong>11.</strong> Suppose that <span class="math inline">\(f_n \in H(\Omega)\)</span> (<span class="math inline">\(n=1,2,3,\ldots\)</span>), <span class="math inline">\(f\)</span> is a complex function in <span class="math inline">\(\Omega\)</span>, and <span class="math inline">\(f(z) = \lim_{n\to\infty}f_n(z)\)</span> for every <span class="math inline">\(z\in \Omega\)</span>. Prove that <span class="math inline">\(\Omega\)</span> has a dense open subset <span class="math inline">\(V\)</span> on which <span class="math inline">\(f\)</span> is holomorphic.<br>
+<em>Hint.</em> Put <span class="math inline">\(\varphi = \sup|f_n|\)</span>. Use Baire’s theorem to prove that every disc in <span class="math inline">\(\Omega\)</span> contains a disc on which <span class="math inline">\(\varphi\)</span> is bounded. Apply Excercise 10.5.<br>
+(In general, <span class="math inline">\(V\neq \Omega\)</span>. Compare Excercises 3 and 4.)</p>
+<p><strong>Proof.</strong> Put <span class="math inline">\(\varphi(z) = \sup_n |f_n(z)|\)</span> for every <span class="math inline">\(z \in \Omega\)</span>. It is well-defined because <span class="math inline">\(\lim_{n\to\infty} f_n(z)\)</span> exists (and equals to <span class="math inline">\(f(z)\)</span>) for every <span class="math inline">\(z \in \Omega\)</span>. Fix <span class="math inline">\(B\)</span> be a closed disc in <span class="math inline">\(\Omega\)</span> (so <span class="math inline">\(B\)</span> is complete). For each <span class="math inline">\(n\)</span>, put <span class="math inline">\(A_n = \{z\in B:\varphi(z) \leq n\}\)</span>. By the definition of <span class="math inline">\(\varphi\)</span>, it is clear that <span class="math display">\[
+A_n = \bigcap\limits_{m=1}^{\infty} \{z\in B: |f_m(z)|\leq n\}.
+\]</span></p>
+<p>Hence <span class="math inline">\(A_n\)</span> is a closed set in <span class="math inline">\(B\)</span> for each <span class="math inline">\(n\)</span>. By Baire’s theorem, there exists an <span class="math inline">\(n\)</span> such that <span class="math inline">\(A_n\)</span> is not a nowhere-dense subset of <span class="math inline">\(B\)</span>. So <span class="math inline">\(A_n\)</span> contains an open disc <span class="math inline">\(U_B\subset B\)</span> in which <span class="math inline">\(\varphi\)</span> is bounded from above by <span class="math inline">\(n\)</span>. Now, apply Exercise 10.5, we get <span class="math inline">\(f \in H(U_B)\)</span>. Let <span class="math display">\[
+V = \bigcup\limits_B U_B,
+\]</span> where <span class="math inline">\(B\)</span> ranges over all closed disc in <span class="math inline">\(\Omega\)</span>. It is clear that <span class="math inline">\(V\)</span> is a dense open subset of <span class="math inline">\(\Omega\)</span> and <span class="math inline">\(f\in H(V)\)</span>. <span class="math inline">\(\Box\)</span></p>
+</section>
+<section id="chapter-14---conformal-mapping" class="level2">
+<h2 class="anchored" data-anchor-id="chapter-14---conformal-mapping">Chapter 14 - Conformal Mapping</h2>
+<p><strong>10.</strong> Suppose <span class="math inline">\(f\)</span> and <span class="math inline">\(g\)</span> are holomorphic mappings of <span class="math inline">\(U\)</span> into <span class="math inline">\(\Omega\)</span>, <span class="math inline">\(f\)</span> is one-to-one, <span class="math inline">\(f(U) = \Omega\)</span>, and <span class="math inline">\(f(0) = g(0)\)</span>. Prove that <span class="math display">\[
+g(D(0;r))\subset f(D(0;r))\qquad (0&lt; r &lt; 1).
+\]</span></p>
+<p><strong>Proof.</strong> Put <span class="math inline">\(h=f^{-1}\circ g\)</span>. Then <span class="math inline">\(h(U)\subset U\)</span> and <span class="math inline">\(h(0) = 0\)</span>. By Schwartz’s lemma, we have <span class="math inline">\(|h(z)|\leq |z|\)</span> for all <span class="math inline">\(z\in U\)</span>. Fix <span class="math inline">\(r\in (0,1)\)</span>. If <span class="math inline">\(z\in D(0;r)\)</span> then also <span class="math inline">\(h(z)\in D(0;r)\)</span>, hence <span class="math inline">\(f^{-1}\circ g (z) \in D(0;r)\)</span>, and hence <span class="math inline">\(g(z) \in f(D(0;r))\)</span>. So <span class="math inline">\(g(D(0;r))\subset f(D(0;r))\)</span>. <span class="math inline">\(\Box\)</span></p>
+<p><strong>12.</strong> Suppose <span class="math inline">\(\Omega\)</span> is a convex region, <span class="math inline">\(f\in H(\Omega)\)</span>, and <span class="math inline">\(\mathrm{Re}f'(z)&gt;0\)</span> for all <span class="math inline">\(z\in \Omega\)</span>. Prove that <span class="math inline">\(f\)</span> is one-to-one in <span class="math inline">\(\Omega\)</span>. Is the result changed if the hypothesis is weakened to <span class="math inline">\(\mathrm{Re}f'(z) \geq 0\)</span>? (Exclude the trivial case <span class="math inline">\(f=\)</span> constant.) Show by an example that “convex” cannot be replaced by “simply connected.”</p>
+<p><strong>Proof.</strong> No.&nbsp;<span class="math inline">\(\Omega = \mathbb{C}\backslash [0,\infty)\)</span>, <span class="math inline">\(f(z) = -iz^{3/2}+z/\sqrt{2}\)</span>.</p>
+<p>Let <span class="math inline">\(a,b\in \Omega\)</span> such that <span class="math inline">\(a \neq b\)</span>. We have <span class="math display">\[
+f(b) - f(a) = \int_{[a,b]}f'(z)\,dz = (b-a)\int_0^1 f'(a+(b-a)t)\,dt.
+\]</span></p>
+<p>Hence <span class="math display">\[\begin{aligned}
+\mathrm{Re}\left[\frac{f(b)-f(a)}{b-a}\right] &amp;= \mathrm{Re}\left[\int_0^1 f'(a+(b-a)t)\,dt\right]\\
+&amp;=  \int_0^1 \mathrm{Re}\left[f'(a+(b-a)t)\right]\,dt &gt; 0.
+\end{aligned}
+\]</span></p>
+<p>So we must have <span class="math inline">\(f(b) \neq f(a)\)</span>, and this implies that <span class="math inline">\(f\)</span> is one-to-one. Now suppose that <span class="math inline">\(\mathrm{Re}f'(z)\geq  0\)</span> for all <span class="math inline">\(z\in \Omega\)</span>. Let <span class="math inline">\(Z = \{z\in \Omega: \mathrm{Re}f'(z) = 0\}\)</span>. Of course, <span class="math inline">\(Z\)</span> is a closed set. By the mean value property of <span class="math inline">\(\mathrm{Re}f'\)</span> and <span class="math inline">\(\mathrm{Re}f'(z)\geq  0\)</span> for all <span class="math inline">\(z\in \Omega\)</span>, it is easy to show that <span class="math inline">\(Z\)</span> is an open set. So <span class="math inline">\(Z = \varnothing\)</span> or <span class="math inline">\(Z = \Omega\)</span>. The first case implies, as we have shown, <span class="math inline">\(f\)</span> is one-to-one in <span class="math inline">\(\Omega\)</span>. The second case implies <span class="math inline">\(f'(\Omega) \subset i\mathbb{R}\)</span>. So, by the open mapping theorem, <span class="math inline">\(f'\)</span> is constant in <span class="math inline">\(\Omega\)</span>, hence <span class="math inline">\(f\)</span> is constant or linear. The linear case also leads to <span class="math inline">\(f\)</span> is one-to-one. So, unless <span class="math inline">\(f\)</span> is constant, <span class="math inline">\(f\)</span> is always one-to-one when <span class="math inline">\(\mathrm{Re}f'(z)\geq  0\)</span> for all <span class="math inline">\(z\in \Omega\)</span>. For an example that “convex” cannot be replaced by “simply connected”, consider <span class="math inline">\(\Omega = \mathbb{C}\backslash [0,\infty)\)</span> and <span class="math inline">\(f(z) = -iz^{3/2}+z/\sqrt{2}\)</span> with the branch cut for <span class="math inline">\(z^{1/2}\)</span> is <span class="math inline">\([0,\infty)\)</span>. It is easy to check that <span class="math inline">\(f'(z) = -\frac{3i}{2}z^{1/2} + 1/\sqrt{2}\)</span> has a positive real part and <span class="math inline">\(f(i) = f(-i)\)</span>. <span class="math inline">\(\Box\)</span></p>
+<p><strong>13.</strong> Suppose <span class="math inline">\(\Omega\)</span> is a region, <span class="math inline">\(f_n\in H(\Omega)\)</span> for <span class="math inline">\(n=1,2,3,\ldots\)</span>, each <span class="math inline">\(f_n\)</span> is one-to-one in <span class="math inline">\(\Omega\)</span>, and <span class="math inline">\(f_n\to f\)</span> uniformly on compact subsets of <span class="math inline">\(\Omega\)</span>. Prove that <span class="math inline">\(f\)</span> is either constant or one-to-one in <span class="math inline">\(\Omega\)</span>. Show that both cases can occur.</p>
+<p><strong>Proof.</strong> Suppose there exists <span class="math inline">\(a,b\in \Omega\)</span> such that <span class="math inline">\(a\neq b\)</span> and <span class="math inline">\(f(a) = f(b)\)</span>. Choose <span class="math inline">\(r &gt; 0\)</span> such that <span class="math inline">\(\bar{D}(a;r)\subset \Omega\)</span> and <span class="math inline">\(b \notin D(a;r)\)</span>. By the assumption, we have <span class="math inline">\(f_n(z) - f_n(b) \to f(z) -f(b)\)</span> uniformly on <span class="math inline">\(\bar{D}(a;r)\)</span>. Now by Exercise 10.20 with a note that <span class="math inline">\(f_n(z) - f_n(b) \neq 0\)</span> for all <span class="math inline">\(z\in D(a;r)\)</span> and all <span class="math inline">\(n\)</span>, we have <span class="math inline">\(f(z) - f(b)\neq 0\)</span> for all <span class="math inline">\(z\in D(a;r)\)</span> or <span class="math inline">\(f(z) -f(b)=0\)</span> for all <span class="math inline">\(z\in D(a;r)\)</span>. The first case cannot happen because <span class="math inline">\(f(a) = f(b)\)</span>. And the second case implies that <span class="math inline">\(f\)</span> is constant. <span class="math inline">\(\Box\)</span></p>
+<p><strong>16.</strong> Let <span class="math inline">\(\mathcal{F}\)</span> be the class of all <span class="math inline">\(f\in H(U)\)</span> for which <span class="math display">\[
+\iint\limits_U |f(z)|^2 \, d x\,d y \leq 1.
+\]</span></p>
+<p>Is this a normal family?</p>
+<p><strong>Proof.</strong> Let <span class="math inline">\(a \in U\)</span> and <span class="math inline">\(R &gt; 0\)</span> such that <span class="math inline">\(D(a;2R) \subset U\)</span>. For <span class="math inline">\(z\in D(a;R)\)</span>, we have <span class="math inline">\(\bar{D}(z;r) \subset U\)</span> for all <span class="math inline">\(r\in (0,R]\)</span>. By the mean value property of <span class="math inline">\(f\)</span>, we have <span class="math display">\[
+f(z) = \frac{1}{2\pi}\int_{0}^{2\pi} f(z + re^{it})\, dt.
+\]</span></p>
+<p>Multiply two sides with <span class="math inline">\(r\)</span> and integrate them according to <span class="math inline">\(r\)</span> from <span class="math inline">\(0\)</span> to <span class="math inline">\(R\)</span>, we get <span class="math display">\[
+\frac{R^2}{2}f(z) = \frac{1}{2\pi}\int_0^R \int_0^{2\pi}rf(z + re^{it})\,dt.
+\]</span></p>
+<p>Hence, by Hölder’s inequality, we have <span class="math display">\[
+\begin{aligned}
+|f(z)| &amp;\leq \frac{1}{\pi R^2}\left[\int_0^R \int_0^{2\pi} r\,dr\,dt\right]^{1/2}\left[\int_0^R \int_0^{2\pi} r|f(z + re^{it})|^2\,dr\,dt\right]^{1/2}\\
+&amp;= \frac{1}{\sqrt{\pi} R}\left[\iint\limits_{D(z;R)}|f(w)|\,dw\right]^{1/2} \leq \frac{1}{\sqrt{\pi} R}.
+\end{aligned}
+\]</span></p>
+<p>For each compact set <span class="math inline">\(K \subset \Omega\)</span>, we can cover it by finite disc <span class="math inline">\(D(a;R)\)</span> with the property that <span class="math inline">\(D(a;2R) \subset U\)</span>. By the above argument, <span class="math inline">\(\mathcal{F}\)</span> is uniformly bounded in each disc, hence is uniformly bounded on <span class="math inline">\(K\)</span>. By Theorem 14.6, we conclude that <span class="math inline">\(\mathcal{F}\)</span> is a normal family. <span class="math inline">\(\Box\)</span></p>
+
+
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/fehiepsi\.github\.io\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<script src="https://giscus.app/client.js" data-repo="fehiepsi/fehiepsi.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkxMjM0MTE3NQ==" data-category="Announcements" data-category-id="DIC_kwDOALxPt84CpvPE" data-mapping="pathname" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="bottom" data-theme="light" data-lang="en" crossorigin="anonymous" data-loading="lazy" async="">
+</script>
+<script type="application/javascript">
+  const giscusIframeObserver = new MutationObserver(function (mutations) {
+    mutations.forEach(function (mutation) {
+      mutation.addedNodes.forEach(function (addedNode) {
+        if (addedNode.matches && addedNode.matches('div.giscus')) {
+          const giscusIframe = addedNode.querySelector('iframe.giscus-frame');
+          if(giscusIframe) {
+            giscusIframe.addEventListener("load", function() {
+              window.setTimeout(() => {
+                toggleGiscusIfUsed(hasAlternateSentinel(), authorPrefersDark);
+              }, 100);
+            });
+            giscusIframeObserver.disconnect();
+          }
+        }
+      });
+    });
+  });
+  giscusIframeObserver.observe(document.body, { childList: true, subtree: true });
+</script>
+<input type="hidden" id="giscus-base-theme" value="light">
+<input type="hidden" id="giscus-alt-theme" value="dark_dimmed">
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>Contents © 2025 <a href="mailto:fehiepsi@gmail.com">Du Phan</a> &nbsp;–&nbsp; Powered by <a href="https://quarto.org">Quarto</a> &nbsp;–&nbsp; <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/"> <img alt="Creative Commons License BY-NC-SA" style="border-width:0; margin-bottom:-4px; height:20px;" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png"> </a></p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
