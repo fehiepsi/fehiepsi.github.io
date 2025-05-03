@@ -1,0 +1,63 @@
+project:
+  type: website
+  output-dir: output
+
+website:
+  title: "fehiepsi's blog"
+  site-url: "https://fehiepsi.github.io/"
+  description: "a math student, a data science and AI novice, a zen mind"
+  favicon: static/favicon.ico
+  navbar:
+    search: true
+    left:
+      - href: /
+        text: Posts
+      - href: talks.md
+        text: Talks
+      - href: about.md
+        text: About
+      - href: /rethinking-pyro/
+        text: rethinking-pyro
+      - href: /rethinking-numpyro/
+        text: rethinking-numpyro
+    right:
+      - icon: twitter
+        href: https://twitter.com/fehiepsi
+      - icon: github
+        href: https://github.com/fehiepsi
+      - icon: linkedin
+        href: https://www.linkedin.com/in/phandu/
+      - icon: wordpress
+        href: https://fehiepsi.wordpress.com/
+      - icon: rss
+        href: /blog/index.xml
+  comments:
+    giscus:
+      repo: fehiepsi/fehiepsi.github.io
+      repo-id: MDEwOlJlcG9zaXRvcnkxMjM0MTE3NQ==
+      category: Announcements
+      category-id: DIC_kwDOALxPt84CpvPE
+      mapping: pathname
+      reactions-enabled: true
+      loading: lazy
+      input-position: bottom
+      theme:
+        light: light
+        dark: dark_dimmed
+  page-footer:
+    center: |
+      Contents &copy; 2025 <a href="mailto:fehiepsi@gmail.com">Du Phan</a> &nbsp;–&nbsp;
+      Powered by <a href="https://quarto.org">Quarto</a> &nbsp;–&nbsp;
+      <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+        <img alt="Creative Commons License BY-NC-SA"
+             style="border-width:0; margin-bottom:-4px; height:20px;"
+             src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png">
+      </a>
+  google-analytics: "UA-131299125-1"
+  back-to-top-navigation: true
+format:
+  html:
+    theme:
+      light: yeti
+      dark: cyborg
+    toc: true
