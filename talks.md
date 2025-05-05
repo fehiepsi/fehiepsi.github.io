@@ -10,3 +10,6 @@
 
 ### (deep universal) variational inference for probabilistic latent variable models
 <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vTOTx61_FyxgJgWKJEa_2cVZX9S8aUch0r90utCAv_Uo36uXhjX2I1juhcfoXdCrEj6T4SUWsnw2-mW/pubembed?start=false&loop=false&delayms=3000" frameborder="0" width="800" height="450" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+
+### Cùng học Python
+<iframe width="800" height="450" src="https://www.youtube.com/embed/videoseries?si=-gvHj-sEdprAI1mH&amp;list=PLML52Yxo3cEYfjyc7CkyHRycF26dBqdvc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
