@@ -14,17 +14,19 @@ website:
         text: Posts
       - href: talks.md
         text: Talks
-      - href: about.md
-        text: About
-      - href: /rethinking-pyro/
-        text: rethinking-pyro
       - href: /rethinking-numpyro/
         text: rethinking-numpyro
+      - href: /rethinking-pyro/
+        text: rethinking-pyro
+      - href: about.md
+        text: About
     right:
-      - icon: twitter
-        href: https://twitter.com/fehiepsi
       - icon: github
         href: https://github.com/fehiepsi
+      - icon: mortarboard-fill
+        href: https://scholar.google.com/citations?user=CeC9PtYAAAAJ&hl=en
+      - icon: twitter
+        href: https://twitter.com/fehiepsi
       - icon: linkedin
         href: https://www.linkedin.com/in/phandu/
       - icon: wordpress
